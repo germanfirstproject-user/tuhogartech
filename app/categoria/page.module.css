@@ -1,0 +1,39 @@
+.container {
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, var(--color-background) 0%, var(--color-background-secondary) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--color-foreground);
+  text-align: center;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+}

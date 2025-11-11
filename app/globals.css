@@ -1,0 +1,4 @@
+/* Importar variables CSS globales */
+@import '../styles/variables.css';
+
+/* Aquí irán los estilos globales específicos si es necesario */

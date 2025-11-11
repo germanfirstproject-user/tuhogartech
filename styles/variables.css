@@ -1,0 +1,268 @@
+/* =========================================
+   VARIABLES CSS GLOBALES - AffiliPro
+   Diseño moderno, limpio y profesional
+   ========================================= */
+
+:root {
+  /* ========== COLORES PRINCIPALES ========== */
+  --color-primary: #2563eb;           /* Azul vibrante */
+  --color-primary-dark: #1e40af;      /* Azul oscuro */
+  --color-primary-light: #3b82f6;     /* Azul claro */
+  --color-primary-very-light: #dbeafe;/* Azul muy claro */
+
+  --color-secondary: #10b981;         /* Verde éxito */
+  --color-secondary-dark: #059669;    /* Verde oscuro */
+  --color-secondary-light: #34d399;   /* Verde claro */
+
+  --color-accent: #f59e0b;            /* Naranja/Ámbar */
+  --color-accent-dark: #d97706;       /* Naranja oscuro */
+
+  --color-danger: #ef4444;            /* Rojo error */
+  --color-danger-dark: #dc2626;       /* Rojo oscuro */
+  --color-danger-light: #fca5a5;      /* Rojo claro */
+
+  --color-warning: #f59e0b;           /* Amarillo/Naranja */
+  --color-warning-light: #fcd34d;     /* Amarillo claro */
+
+  /* ========== COLORES NEUTROS ========== */
+  --color-dark: #0f172a;              /* Casi negro */
+  --color-dark-secondary: #1e293b;    /* Gris muy oscuro */
+  --color-dark-tertiary: #334155;     /* Gris oscuro */
+  
+  --color-light: #f8fafc;             /* Blanco roto */
+  --color-light-secondary: #f1f5f9;   /* Gris muy claro */
+  --color-light-tertiary: #e2e8f0;    /* Gris claro */
+
+  --color-text: #1e293b;              /* Texto principal */
+  --color-text-secondary: #64748b;    /* Texto secundario */
+  --color-text-muted: #94a3b8;        /* Texto muted */
+  --color-text-light: #f8fafc;        /* Texto en fondo oscuro */
+
+  --color-background: #ffffff;        /* Fondo principal */
+  --color-background-secondary: #f8fafc; /* Fondo secundario */
+  --color-background-tertiary: #f1f5f9;  /* Fondo terciario */
+
+  --color-border: #e2e8f0;            /* Bordes */
+  --color-border-dark: #cbd5e1;       /* Bordes oscuros */
+
+  /* ========== SHADOW ========== */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* ========== TIPOGRAFÍA ========== */
+  --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.2;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* ========== ESPACIADO ========== */
+  --space-0: 0;
+  --space-1: 0.25rem;    /* 4px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-4: 1rem;       /* 16px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-20: 5rem;      /* 80px */
+  --space-24: 6rem;      /* 96px */
+
+  /* ========== RADIUS ========== */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-full: 9999px;
+
+  /* ========== TRANSITIONS ========== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ========== GRADIENTS ========== */
+  --gradient-hero: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 100%);
+
+  /* ========== Z-INDEX ========== */
+  --z-hide: -1;
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+
+  /* ========== RESPONSIVE BREAKPOINTS ========== */
+  /* Usaremos media queries: 320px, 640px, 768px, 1024px, 1280px */
+}
+
+/* ========== RESET GLOBAL ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  transition: background-color var(--transition-normal);
+}
+
+/* ========== TIPOGRAFÍA BASE ========== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  margin-bottom: var(--space-4);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+}
+
+h5 {
+  font-size: var(--font-size-lg);
+}
+
+h6 {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+p {
+  margin-bottom: var(--space-4);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+/* ========== FORMULARIOS ========== */
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input,
+textarea,
+select {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-very-light);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-fast);
+}
+
+/* ========== UTILIDADES ========== */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: var(--color-text-secondary);
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-4 {
+  gap: var(--space-4);
+}

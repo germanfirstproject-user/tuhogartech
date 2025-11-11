@@ -1,0 +1,246 @@
+/* Profile Page Styles - CSS Modules */
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.main {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: var(--space-12) var(--space-4);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+}
+
+.breadcrumbLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  transition: color var(--transition-fast);
+}
+
+.breadcrumbLink:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.card {
+  max-width: 672px;
+  margin: 0 auto;
+  background-color: white;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Avatar Section */
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+}
+
+.avatarCircle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--color-primary-very-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarIcon {
+  width: 64px;
+  height: 64px;
+  color: var(--color-primary);
+}
+
+.avatarText {
+  text-align: center;
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin: var(--space-2) 0 0 0;
+}
+
+/* Info Sections */
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.infoBox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.infoBoxEmail {
+  background-color: var(--color-primary-very-light);
+  border-color: var(--color-primary-light);
+}
+
+.infoBoxStatus {
+  background-color: rgba(16, 185, 129, 0.05);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.infoBoxRole {
+  background-color: rgba(147, 51, 234, 0.05);
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.infoIcon {
+  width: 20px;
+  height: 20px;
+  margin-top: var(--space-1);
+  flex-shrink: 0;
+}
+
+.infoIconEmail {
+  color: var(--color-primary);
+}
+
+.infoIconStatus {
+  color: #10b981;
+}
+
+.infoIconRole {
+  color: #9333ea;
+}
+
+.infoContent {
+  flex: 1;
+}
+
+.infoLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--space-1) 0;
+}
+
+.infoValue {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.infoValueStatus {
+  color: #10b981;
+}
+
+.infoValueRole {
+  color: #9333ea;
+}
+
+/* Actions Section */
+.actionsSection {
+  margin-top: var(--space-8);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.adminLink {
+  width: 100%;
+  text-decoration: none;
+}
+
+.adminButton {
+  width: 100%;
+  padding: 12px 24px;
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.adminButton:hover {
+  background-color: var(--color-primary-very-light);
+  border-color: var(--color-primary-dark);
+}
+
+.helpText {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0;
+}
+
+/* Info Box (Upcoming) */
+.infoBoxContainer {
+  max-width: 672px;
+  margin: var(--space-8) auto 0;
+  background-color: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.infoBoxText {
+  font-size: var(--font-size-sm);
+  color: #1e3a8a;
+  margin: 0;
+  line-height: var(--line-height-relaxed);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .main {
+    padding: var(--space-6) var(--space-2);
+  }
+
+  .card {
+    padding: var(--space-4);
+  }
+
+  .title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .avatarSection {
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+}

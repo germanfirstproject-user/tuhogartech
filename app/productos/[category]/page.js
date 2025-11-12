@@ -1,33 +1,66 @@
 import Link from 'next/link';
-import { getProducts, getProductsByCategory } from '@/lib/supabase';
+import { getCategories, getCategoryBySlug, getProductsByCategory } from '@/lib/supabase';
 import { ArrowLeft } from 'lucide-react';
 import styles from './page.module.css';
 
-export async function generateStaticParams() {
-  const products = await getProducts();
-  const categories = [...new Set(products.map((p) => p.category))].filter(Boolean);
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-  return categories.map((category) => ({
-    category: encodeURIComponent(category),
+export async function generateStaticParams() {
+  const result = await getCategories();
+  const categories = result.success ? result.data : [];
+  
+  // Solo generar rutas para categorías activas con productos
+  const activeCategories = categories.filter(cat => cat.is_active && cat.product_count > 0);
+
+  return activeCategories.map((category) => ({
+    category: category.slug,
   }));
 }
 
 export async function generateMetadata({ params }) {
-  const category = decodeURIComponent(params.category);
+  const categoryResult = await getCategoryBySlug(params.category);
+  const category = categoryResult.success ? categoryResult.data : null;
+
+  if (!category) {
+    return {
+      title: 'Categoría no encontrada - AffiliPro',
+      description: 'La categoría solicitada no existe',
+    };
+  }
 
   return {
-    title: `${category} - Productos Afiliados | AffiliPro`,
-    description: `Descubre los mejores productos de ${category} con análisis detallados y comparativas`,
+    title: category.seo_title || `${category.name} - Productos Afiliados | AffiliPro`,
+    description: category.seo_description || `Descubre los mejores productos de ${category.name} con análisis detallados y comparativas`,
     openGraph: {
-      title: `${category} - AffiliPro`,
-      description: `Descubre los mejores productos de ${category}`,
+      title: category.seo_title || `${category.name} - AffiliPro`,
+      description: category.seo_description || `Descubre los mejores productos de ${category.name}`,
+      images: category.image_url ? [{ url: category.image_url }] : [],
     },
   };
 }
 
 export default async function CategoryPage({ params }) {
-  const category = decodeURIComponent(params.category);
-  const products = await getProductsByCategory(category);
+  const categoryResult = await getCategoryBySlug(params.category);
+  const category = categoryResult.success ? categoryResult.data : null;
+  
+  if (!category) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.errorState}>
+            <h1>Categoría no encontrada</h1>
+            <Link href="/productos" className={styles.backLink}>
+              Volver a productos
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const result = await getProductsByCategory(category.name);
+  const products = result.success ? result.data : [];
 
   return (
     <main className={styles.main}>
@@ -40,9 +73,23 @@ export default async function CategoryPage({ params }) {
           </Link>
         </div>
 
-        {/* Header */}
+        {/* Header con imagen de categoría */}
+        {category.image_url && (
+          <div className={styles.categoryBanner}>
+            <img 
+              src={category.image_url} 
+              alt={category.name}
+              className={styles.bannerImage}
+            />
+            <div className={styles.bannerOverlay} />
+          </div>
+        )}
+
         <div className={styles.header}>
-          <h1 className={styles.mainTitle}>{category}</h1>
+          <h1 className={styles.mainTitle}>{category.name}</h1>
+          {category.description && (
+            <p className={styles.categoryDescription}>{category.description}</p>
+          )}
           <p className={styles.subtitle}>
             {products.length} {products.length === 1 ? 'producto' : 'productos'} disponible{products.length !== 1 ? 's' : ''}
           </p>

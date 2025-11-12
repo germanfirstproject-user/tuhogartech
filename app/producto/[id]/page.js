@@ -4,14 +4,16 @@ import { ArrowLeft, Package, Star, Users } from 'lucide-react';
 import styles from './page.module.css';
 
 export async function generateStaticParams() {
-  const products = await getProducts();
+  const result = await getProducts();
+  const products = result.success ? result.data : [];
   return products.map((product) => ({
     id: product.id,
   }));
 }
 
 export async function generateMetadata({ params }) {
-  const product = await getProductById(params.id);
+  const result = await getProductById(params.id);
+  const product = result.success ? result.data : null;
 
   if (!product) {
     return {
@@ -31,7 +33,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProductDetailPage({ params }) {
-  const product = await getProductById(params.id);
+  const result = await getProductById(params.id);
+  const product = result.success ? result.data : null;
 
   if (!product) {
     return (

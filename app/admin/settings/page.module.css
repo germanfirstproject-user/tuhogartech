@@ -1,0 +1,36 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+  margin: 0 0 2rem 0;
+}
+
+.placeholder {
+  background: white;
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.placeholder p {
+  font-size: 1.25rem;
+  color: #6b7280;
+  margin: 0.5rem 0;
+}
+
+.placeholder p:first-child {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}

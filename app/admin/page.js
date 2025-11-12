@@ -1,114 +1,117 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { signOut } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
+import { getProducts, getBlogs } from '@/lib/supabase';
 import styles from './page.module.css';
 
-export default function AdminPage() {
-  const router = useRouter();
-  const [isAdmin, setIsAdmin] = useState(null);
+export default function AdminDashboard() {
+  const { user } = useAuth();
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalBlogs: 0,
+    totalUsers: 0,
+    recentActivity: []
+  });
   const [loading, setLoading] = useState(true);
-  const [userEmail, setUserEmail] = useState('');
 
-  const handleLogout = async () => {
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  const loadStats = async () => {
     try {
-      await signOut();
-      localStorage.removeItem('user');
-      setIsAdmin(false);
-      setUserEmail('');
-      router.push('/');
-      setTimeout(() => window.location.reload(), 500);
-    } catch (err) {
-      console.error('Error al cerrar sesión:', err);
-      localStorage.removeItem('user');
-      router.push('/');
-      setTimeout(() => window.location.reload(), 500);
+      // Obtener total de productos
+      const productsResult = await getProducts();
+      const totalProducts = productsResult.success ? productsResult.data.length : 0;
+
+      // Obtener total de blogs
+      const blogsResult = await getBlogs();
+      const totalBlogs = blogsResult.success ? blogsResult.data.length : 0;
+
+      // Para usuarios, usar el Admin API o simplemente mostrar un mensaje
+      // Como no tenemos acceso directo a auth.users, dejamos en 0 o implementamos después
+      const totalUsers = 0; // Se puede implementar con una función especial del servidor
+
+      setStats({
+        totalProducts,
+        totalBlogs,
+        totalUsers,
+        recentActivity: []
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    // Verificar si es admin
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      try {
-        const user = JSON.parse(userData);
-        if (user.isAdmin) {
-          setIsAdmin(true);
-          setUserEmail(user.email || '');
-        } else {
-          // No es admin, redirigir a home
-          router.push('/');
-        }
-      } catch (e) {
-        // Error, redirigir a login
-        router.push('/login');
-      }
-    } else {
-      // No hay usuario, redirigir a login
-      router.push('/login');
-    }
-    setLoading(false);
-  }, [router]);
-
   if (loading) {
     return (
-      <main className={styles.container}>
-        <div className={styles.content}>
-          <p>Cargando...</p>
-        </div>
-      </main>
+      <div className={styles.container}>
+        <p>Cargando estadísticas...</p>
+      </div>
     );
   }
 
-  if (!isAdmin) {
-    return null;
-  }
-
   return (
-    <main className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.header}>
-          <div className={styles.titleSection}>
-            <h1 className={styles.title}>Panel de Administración</h1>
-            <p className={styles.userEmail}>{userEmail}</p>
-          </div>
-          <button onClick={handleLogout} className={styles.logoutButton}>
-            🚪 Cerrar Sesión
-          </button>
-        </div>
-        
-        <p className={styles.description}>
-          Bienvenido al área de administración. Aquí puedes gestionar tu sitio.
-        </p>
-        
-        <div className={styles.cardGrid}>
-          <div className={styles.card}>
-            <h3>Gestión de Productos</h3>
-            <p>Crear, editar y eliminar productos</p>
-          </div>
-          
-          <div className={styles.card}>
-            <h3>Gestión de Usuarios</h3>
-            <p>Ver y gestionar usuarios registrados</p>
-          </div>
-          
-          <div className={styles.card}>
-            <h3>Reportes</h3>
-            <p>Ver estadísticas y análisis</p>
-          </div>
-          
-          <div className={styles.card}>
-            <h3>Configuración</h3>
-            <p>Ajusta la configuración general</p>
-          </div>
-        </div>
-        
-        <Link href="/" className={styles.button}>
-          Volver al inicio
-        </Link>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Dashboard</h1>
+        <p className={styles.subtitle}>Bienvenido, {user?.email}</p>
       </div>
-    </main>
+
+      <div className={styles.statsGrid}>
+        <div className={styles.statCard}>
+          <div className={styles.statIcon}>🛍️</div>
+          <div className={styles.statContent}>
+            <p className={styles.statLabel}>Total Productos</p>
+            <p className={styles.statValue}>{stats.totalProducts}</p>
+          </div>
+        </div>
+
+        <div className={styles.statCard}>
+          <div className={styles.statIcon}>📝</div>
+          <div className={styles.statContent}>
+            <p className={styles.statLabel}>Total Blogs</p>
+            <p className={styles.statValue}>{stats.totalBlogs}</p>
+          </div>
+        </div>
+
+        <div className={styles.statCard}>
+          <div className={styles.statIcon}>👥</div>
+          <div className={styles.statContent}>
+            <p className={styles.statLabel}>Total Usuarios</p>
+            <p className={styles.statValue}>{stats.totalUsers}</p>
+          </div>
+        </div>
+
+        <div className={styles.statCard}>
+          <div className={styles.statIcon}>📊</div>
+          <div className={styles.statContent}>
+            <p className={styles.statLabel}>Actividad Reciente</p>
+            <p className={styles.statValue}>{stats.recentActivity.length}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.quickActions}>
+        <h2 className={styles.sectionTitle}>Acciones Rápidas</h2>
+        <div className={styles.actionsGrid}>
+          <a href="/admin/products" className={styles.actionCard}>
+            <span className={styles.actionIcon}>➕</span>
+            <span>Crear Producto</span>
+          </a>
+          <a href="/admin/blogs" className={styles.actionCard}>
+            <span className={styles.actionIcon}>✍️</span>
+            <span>Crear Blog</span>
+          </a>
+          <a href="/admin/users" className={styles.actionCard}>
+            <span className={styles.actionIcon}>👤</span>
+            <span>Ver Usuarios</span>
+          </a>
+        </div>
+      </div>
+    </div>
   );
 }

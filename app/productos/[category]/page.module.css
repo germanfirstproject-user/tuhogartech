@@ -36,6 +36,28 @@
   text-decoration: underline;
 }
 
+/* Category Banner */
+.categoryBanner {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-8);
+}
+
+.bannerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+}
+
 /* Header */
 .header {
   margin-bottom: var(--space-12);
@@ -49,10 +71,47 @@
   line-height: var(--line-height-tight);
 }
 
+.categoryDescription {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-4) 0;
+  line-height: var(--line-height-relaxed);
+}
+
 .subtitle {
   font-size: var(--font-size-lg);
   color: var(--color-text-secondary);
   margin: 0;
+}
+
+/* Error State */
+.errorState {
+  text-align: center;
+  padding: var(--space-12);
+  background-color: white;
+  border-radius: var(--radius-lg);
+  margin: var(--space-8) 0;
+}
+
+.errorState h1 {
+  font-size: var(--font-size-3xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.backLink {
+  display: inline-block;
+  padding: var(--space-3) var(--space-6);
+  background-color: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  transition: background-color var(--transition-fast);
+}
+
+.backLink:hover {
+  background-color: var(--color-primary-dark);
 }
 
 /* Products Grid */

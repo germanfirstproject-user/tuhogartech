@@ -1,17 +1,85 @@
 import Link from 'next/link';
+import { getBlogs } from '@/lib/supabase';
 import styles from './page.module.css';
 
 export const metadata = {
-  title: 'Blog - Gu�as y consejos',
-  description: 'Gu�as de compra y an�lisis en desarrollo.',
+  title: 'Blog - Guías y consejos',
+  description: 'Guías de compra, análisis y consejos sobre productos.',
 };
 
-export default function BlogListPage() {
+export default async function BlogListPage() {
+  const result = await getBlogs();
+  const allBlogs = result.success ? result.data : [];
+  
+  // Filtrar solo blogs publicados para usuarios públicos
+  const blogs = allBlogs.filter(blog => blog.status === 'published');
+
   return (
     <main className={styles.container}>
-      <h1 className={styles.title}>Blog</h1>
-      <p className={styles.description}>Gu�as y an�lisis en desarrollo</p>
-      <Link href="/" className={styles.button}>Volver</Link>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Blog</h1>
+        <p className={styles.description}>
+          Guías de compra, análisis y consejos sobre los mejores productos
+        </p>
+      </div>
+
+      {blogs.length > 0 ? (
+        <div className={styles.blogsGrid}>
+          {blogs.map((blog) => (
+            <Link 
+              href={`/blog/${blog.slug || blog.id}`} 
+              key={blog.id}
+              className={styles.blogCard}
+            >
+              {blog.featured_image && (
+                <div className={styles.blogImageContainer}>
+                  <img 
+                    src={blog.featured_image} 
+                    alt={blog.featured_image_alt || blog.title}
+                    className={styles.blogImage}
+                  />
+                </div>
+              )}
+              <div className={styles.blogContent}>
+                {blog.category && (
+                  <span className={styles.blogCategory}>{blog.category}</span>
+                )}
+                <h2 className={styles.blogTitle}>{blog.title}</h2>
+                {blog.excerpt && (
+                  <p className={styles.blogExcerpt}>{blog.excerpt}</p>
+                )}
+                <div className={styles.blogMeta}>
+                  {blog.published_at && (
+                    <span className={styles.blogDate}>
+                      {new Date(blog.published_at).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </span>
+                  )}
+                  {blog.author_name && (
+                    <span className={styles.blogAuthor}>Por {blog.author_name}</span>
+                  )}
+                </div>
+                {blog.tags && blog.tags.length > 0 && (
+                  <div className={styles.blogTags}>
+                    {blog.tags.slice(0, 3).map((tag, idx) => (
+                      <span key={idx} className={styles.blogTag}>{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className={styles.empty}>
+          <p>No hay artículos publicados aún.</p>
+          <Link href="/" className={styles.button}>Volver al inicio</Link>
+        </div>
+      )}
     </main>
   );
 }
+

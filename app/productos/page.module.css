@@ -77,6 +77,22 @@
   transform: scale(1.1);
 }
 
+.categoryImagePlaceholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(37, 99, 235, 0.05));
+}
+
+.placeholderIcon {
+  font-size: 4rem;
+  opacity: 0.3;
+}
+
 .categoryOverlay {
   position: absolute;
   inset: 0;
@@ -99,6 +115,17 @@
   font-size: var(--font-size-sm);
   color: #d1d5db;
   margin: 0;
+}
+
+.categoryDescription {
+  font-size: var(--font-size-sm);
+  color: #e5e7eb;
+  margin: var(--space-2) 0 0 0;
+  line-height: var(--line-height-snug);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Empty State */

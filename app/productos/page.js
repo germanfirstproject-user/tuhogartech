@@ -1,6 +1,9 @@
 import Link from 'next/link';
-import { getProducts } from '@/lib/supabase';
+import { getCategories } from '@/lib/supabase';
 import styles from './page.module.css';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const metadata = {
   title: 'Productos - AffiliPro',
@@ -12,26 +15,13 @@ export const metadata = {
 };
 
 export default async function ProductosPage() {
-  const products = await getProducts();
-
-  // Extraer categorías únicas con conteo de productos
-  const categoriesMap = {};
-  products.forEach((product) => {
-    if (product.category) {
-      if (!categoriesMap[product.category]) {
-        categoriesMap[product.category] = {
-          name: product.category,
-          count: 0,
-          image: product.images?.[0],
-        };
-      }
-      categoriesMap[product.category].count++;
-    }
-  });
-
-  const categories = Object.values(categoriesMap).sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+  const result = await getCategories();
+  const allCategories = result.success ? result.data : [];
+  
+  // Filtrar solo categorías activas con productos
+  const categories = allCategories
+    .filter(cat => cat.is_active && cat.product_count > 0)
+    .sort((a, b) => a.display_order - b.display_order);
 
   return (
     <main className={styles.main}>
@@ -49,18 +39,22 @@ export default async function ProductosPage() {
           {categories.length > 0 ? (
             categories.map((category) => (
               <Link
-                key={category.name}
-                href={`/productos/${category.name}`}
+                key={category.id}
+                href={`/productos/${category.slug}`}
                 className={styles.categoryLink}
               >
                 <div className={styles.categoryCard}>
                   {/* Imagen de fondo */}
-                  {category.image && (
+                  {category.image_url ? (
                     <img
-                      src={category.image}
+                      src={category.image_url}
                       alt={category.name}
                       className={styles.categoryImage}
                     />
+                  ) : (
+                    <div className={styles.categoryImagePlaceholder}>
+                      <span className={styles.placeholderIcon}>📦</span>
+                    </div>
                   )}
 
                   {/* Overlay */}
@@ -69,8 +63,13 @@ export default async function ProductosPage() {
                       {category.name}
                     </h2>
                     <p className={styles.categoryCount}>
-                      {category.count} {category.count === 1 ? 'producto' : 'productos'}
+                      {category.product_count} {category.product_count === 1 ? 'producto' : 'productos'}
                     </p>
+                    {category.description && (
+                      <p className={styles.categoryDescription}>
+                        {category.description}
+                      </p>
+                    )}
                   </div>
                 </div>
               </Link>

@@ -1,71 +1,23 @@
 'use client';
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 import styles from "./Header.module.css";
 
 export default function Header() {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const { user, isLoggedIn, isAdmin, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    // Verificar sesión desde localStorage
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      try {
-        const user = JSON.parse(userData);
-        setIsLoggedIn(true);
-        setUserEmail(user.email || '');
-        setIsAdmin(user.isAdmin || false);
-      } catch (e) {
-        // Error parsing
-      }
-    }
-  }, []);
 
   const handleLogout = async () => {
     try {
-      // Sign out desde Supabase
-      const result = await signOut();
-      
-      if (result.success) {
-        // Limpiar localStorage
-        localStorage.removeItem('user');
-        setIsLoggedIn(false);
-        setIsAdmin(false);
-        setUserEmail('');
-        setMenuOpen(false);
-        
-        // Redirigir a home
-        router.push('/');
-        
-        // Recargar para limpiar estado del cliente
-        setTimeout(() => window.location.reload(), 500);
-      } else {
-        // Incluso si hay error, limpiar el frontend
-        localStorage.removeItem('user');
-        setIsLoggedIn(false);
-        setIsAdmin(false);
-        setUserEmail('');
-        setMenuOpen(false);
-        router.push('/');
-        setTimeout(() => window.location.reload(), 500);
-      }
-    } catch (err) {
-      console.error('Error al cerrar sesión:', err);
-      // Forzar limpieza incluso si hay error
-      localStorage.removeItem('user');
-      setIsLoggedIn(false);
-      setIsAdmin(false);
-      setUserEmail('');
+      await signOut();
       setMenuOpen(false);
       router.push('/');
-      setTimeout(() => window.location.reload(), 500);
+    } catch (err) {
+      console.error('Error al cerrar sesión:', err);
     }
   };
 
@@ -94,13 +46,13 @@ export default function Header() {
               <button
                 className={styles.userButton}
                 onClick={() => setMenuOpen(!menuOpen)}
-                title={userEmail}
+                title={user?.email}
               >
                 👤
               </button>
               {menuOpen && (
                 <div className={styles.dropdown}>
-                  <div className={styles.dropdownHeader}>{userEmail}</div>
+                  <div className={styles.dropdownHeader}>{user?.email}</div>
                   <Link href="/profile" className={styles.dropdownItem}>
                     Mi Perfil
                   </Link>

@@ -3,12 +3,33 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
-    const { email, password, fullName } = await request.json();
+    // Parsear el request
+    let body;
+    try {
+      body = await request.json();
+    } catch (err) {
+      console.error('Error parsing request body:', err);
+      return NextResponse.json(
+        { success: false, error: 'Solicitud inválida' },
+        { status: 400 }
+      );
+    }
+
+    const { email, password, fullName } = body;
 
     // Validar entrada
     if (!email || !password) {
       return NextResponse.json(
         { success: false, error: 'Email y contraseña son requeridos' },
+        { status: 400 }
+      );
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { success: false, error: 'Email inválido' },
         { status: 400 }
       );
     }
@@ -20,10 +41,21 @@ export async function POST(request) {
       );
     }
 
-    // Crear cliente de Supabase (lado servidor)
+    // Obtener credenciales de Supabase
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
+    // Validar que las credenciales estén configuradas
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Supabase credentials not configured');
+      return NextResponse.json(
+        { success: false, error: 'Error de configuración del servidor' },
+        { status: 500 }
+      );
+    }
+
+    // Crear cliente de Supabase
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         autoRefreshToken: false,
@@ -31,47 +63,52 @@ export async function POST(request) {
       },
     });
 
-    // SignUp desde servidor
-    const { data, error } = await supabase.auth.signUp({
+    // Registrar nuevo usuario
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: fullName || email.split('@')[0],
-          is_admin: false,
-        },
-      },
     });
 
-    if (error) {
-      console.error('Error signing up:', error);
+    if (authError) {
+      console.error('Auth signup error:', authError.message);
+      // Mensajes de error más amigables
+      let errorMessage = 'Error al crear la cuenta';
+      if (authError.message?.includes('already exists')) {
+        errorMessage = 'Este email ya está registrado';
+      } else if (authError.message?.includes('Invalid password')) {
+        errorMessage = 'Contraseña inválida';
+      }
       return NextResponse.json(
-        { success: false, error: error.message || 'Error al crear la cuenta' },
+        { success: false, error: errorMessage },
         { status: 400 }
       );
     }
 
-    // Verificar si el usuario se creó
-    if (data?.user) {
+    // Usuario creado exitosamente en auth.users
+    if (authData?.user?.id) {
+      // Determinar si es admin basándose en el email
+      const isAdmin = adminEmail && email === adminEmail;
+
       return NextResponse.json({
         success: true,
         user: {
-          id: data.user.id,
-          email: data.user.email,
-          isAdmin: false,
+          id: authData.user.id,
+          email: authData.user.email,
+          isAdmin: isAdmin,
+          role: isAdmin ? 'admin' : 'user',
         },
         message: 'Cuenta creada exitosamente.',
       });
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Cuenta creada exitosamente.',
-    });
-  } catch (err) {
-    console.error('Signup error:', err);
     return NextResponse.json(
-      { success: false, error: err?.message || 'Error inesperado al crear la cuenta' },
+      { success: false, error: 'Error al crear la cuenta' },
+      { status: 500 }
+    );
+  } catch (err) {
+    console.error('Signup error:', err.message || err);
+    return NextResponse.json(
+      { success: false, error: 'Error inesperado. Intenta de nuevo más tarde.' },
       { status: 500 }
     );
   }

@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signIn, signUp } from '@/lib/supabase';
+import { signIn as supabaseSignIn, signUp as supabaseSignUp } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 import styles from './page.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { signIn: authSignIn } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,11 +29,11 @@ export default function LoginPage() {
 
       if (isLogin) {
         // Sign in
-        result = await signIn(email, password);
+        result = await supabaseSignIn(email, password);
         
         if (result.success) {
-          // Guardar usuario en localStorage
-          localStorage.setItem('user', JSON.stringify(result.user));
+          // Actualizar contexto de autenticación
+          authSignIn(result.user);
           setMessage('¡Sesión iniciada! Redirigiendo...');
           
           // Redirigir a admin si es admin, sino a home
@@ -41,35 +43,30 @@ export default function LoginPage() {
             } else {
               router.push('/');
             }
+            router.refresh();
           }, 500);
         } else {
           setError(result.error || 'Error al iniciar sesión');
         }
       } else {
         // Sign up - Crear cuenta
-        result = await signUp(email, password, fullName);
+        result = await supabaseSignUp(email, password, fullName);
         
         if (result.success) {
-          setMessage(result.message || 'Cuenta creada exitosamente. Por favor verifica tu email.');
-          // Limpiar formulario
-          setEmail('');
-          setPassword('');
-          setFullName('');
+          setMessage(result.message || 'Cuenta creada exitosamente.');
           
-          // Si el usuario fue creado con datos, permitir login inmediato
-          if (result.user) {
-            // Cambiar a login después de 3 segundos
-            setTimeout(() => {
-              setIsLogin(true);
-              setMessage('');
-            }, 3000);
-          } else {
-            // Si solo se creó pero requiere confirmación email
-            setTimeout(() => {
-              setIsLogin(true);
-              setMessage('');
-            }, 3000);
-          }
+          // Actualizar contexto de autenticación
+          authSignIn(result.user);
+          
+          // Redirigir a admin si es admin, sino a home
+          setTimeout(() => {
+            if (result.user.isAdmin) {
+              router.push('/admin');
+            } else {
+              router.push('/');
+            }
+            router.refresh();
+          }, 1000);
         } else {
           setError(result.error || 'Error al crear cuenta');
         }

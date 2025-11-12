@@ -47,13 +47,13 @@ export async function getProducts() {
 
     if (error) {
       console.error('Error fetching products from Supabase:', error);
-      return [];
+      return { success: false, error: error.message, data: [] };
     }
 
-    return data || [];
+    return { success: true, data: data || [] };
   } catch (err) {
     console.error('Supabase connection error:', err);
-    return [];
+    return { success: false, error: err.message, data: [] };
   }
 }
 
@@ -68,13 +68,13 @@ export async function getProductsByCategory(category) {
 
     if (error) {
       console.error('Error fetching products by category:', error);
-      return [];
+      return { success: false, error: error.message, data: [] };
     }
 
-    return data || [];
+    return { success: true, data: data || [] };
   } catch (err) {
     console.error('Supabase connection error:', err);
-    return [];
+    return { success: false, error: err.message, data: [] };
   }
 }
 
@@ -89,13 +89,13 @@ export async function getProductById(id) {
 
     if (error) {
       console.error('Error fetching product by ID:', error);
-      return null;
+      return { success: false, error: error.message, data: null };
     }
 
-    return data;
+    return { success: true, data };
   } catch (err) {
     console.error('Supabase connection error:', err);
-    return null;
+    return { success: false, error: err.message, data: null };
   }
 }
 
@@ -110,13 +110,13 @@ export async function getProductByAsin(asin) {
 
     if (error) {
       console.error('Error fetching product by ASIN:', error);
-      return null;
+      return { success: false, error: error.message, data: null };
     }
 
-    return data;
+    return { success: true, data };
   } catch (err) {
     console.error('Supabase connection error:', err);
-    return null;
+    return { success: false, error: err.message, data: null };
   }
 }
 
@@ -131,13 +131,13 @@ export async function searchProducts(query) {
 
     if (error) {
       console.error('Error searching products:', error);
-      return [];
+      return { success: false, error: error.message, data: [] };
     }
 
-    return data || [];
+    return { success: true, data: data || [] };
   } catch (err) {
     console.error('Supabase connection error:', err);
-    return [];
+    return { success: false, error: err.message, data: [] };
   }
 }
 
@@ -292,9 +292,10 @@ export async function signIn(email, password) {
       return { success: false, error: error.message };
     }
 
-    // Obtener datos del usuario incluyendo metadata
+    // Obtener datos del usuario
     const user = data.user;
-    const isAdmin = user?.user_metadata?.is_admin || false;
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+    const isAdmin = adminEmail && user?.email === adminEmail;
 
     return {
       success: true,
@@ -302,6 +303,7 @@ export async function signIn(email, password) {
         id: user.id,
         email: user.email,
         isAdmin: isAdmin,
+        role: isAdmin ? 'admin' : 'user',
       },
     };
   } catch (err) {
@@ -368,6 +370,415 @@ export async function updateUserMetadata(userId, metadata) {
     }
 
     return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * ========================================
+ * FUNCIONES PARA GESTIÓN DE BLOGS
+ * ========================================
+ */
+
+// Obtener todos los blogs
+export async function getBlogs(filters = {}) {
+  try {
+    let query = supabase.from('blogs').select('*');
+
+    // Aplicar filtros
+    if (filters.status) {
+      query = query.eq('status', filters.status);
+    }
+    if (filters.category) {
+      query = query.eq('category', filters.category);
+    }
+
+    query = query.order('created_at', { ascending: false });
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Error fetching blogs:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+// Obtener un blog por ID
+export async function getBlogById(id) {
+  try {
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching blog:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Obtener un blog por slug
+export async function getBlogBySlug(slug) {
+  try {
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (error) {
+      console.error('Error fetching blog:', error);
+      return { success: false, error: error.message };
+    }
+
+    // Incrementar vistas
+    await supabase
+      .from('blogs')
+      .update({ views_count: (data.views_count || 0) + 1 })
+      .eq('id', data.id);
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Insertar nuevo blog
+export async function insertBlog(blogData) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    const newBlog = {
+      ...blogData,
+      author_id: user?.id,
+      author_name: user?.email || 'Admin',
+      created_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await supabase
+      .from('blogs')
+      .insert([newBlog])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error inserting blog:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Actualizar blog
+export async function updateBlog(id, blogData) {
+  try {
+    const { data, error } = await supabase
+      .from('blogs')
+      .update(blogData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating blog:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Eliminar blog
+export async function deleteBlog(id) {
+  try {
+    const { error } = await supabase
+      .from('blogs')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting blog:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * PRODUCT SEO FUNCTIONS
+ */
+
+// Obtener SEO de un producto
+export async function getProductSeo(productId) {
+  try {
+    const { data, error } = await supabase
+      .from('product_seo')
+      .select('*')
+      .eq('product_id', productId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+      console.error('Error fetching product SEO:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    return { success: true, data: data || null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Insertar o actualizar SEO de producto (upsert)
+export async function upsertProductSeo(productId, seoData) {
+  try {
+    const { data, error } = await supabase
+      .from('product_seo')
+      .upsert({
+        product_id: productId,
+        ...seoData,
+      }, {
+        onConflict: 'product_id'
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error upserting product SEO:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Eliminar SEO de producto
+export async function deleteProductSeo(productId) {
+  try {
+    const { error } = await supabase
+      .from('product_seo')
+      .delete()
+      .eq('product_id', productId);
+
+    if (error) {
+      console.error('Error deleting product SEO:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * CATEGORIES FUNCTIONS
+ */
+
+// Obtener todas las categorías
+export async function getCategories() {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('display_order', { ascending: true })
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching categories:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: data || [] };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+// Obtener categoría por ID
+export async function getCategoryById(id) {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching category:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Obtener categoría por slug
+export async function getCategoryBySlug(slug) {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (error) {
+      console.error('Error fetching category:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Insertar categoría
+export async function insertCategory(categoryData) {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .insert([categoryData])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error inserting category:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Actualizar categoría
+export async function updateCategory(id, categoryData) {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .update(categoryData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating category:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Eliminar categoría
+export async function deleteCategory(id) {
+  try {
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting category:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Subir imagen de categoría a Supabase Storage
+export async function uploadCategoryImage(file, categorySlug) {
+  try {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${categorySlug}-${Date.now()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from('category-images')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Error uploading image:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    // Obtener URL pública
+    const { data: { publicUrl } } = supabase.storage
+      .from('category-images')
+      .getPublicUrl(filePath);
+
+    return { success: true, data: { path: data.path, url: publicUrl } };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Eliminar imagen de categoría de Storage
+export async function deleteCategoryImage(imagePath) {
+  try {
+    // Extraer solo el nombre del archivo de la URL completa
+    const fileName = imagePath.split('/').pop();
+
+    const { error } = await supabase.storage
+      .from('category-images')
+      .remove([fileName]);
+
+    if (error) {
+      console.error('Error deleting image:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
   } catch (err) {
     console.error('Error:', err);
     return { success: false, error: err.message };

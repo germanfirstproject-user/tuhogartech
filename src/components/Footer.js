@@ -1,10 +1,24 @@
 'use client';
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { getSiteSettings } from "@/lib/supabase";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [siteName, setSiteName] = useState('AffiliPro');
+
+  useEffect(() => {
+    loadSiteSettings();
+  }, []);
+
+  const loadSiteSettings = async () => {
+    const result = await getSiteSettings();
+    if (result.success && result.data) {
+      setSiteName(result.data.site_name || 'AffiliPro');
+    }
+  };
 
   return (
     <footer className={styles.footer}>
@@ -13,7 +27,7 @@ export default function Footer() {
         <div className={styles.grid}>
           {/* Brand */}
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>AffiliPro</h3>
+            <h3 className={styles.sectionTitle}>{siteName}</h3>
             <p className={styles.sectionDescription}>
               Plataforma de reseñas y comparativas de productos de calidad.
             </p>
@@ -70,10 +84,10 @@ export default function Footer() {
         {/* Bottom */}
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            &copy; {currentYear} AffiliPro. Todos los derechos reservados.
+            &copy; {currentYear} {siteName}. Todos los derechos reservados.
           </p>
           <p className={styles.affiliate}>
-            AffiliPro es un participante en el Programa de Asociados de Amazon Services LLC.
+            {siteName} es un participante en el Programa de Asociados de Amazon Services LLC.
           </p>
         </div>
       </div>

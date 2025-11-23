@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { getCategories } from '@/lib/supabase';
 import styles from './page.module.css';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Revalidar cada 5 minutos (300 segundos)
+export const revalidate = 300;
 
 export const metadata = {
   title: 'Productos - AffiliPro',
@@ -42,6 +42,7 @@ export default async function ProductosPage() {
                 key={category.id}
                 href={`/productos/${category.slug}`}
                 className={styles.categoryLink}
+                prefetch={true}
               >
                 <div className={styles.categoryCard}>
                   {/* Imagen de fondo */}
@@ -50,6 +51,8 @@ export default async function ProductosPage() {
                       src={category.image_url}
                       alt={category.name}
                       className={styles.categoryImage}
+                      loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <div className={styles.categoryImagePlaceholder}>

@@ -19,11 +19,16 @@ export function AuthProvider({ children }) {
       // Primero intentar desde localStorage
       const userData = localStorage.getItem('user');
       if (userData) {
-        const parsedUser = JSON.parse(userData);
-        setUser(parsedUser);
+        try {
+          const parsedUser = JSON.parse(userData);
+          setUser(parsedUser);
+        } catch (parseError) {
+          // Si hay error parseando, limpiar localStorage
+          localStorage.removeItem('user');
+        }
       }
       
-      // Luego verificar con Supabase
+      // Luego verificar con Supabase (silenciosamente)
       const result = await getCurrentUser();
       if (result.success && result.user) {
         const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
@@ -38,11 +43,15 @@ export function AuthProvider({ children }) {
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
       } else if (!userData) {
+        // Si no hay usuario en localStorage ni en Supabase, limpiar todo
         setUser(null);
+        localStorage.removeItem('user');
       }
     } catch (error) {
-      console.error('Error checking user:', error);
+      // Silenciar errores de autenticación para no molestar al usuario
+      // Solo limpiar el estado
       setUser(null);
+      localStorage.removeItem('user');
     } finally {
       setLoading(false);
     }

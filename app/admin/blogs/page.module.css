@@ -141,6 +141,65 @@
   font-size: 0.875rem;
 }
 
+.hint {
+  display: block;
+  margin-top: 0.5rem;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+/* Image Upload */
+.fileInput {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fileInput:hover {
+  border-color: #667eea;
+  background-color: #f3f4f6;
+}
+
+.imagePreview {
+  margin-top: 1rem;
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.previewImg {
+  max-width: 300px;
+  max-height: 300px;
+  border-radius: 8px;
+  display: block;
+  border: 2px solid #e5e7eb;
+}
+
+.removeImageBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.removeImageBtn:hover {
+  background: rgba(220, 38, 38, 1);
+}
+
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;

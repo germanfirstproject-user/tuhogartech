@@ -78,14 +78,17 @@ export async function getCurrentUser() {
     const { data, error } = await supabase.auth.getUser();
 
     if (error) {
-      console.error('Error getting current user:', error);
-      return null;
+      // Silenciar errores de refresh token - es normal si no hay sesión activa
+      if (error.message?.includes('Refresh Token') || error.message?.includes('Invalid')) {
+        return { success: false, user: null, error: null };
+      }
+      return { success: false, user: null, error: error.message };
     }
 
-    return data?.user || null;
+    return { success: true, user: data?.user || null };
   } catch (err) {
-    console.error('Error:', err);
-    return null;
+    // Silenciar errores de red/autenticación
+    return { success: false, user: null, error: null };
   }
 }
 
@@ -95,14 +98,13 @@ export async function getCurrentSession() {
     const { data, error } = await supabase.auth.getSession();
 
     if (error) {
-      console.error('Error getting session:', error);
-      return null;
+      // Silenciar errores de sesión expirada
+      return { success: false, session: null };
     }
 
-    return data?.session || null;
+    return { success: true, session: data?.session || null };
   } catch (err) {
-    console.error('Error:', err);
-    return null;
+    return { success: false, session: null };
   }
 }
 

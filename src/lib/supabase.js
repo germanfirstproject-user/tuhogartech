@@ -58,16 +58,58 @@ export async function getProducts() {
 }
 
 // Obtener productos por categoría
-export async function getProductsByCategory(category) {
+export async function getProductsByCategory(category, page = 1, pageSize = 12) {
   try {
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    // Obtener el total de productos
+    const { count } = await supabase
+      .from('products')
+      .select('*', { count: 'exact', head: true })
+      .eq('category', category);
+
+    // Obtener productos paginados
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .eq('category', category)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(from, to);
 
     if (error) {
       console.error('Error fetching products by category:', error);
+      return { success: false, error: error.message, data: [], totalPages: 0, currentPage: page };
+    }
+
+    const totalPages = Math.ceil((count || 0) / pageSize);
+
+    return { 
+      success: true, 
+      data: data || [], 
+      totalPages,
+      currentPage: page,
+      totalCount: count || 0
+    };
+  } catch (err) {
+    console.error('Supabase connection error:', err);
+    return { success: false, error: err.message, data: [], totalPages: 0, currentPage: page };
+  }
+}
+
+// Obtener productos mejor valorados
+export async function getTopRatedProducts(limit = 10) {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .not('rating', 'is', null)
+      .order('rating', { ascending: false })
+      .order('reviews_count', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error('Error fetching top rated products:', error);
       return { success: false, error: error.message, data: [] };
     }
 
@@ -331,7 +373,7 @@ export async function signOut() {
   }
 }
 
-// Get current user - Obtener usuario actual con sus datos
+// Get current user - Obtener usuario actual con sus datos completos
 export async function getCurrentUser() {
   try {
     const { data: { user }, error } = await supabase.auth.getUser();
@@ -348,6 +390,15 @@ export async function getCurrentUser() {
         id: user.id,
         email: user.email,
         isAdmin: isAdmin,
+        // Campos importantes de auth
+        email_confirmed_at: user.email_confirmed_at,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
+        last_sign_in_at: user.last_sign_in_at,
+        phone: user.phone,
+        // Metadata adicional
+        user_metadata: user.user_metadata,
+        app_metadata: user.app_metadata,
       },
     };
   } catch (err) {
@@ -383,9 +434,9 @@ export async function updateUserMetadata(userId, metadata) {
  */
 
 // Obtener todos los blogs
-export async function getBlogs(filters = {}) {
+export async function getBlogs(filters = {}, page = 1, pageSize = 12) {
   try {
-    let query = supabase.from('blogs').select('*');
+    let query = supabase.from('blogs').select('*', { count: 'exact' });
 
     // Aplicar filtros
     if (filters.status) {
@@ -395,16 +446,65 @@ export async function getBlogs(filters = {}) {
       query = query.eq('category', filters.category);
     }
 
-    query = query.order('created_at', { ascending: false });
+    // Si no se solicita paginación (page = 0), retornar todo
+    if (page === 0) {
+      query = query.order('created_at', { ascending: false });
+      const { data, error } = await query;
 
-    const { data, error } = await query;
+      if (error) {
+        console.error('Error fetching blogs:', error);
+        return { success: false, error: error.message, data: [] };
+      }
+
+      return { success: true, data };
+    }
+
+    // Con paginación
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    query = query
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    const { data, error, count } = await query;
 
     if (error) {
       console.error('Error fetching blogs:', error);
+      return { success: false, error: error.message, data: [], totalPages: 0, currentPage: page };
+    }
+
+    const totalPages = Math.ceil((count || 0) / pageSize);
+
+    return { 
+      success: true, 
+      data,
+      totalPages,
+      currentPage: page,
+      totalCount: count || 0
+    };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [], totalPages: 0, currentPage: page };
+  }
+}
+
+// Obtener blogs recientes (publicados)
+export async function getRecentBlogs(limit = 10) {
+  try {
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('status', 'published')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error('Error fetching recent blogs:', error);
       return { success: false, error: error.message, data: [] };
     }
 
-    return { success: true, data };
+    return { success: true, data: data || [] };
   } catch (err) {
     console.error('Error:', err);
     return { success: false, error: err.message, data: [] };
@@ -773,6 +873,7 @@ export async function deleteCategoryImage(imagePath) {
       .from('category-images')
       .remove([fileName]);
 
+
     if (error) {
       console.error('Error deleting image:', error);
       return { success: false, error: error.message };
@@ -782,5 +883,587 @@ export async function deleteCategoryImage(imagePath) {
   } catch (err) {
     console.error('Error:', err);
     return { success: false, error: err.message };
+  }
+}
+
+// ==========================================
+// Blog Images - Storage Functions
+// ==========================================
+
+// Subir imagen de blog a Storage
+export async function uploadBlogImage(file) {
+  try {
+    if (!file) {
+      return { success: false, error: 'No file provided', data: null };
+    }
+
+    // Generar nombre único para el archivo
+    const fileExt = file.name.split('.').pop();
+    const fileName = `blog_${Date.now()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from('blog-images')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Error uploading blog image:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    // Obtener URL pública
+    const { data: { publicUrl } } = supabase.storage
+      .from('blog-images')
+      .getPublicUrl(filePath);
+
+    return { success: true, data: { path: data.path, url: publicUrl } };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Eliminar imagen de blog de Storage
+export async function deleteBlogImage(imagePath) {
+  try {
+    // Extraer solo el nombre del archivo de la URL completa
+    const fileName = imagePath.split('/').pop();
+
+    const { error } = await supabase.storage
+      .from('blog-images')
+      .remove([fileName]);
+
+    if (error) {
+      console.error('Error deleting blog image:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ==========================================
+// Users - Admin Functions
+// ==========================================
+
+// Obtener todos los usuarios (solo admins via RPC function)
+export async function getAuthUsers() {
+  try {
+    const { data, error } = await supabase.rpc('get_auth_users');
+
+    if (error) {
+      // Silenciar errores de permisos - normal si no es admin
+      if (error.code === '42501' || error.message?.includes('permission')) {
+        return { success: false, error: 'No autorizado', data: [] };
+      }
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: data || [], error: null };
+  } catch (err) {
+    return { success: false, error: 'Error de conexión', data: [] };
+  }
+}
+
+// Obtener estadísticas de usuarios
+export async function getUserStats() {
+  try {
+    const { data, error } = await supabase.rpc('get_auth_users');
+
+    if (error) {
+      // Silenciar errores de permisos
+      if (error.code === '42501' || error.message?.includes('permission')) {
+        return { success: false, error: 'No autorizado', data: null };
+      }
+      return { success: false, error: error.message, data: null };
+    }
+
+    const stats = {
+      total: data.length,
+      confirmed: data.filter(u => u.email_confirmed_at).length,
+      unconfirmed: data.filter(u => !u.email_confirmed_at).length,
+      activeThisMonth: data.filter(u => {
+        if (!u.last_sign_in_at) return false;
+        const lastSignIn = new Date(u.last_sign_in_at);
+        const monthAgo = new Date();
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        return lastSignIn > monthAgo;
+      }).length,
+    };
+
+    return { success: true, data: stats, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// ==========================================
+// User Data - Unified User Information
+// ==========================================
+
+// Obtener datos del usuario actual
+export async function getUserData(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('user_data')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (error) {
+      // Silenciar errores de autenticación/permisos
+      if (error.code === 'PGRST301' || error.message?.includes('JWT') || error.message?.includes('auth')) {
+        return { success: false, error: 'No autenticado', data: null };
+      }
+      return { success: false, error: error.message, data: null };
+    }
+
+    // Si no existe, intentar crear (aunque debería crearse automáticamente por trigger)
+    if (!data) {
+      const { data: newData, error: insertError } = await supabase
+        .from('user_data')
+        .insert({ user_id: userId })
+        .select()
+        .maybeSingle();
+
+      if (insertError) {
+        // Silenciar errores de autenticación
+        if (insertError.code === 'PGRST301' || insertError.message?.includes('JWT')) {
+          return { success: false, error: 'No autenticado', data: null };
+        }
+        // Si ya existe (código 23505 = unique violation), intentar obtenerlo de nuevo
+        if (insertError.code === '23505') {
+          const { data: existingData, error: retryError } = await supabase
+            .from('user_data')
+            .select('*')
+            .eq('user_id', userId)
+            .maybeSingle();
+
+          if (retryError) {
+            return { success: false, error: retryError.message, data: null };
+          }
+
+          return { success: true, data: existingData, error: null };
+        }
+
+        console.error('Error creating user data:', insertError);
+        return { success: false, error: insertError.message, data: null };
+      }
+
+      return { success: true, data: newData, error: null };
+    }
+
+    return { success: true, data, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Actualizar datos del usuario
+export async function updateUserData(userId, updates) {
+  try {
+    const { data, error } = await supabase
+      .from('user_data')
+      .update(updates)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating user data:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    return { success: true, data, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Agregar producto a favoritos
+export async function addFavoriteProduct(userId, productId) {
+  try {
+    const { error } = await supabase.rpc('add_favorite_product', {
+      p_user_id: userId,
+      p_product_id: productId
+    });
+
+    if (error) {
+      console.error('Error adding favorite:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Obtener productos favoritos del usuario con detalles completos
+export async function getUserFavoriteProducts(userId) {
+  try {
+    // Primero obtener los IDs de productos favoritos
+    const { data: userData, error: userError } = await supabase
+      .from('user_data')
+      .select('favorite_products')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (userError) {
+      console.error('Error fetching user favorites:', userError);
+      return { success: false, error: userError.message, data: [] };
+    }
+
+    if (!userData || !userData.favorite_products || userData.favorite_products.length === 0) {
+      return { success: true, data: [], error: null };
+    }
+
+    // Obtener detalles de los productos
+    const { data: products, error: productsError } = await supabase
+      .from('products')
+      .select('*')
+      .in('id', userData.favorite_products);
+
+    if (productsError) {
+      console.error('Error fetching favorite products details:', productsError);
+      return { success: false, error: productsError.message, data: [] };
+    }
+
+    return { success: true, data: products || [], error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+// Eliminar producto de favoritos
+export async function removeFavoriteProduct(userId, productId) {
+  try {
+    const { error } = await supabase.rpc('remove_favorite_product', {
+      p_user_id: userId,
+      p_product_id: productId
+    });
+
+    if (error) {
+      console.error('Error removing favorite:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Registrar visita a producto
+export async function addVisitedProduct(userId, productId) {
+  try {
+    const { error } = await supabase.rpc('add_visited_product', {
+      p_user_id: userId,
+      p_product_id: productId
+    });
+
+    if (error) {
+      console.error('Error adding visited product:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Registrar lectura de blog
+export async function addReadBlog(userId, blogId) {
+  try {
+    const { error } = await supabase.rpc('add_read_blog', {
+      p_user_id: userId,
+      p_blog_id: blogId
+    });
+
+    if (error) {
+      console.error('Error adding read blog:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Actualizar preferencias del usuario
+export async function updateUserPreferences(userId, preferences) {
+  try {
+    const { data, error } = await supabase
+      .from('user_data')
+      .update({ preferences })
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating preferences:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    return { success: true, data, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// ==========================================
+// Site Settings - Configuration
+// ==========================================
+
+// Obtener la configuración del sitio
+export async function getSiteSettings() {
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .eq('is_default', true)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching site settings:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    // Si no hay configuración, retornar valores por defecto
+    if (!data) {
+      return {
+        success: true,
+        data: {
+          home_title: 'AffiliPro - Los mejores productos',
+          home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas',
+          site_name: 'AffiliPro',
+          site_url: ''
+        },
+        error: null
+      };
+    }
+
+    return { success: true, data, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return {
+      success: false,
+      error: err.message,
+      data: {
+        home_title: 'AffiliPro - Los mejores productos',
+        home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas',
+        site_name: 'AffiliPro',
+        site_url: ''
+      }
+    };
+  }
+}
+
+// Actualizar la configuración del sitio
+export async function updateSiteSettings(settings) {
+  try {
+    // Primero verificamos si existe un registro
+    const { data: existing } = await supabase
+      .from('site_settings')
+      .select('id')
+      .eq('is_default', true)
+      .single();
+
+    if (existing) {
+      // Actualizar el registro existente
+      const { data, error } = await supabase
+        .from('site_settings')
+        .update(settings)
+        .eq('id', existing.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating site settings:', error);
+        return { success: false, error: error.message, data: null };
+      }
+
+      return { success: true, data, error: null };
+    } else {
+      // Crear nuevo registro
+      const { data, error } = await supabase
+        .from('site_settings')
+        .insert({ ...settings, is_default: true })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating site settings:', error);
+        return { success: false, error: error.message, data: null };
+      }
+
+      return { success: true, data, error: null };
+    }
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// ==========================================
+// Featured Products - Admin Selection
+// ==========================================
+
+// Obtener productos destacados
+export async function getFeaturedProducts() {
+  try {
+    const { data: featuredData, error: featuredError } = await supabase
+      .from('featured_products')
+      .select('product_id, display_order')
+      .eq('is_active', true)
+      .order('display_order', { ascending: true });
+
+    if (featuredError) {
+      console.error('Error fetching featured products:', featuredError);
+      return { success: false, error: featuredError.message, data: [] };
+    }
+
+    if (!featuredData || featuredData.length === 0) {
+      return { success: true, data: [], error: null };
+    }
+
+    // Obtener detalles completos de los productos
+    const productIds = featuredData.map(f => f.product_id);
+    const { data: productsData, error: productsError } = await supabase
+      .from('products')
+      .select('*')
+      .in('id', productIds);
+
+    if (productsError) {
+      console.error('Error fetching featured product details:', productsError);
+      return { success: false, error: productsError.message, data: [] };
+    }
+
+    // Ordenar productos según el orden de featured_products
+    const orderedProducts = featuredData
+      .map(f => productsData.find(p => p.id === f.product_id))
+      .filter(Boolean);
+
+    return { success: true, data: orderedProducts, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+// Añadir producto destacado
+export async function addFeaturedProduct(productId, displayOrder = 0) {
+  try {
+    const { data, error } = await supabase
+      .from('featured_products')
+      .insert({
+        product_id: productId,
+        display_order: displayOrder,
+        is_active: true
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error adding featured product:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    return { success: true, data, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Eliminar producto destacado
+export async function removeFeaturedProduct(productId) {
+  try {
+    const { error } = await supabase
+      .from('featured_products')
+      .delete()
+      .eq('product_id', productId);
+
+    if (error) {
+      console.error('Error removing featured product:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Actualizar orden de productos destacados
+export async function updateFeaturedProductsOrder(productOrders) {
+  try {
+    // productOrders es un array de { product_id, display_order }
+    const updates = productOrders.map(item => 
+      supabase
+        .from('featured_products')
+        .update({ display_order: item.display_order })
+        .eq('product_id', item.product_id)
+    );
+
+    const results = await Promise.all(updates);
+    const errors = results.filter(r => r.error);
+
+    if (errors.length > 0) {
+      console.error('Errors updating featured products order:', errors);
+      return { success: false, error: 'Some updates failed' };
+    }
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ==========================================
+// Statistics - Real Data
+// ==========================================
+
+// Obtener estadísticas del sitio (productos, categorías)
+export async function getSiteStats() {
+  try {
+    // Obtener conteos en paralelo
+    const [productsResult, categoriesResult] = await Promise.all([
+      supabase.from('products').select('id', { count: 'exact', head: true }),
+      supabase.from('categories').select('id', { count: 'exact', head: true })
+    ]);
+
+    const stats = {
+      productsCount: productsResult.count || 0,
+      categoriesCount: categoriesResult.count || 0
+    };
+
+    return { success: true, data: stats, error: null };
+  } catch (err) {
+    console.error('Error getting site stats:', err);
+    return { 
+      success: false, 
+      error: err.message, 
+      data: { productsCount: 0, categoriesCount: 0 } 
+    };
   }
 }

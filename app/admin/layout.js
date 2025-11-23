@@ -35,6 +35,7 @@ export default function AdminLayout({ children }) {
   const tabs = [
     { id: 'dashboard', label: '📊 Dashboard', href: '/admin' },
     { id: 'products', label: '🛍️ Productos', href: '/admin/products' },
+    { id: 'featured', label: '⭐ Destacados', href: '/admin/featured' },
     { id: 'blogs', label: '📝 Blogs', href: '/admin/blogs' },
     { id: 'categories', label: '📁 Categorías', href: '/admin/categories' },
     { id: 'users', label: '👥 Usuarios', href: '/admin/users' },

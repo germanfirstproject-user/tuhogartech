@@ -1,14 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase, getBlogs, insertBlog, updateBlog, deleteBlog } from '@/lib/supabase';
+import { supabase, getBlogs, insertBlog, updateBlog, deleteBlog, uploadBlogImage, deleteBlogImage } from '@/lib/supabase';
+import RichTextEditor from '@/components/RichTextEditor';
 import styles from './page.module.css';
 
 export default function BlogsAdminPage() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingBlog, setEditingBlog] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -40,36 +44,76 @@ export default function BlogsAdminPage() {
     setLoading(false);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Obtener el usuario actual
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    const blogData = {
-      ...formData,
-      tags: formData.tags ? formData.tags.split(',').map(t => t.trim()) : [],
-      published_at: formData.status === 'published' ? new Date().toISOString() : null,
-      author_id: user?.id || null,
-      author_name: user?.email || null,
-    };
+    setUploading(true);
 
-    let result;
-    if (editingBlog) {
-      result = await updateBlog(editingBlog.id, blogData);
-    } else {
-      result = await insertBlog(blogData);
-    }
+    try {
+      // Si hay una nueva imagen, subirla primero
+      let featuredImageUrl = formData.featured_image;
+      
+      if (imageFile) {
+        const uploadResult = await uploadBlogImage(imageFile);
+        if (uploadResult.success) {
+          featuredImageUrl = uploadResult.data.url;
+          
+          // Si estamos editando y había una imagen anterior, eliminarla
+          if (editingBlog && editingBlog.featured_image) {
+            await deleteBlogImage(editingBlog.featured_image);
+          }
+        } else {
+          alert('Error al subir la imagen: ' + uploadResult.error);
+          setUploading(false);
+          return;
+        }
+      }
 
-    if (result.success) {
-      alert(editingBlog ? 'Blog actualizado' : 'Blog creado');
-      setShowForm(false);
-      setEditingBlog(null);
-      resetForm();
-      loadBlogs();
-    } else {
-      console.error('Error completo:', result.error);
-      alert('Error: ' + (result.error?.message || JSON.stringify(result.error)));
+      // Obtener el usuario actual
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const blogData = {
+        ...formData,
+        featured_image: featuredImageUrl,
+        tags: formData.tags ? formData.tags.split(',').map(t => t.trim()) : [],
+        published_at: formData.status === 'published' ? new Date().toISOString() : null,
+        author_id: user?.id || null,
+        author_name: user?.email || null,
+      };
+
+      let result;
+      if (editingBlog) {
+        result = await updateBlog(editingBlog.id, blogData);
+      } else {
+        result = await insertBlog(blogData);
+      }
+
+      if (result.success) {
+        alert(editingBlog ? 'Blog actualizado' : 'Blog creado');
+        setShowForm(false);
+        setEditingBlog(null);
+        resetForm();
+        loadBlogs();
+      } else {
+        console.error('Error completo:', result.error);
+        alert('Error: ' + (result.error?.message || JSON.stringify(result.error)));
+      }
+    } catch (error) {
+      console.error('Error en handleSubmit:', error);
+      alert('Error: ' + error.message);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -92,11 +136,18 @@ export default function BlogsAdminPage() {
       og_description: blog.og_description || '',
       og_image: blog.og_image || '',
     });
+    setImagePreview(blog.featured_image || '');
+    setImageFile(null);
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, blog) => {
     if (!confirm('¿Estás seguro de eliminar este blog?')) return;
+    
+    // Eliminar imagen destacada si existe
+    if (blog.featured_image) {
+      await deleteBlogImage(blog.featured_image);
+    }
     
     const result = await deleteBlog(id);
     if (result.success) {
@@ -125,6 +176,9 @@ export default function BlogsAdminPage() {
       og_description: '',
       og_image: '',
     });
+    setImageFile(null);
+    setImagePreview('');
+    setEditingBlog(null);
   };
 
   const handleCancel = () => {
@@ -192,11 +246,10 @@ export default function BlogsAdminPage() {
 
                 <div className={styles.formGroup}>
                   <label>Contenido *</label>
-                  <textarea
+                  <RichTextEditor
                     value={formData.content}
-                    onChange={(e) => setFormData({...formData, content: e.target.value})}
-                    rows={10}
-                    required
+                    onChange={(value) => setFormData({...formData, content: value})}
+                    placeholder="Escribe el contenido del blog aquí. Puedes añadir imágenes, código, formateo y más..."
                   />
                 </div>
 
@@ -234,11 +287,45 @@ export default function BlogsAdminPage() {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label>URL Imagen Destacada</label>
+                  <label>Imagen Destacada</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className={styles.fileInput}
+                  />
+                  {imagePreview && (
+                    <div className={styles.imagePreview}>
+                      <img src={imagePreview} alt="Vista previa" className={styles.previewImg} />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImageFile(null);
+                          setImagePreview('');
+                          setFormData({...formData, featured_image: ''});
+                        }}
+                        className={styles.removeImageBtn}
+                      >
+                        ✕ Quitar imagen
+                      </button>
+                    </div>
+                  )}
+                  <small className={styles.hint}>O pega una URL externa abajo</small>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>URL Imagen Externa (opcional)</label>
                   <input
                     type="url"
                     value={formData.featured_image}
-                    onChange={(e) => setFormData({...formData, featured_image: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, featured_image: e.target.value});
+                      if (e.target.value) {
+                        setImagePreview(e.target.value);
+                        setImageFile(null);
+                      }
+                    }}
+                    placeholder="https://ejemplo.com/imagen.jpg"
                   />
                 </div>
 
@@ -248,6 +335,7 @@ export default function BlogsAdminPage() {
                     type="text"
                     value={formData.featured_image_alt}
                     onChange={(e) => setFormData({...formData, featured_image_alt: e.target.value})}
+                    placeholder="Descripción de la imagen para SEO"
                   />
                 </div>
               </div>
@@ -352,7 +440,7 @@ export default function BlogsAdminPage() {
                   <button onClick={() => handleEdit(blog)} className={styles.editButton}>
                     ✏️ Editar
                   </button>
-                  <button onClick={() => handleDelete(blog.id)} className={styles.deleteButton}>
+                  <button onClick={() => handleDelete(blog.id, blog)} className={styles.deleteButton}>
                     🗑️ Eliminar
                   </button>
                 </div>

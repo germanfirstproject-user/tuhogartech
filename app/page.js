@@ -1,24 +1,46 @@
-'use client';
-
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getSiteStats } from '@/lib/supabase';
+import Carousel from '@/components/Carousel';
+import AdminLink from '@/components/AdminLink';
 import styles from './page.module.css';
 
-export default function HomePage() {
-  const [isAdmin, setIsAdmin] = useState(false);
+// Revalidar cada 5 minutos (300 segundos) - buen balance entre rendimiento y frescura
+export const revalidate = 300;
 
-  useEffect(() => {
-    // Verificar si es admin desde localStorage
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      try {
-        const user = JSON.parse(userData);
-        setIsAdmin(user.isAdmin || false);
-      } catch (e) {
-        // Error parsing
+export const metadata = {
+  title: 'Inicio - Los mejores productos',
+  description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra',
+};
+
+export default async function HomePage() {
+  // Cargar todos los datos en paralelo en el servidor (MUCHO más rápido)
+  const [settingsResult, featuredResult, topRatedResult, blogsResult, statsResult] = await Promise.all([
+    getSiteSettings(),
+    getFeaturedProducts(),
+    getTopRatedProducts(10),
+    getRecentBlogs(10),
+    getSiteStats(),
+  ]);
+
+  const settings = settingsResult.success && settingsResult.data 
+    ? {
+        home_title: settingsResult.data.home_title || 'Encuentra los mejores productos',
+        home_description: settingsResult.data.home_description || 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra'
       }
-    }
-  }, []);
+    : {
+        home_title: 'Encuentra los mejores productos',
+        home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra'
+      };
+
+  const featuredProducts = featuredResult.success ? featuredResult.data : [];
+  const topRatedProducts = topRatedResult.success ? topRatedResult.data : [];
+  const recentBlogs = blogsResult.success ? blogsResult.data : [];
+  const stats = statsResult.success ? statsResult.data : { productsCount: 0, categoriesCount: 0 };
+
+  // Dividir el título en partes (antes y después del salto de línea si existe)
+  const titleParts = settings.home_title.split(' al mejor precio');
+  const mainTitle = titleParts[0] || settings.home_title;
+  const highlightText = titleParts.length > 1 ? 'al mejor precio' : '';
 
   return (
     <main className={styles.main}>
@@ -26,12 +48,16 @@ export default function HomePage() {
       <section className={styles.hero}>
         <div className={styles.heroContainer}>
           <h1 className={styles.heroTitle}>
-            Encuentra los mejores productos
-            <br />
-            <span style={{color: '#a78bfa'}}>al mejor precio</span>
+            {mainTitle}
+            {highlightText && (
+              <>
+                <br />
+                <span style={{color: '#a78bfa'}}>{highlightText}</span>
+              </>
+            )}
           </h1>
           <p className={styles.heroSubtitle}>
-            Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra
+            {settings.home_description}
           </p>
           <div className={styles.heroCTA}>
             <Link href="/productos" className={`${styles.heroButton} ${styles.heroButtonPrimary}`}>
@@ -44,24 +70,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section - CON DATOS REALES */}
       <section className={styles.stats}>
         <div className={styles.statsContainer}>
           <div className={styles.statItem}>
-            <div className={styles.statNumber}>500+</div>
+            <div className={styles.statNumber}>{stats.productsCount}+</div>
             <div className={styles.statLabel}>Productos</div>
           </div>
           <div className={styles.statItem}>
-            <div className={styles.statNumber}>50+</div>
+            <div className={styles.statNumber}>{stats.categoriesCount}+</div>
             <div className={styles.statLabel}>Categorías</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>100K+</div>
-            <div className={styles.statLabel}>Usuarios</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>4.9★</div>
-            <div className={styles.statLabel}>Calificación</div>
           </div>
         </div>
       </section>
@@ -88,20 +106,45 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Admin Section - Solo visible si es admin */}
-      {isAdmin && (
-        <section className={styles.adminSection}>
-          <div className={styles.adminContainer}>
-            <h2 className={styles.adminTitle}>Panel de Administración</h2>
-            <p className={styles.adminDescription}>
-              Como administrador, tienes acceso a herramientas especiales
-            </p>
-            <Link href="/admin" className={styles.adminButton}>
-              Ir al Panel Admin →
-            </Link>
+      {/* Productos Destacados por el Admin */}
+      {featuredProducts.length > 0 && (
+        <section className={styles.carouselSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>✨ Productos Destacados</h2>
+            <p className={styles.sectionSubtitle}>Nuestra selección especial para ti</p>
           </div>
+          <Carousel items={featuredProducts} type="product" />
         </section>
       )}
+
+      {/* Productos Mejor Valorados */}
+      <section className={styles.carouselSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>⭐ Productos Mejor Valorados</h2>
+          <p className={styles.sectionSubtitle}>Los productos con las mejores calificaciones de nuestros usuarios</p>
+        </div>
+        {topRatedProducts.length > 0 ? (
+          <Carousel items={topRatedProducts} type="product" />
+        ) : (
+          <div className={styles.emptyCarousel}>No hay productos disponibles</div>
+        )}
+      </section>
+
+      {/* Blogs Recientes */}
+      <section className={styles.carouselSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>📚 Artículos Recientes</h2>
+          <p className={styles.sectionSubtitle}>Las últimas guías y análisis de productos</p>
+        </div>
+        {recentBlogs.length > 0 ? (
+          <Carousel items={recentBlogs} type="blog" />
+        ) : (
+          <div className={styles.emptyCarousel}>No hay artículos disponibles</div>
+        )}
+      </section>
+
+      {/* Admin Section - Solo visible si es admin */}
+      <AdminLink />
     </main>
   );
 }

@@ -1,15 +1,28 @@
 'use client';
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { getSiteSettings } from "@/lib/supabase";
 import styles from "./Header.module.css";
 
 export default function Header() {
   const router = useRouter();
   const { user, isLoggedIn, isAdmin, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [siteName, setSiteName] = useState('AffiliPro');
+
+  useEffect(() => {
+    loadSiteSettings();
+  }, []);
+
+  const loadSiteSettings = async () => {
+    const result = await getSiteSettings();
+    if (result.success && result.data) {
+      setSiteName(result.data.site_name || 'AffiliPro');
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -26,7 +39,7 @@ export default function Header() {
       <div className={styles.container}>
         {/* Logo */}
         <Link href="/" className={styles.logo}>
-          AffiliPro
+          {siteName}
         </Link>
 
         {/* Desktop Navigation */}

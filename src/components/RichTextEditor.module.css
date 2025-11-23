@@ -1,0 +1,49 @@
+﻿.editor {
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: white;
+}
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+  flex-wrap: wrap;
+}
+.toolbarButton {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 0.75rem;
+  border-radius: 0.375rem;
+  background: white;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #6366f1;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toolbarButton:hover {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: #6366f1;
+}
+.toolbarButton.active {
+  background: #6366f1;
+  color: white;
+  border-color: transparent;
+}
+.content {
+  padding: 1rem;
+  min-height: 200px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #1e293b;
+}
+.content:focus {
+  outline: none;
+}

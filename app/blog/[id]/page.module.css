@@ -159,6 +159,13 @@
   margin: 0 0 var(--space-6) 0;
 }
 
+.content h1 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  margin: var(--space-10) 0 var(--space-4) 0;
+  color: var(--color-text);
+}
+
 .content h2 {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
@@ -173,6 +180,21 @@
   color: var(--color-text);
 }
 
+.content h4 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin: var(--space-6) 0 var(--space-3) 0;
+  color: var(--color-text);
+}
+
+.content h5,
+.content h6 {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  margin: var(--space-4) 0 var(--space-2) 0;
+  color: var(--color-text);
+}
+
 .content ul,
 .content ol {
   margin: 0 0 var(--space-6) 0;
@@ -183,9 +205,27 @@
   margin-bottom: var(--space-2);
 }
 
+.content strong {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.content em {
+  font-style: italic;
+}
+
+.content u {
+  text-decoration: underline;
+}
+
+.content s {
+  text-decoration: line-through;
+}
+
 .content a {
   color: #7c3aed;
   text-decoration: underline;
+  transition: color 0.2s;
 }
 
 .content a:hover {
@@ -197,6 +237,75 @@
   height: auto;
   border-radius: var(--radius-md);
   margin: var(--space-6) 0;
+}
+
+.content blockquote {
+  border-left: 4px solid #7c3aed;
+  padding-left: var(--space-4);
+  margin: var(--space-6) 0;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  background-color: #f9fafb;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+}
+
+.content pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin: var(--space-6) 0;
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.content code {
+  background-color: #f3f4f6;
+  color: #dc2626;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.content pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-6) 0;
+}
+
+.content table th,
+.content table td {
+  border: 1px solid var(--color-border);
+  padding: var(--space-3);
+  text-align: left;
+}
+
+.content table th {
+  background-color: #f3f4f6;
+  font-weight: var(--font-weight-semibold);
+}
+
+.content hr {
+  border: none;
+  border-top: 2px solid var(--color-border);
+  margin: var(--space-8) 0;
+}
+
+.content iframe,
+.content video {
+  max-width: 100%;
+  margin: var(--space-6) 0;
+  border-radius: var(--radius-md);
 }
 
 .content blockquote {

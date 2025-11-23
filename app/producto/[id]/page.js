@@ -1,6 +1,8 @@
 import Link from 'next/link';
-import { getProducts, getProductById } from '@/lib/supabase';
+import { getProducts, getProductById, getProductSeo } from '@/lib/supabase';
 import { ArrowLeft, Package, Star, Users } from 'lucide-react';
+import ProductVisitTracker from '@/components/ProductVisitTracker';
+import FavoriteButton from '@/components/FavoriteButton';
 import styles from './page.module.css';
 
 export async function generateStaticParams() {
@@ -21,13 +23,29 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  // Obtener SEO personalizado si existe
+  const seoResult = await getProductSeo(params.id);
+  const seo = seoResult.success ? seoResult.data : null;
+
   return {
-    title: `${product.title} - AffiliPro`,
-    description: product.description || `${product.title} por ${product.brand || 'N/A'}. Precio: ${product.price}€. Valoración: ${product.rating}/5.`,
+    title: seo?.seo_title || `${product.title} - AffiliPro`,
+    description: seo?.seo_description || product.description || `${product.title} por ${product.brand || 'N/A'}. Precio: ${product.price}€. Valoración: ${product.rating}/5.`,
+    keywords: seo?.seo_keywords || `${product.title}, ${product.brand}, ${product.category}`,
+    robots: seo?.meta_robots || 'index, follow',
     openGraph: {
-      title: `${product.title} | AffiliPro`,
-      description: product.description || `${product.title} - ${product.brand || 'N/A'}`,
-      images: [{ url: product.images?.[0] || '' }],
+      title: seo?.og_title || `${product.title} | AffiliPro`,
+      description: seo?.og_description || product.description || `${product.title} - ${product.brand || 'N/A'}`,
+      images: seo?.og_image ? [{ url: seo.og_image }] : product.images?.[0] ? [{ url: product.images[0] }] : [],
+      type: 'website',
+    },
+    twitter: {
+      card: seo?.twitter_card || 'summary_large_image',
+      title: seo?.twitter_title || seo?.og_title || product.title,
+      description: seo?.twitter_description || seo?.og_description || product.description,
+      images: seo?.twitter_image ? [seo.twitter_image] : seo?.og_image ? [seo.og_image] : product.images?.[0] ? [product.images[0]] : [],
+    },
+    alternates: {
+      canonical: seo?.canonical_url || `https://tupagina.com/producto/${params.id}`,
     },
   };
 }
@@ -49,6 +67,7 @@ export default async function ProductDetailPage({ params }) {
 
   return (
     <main className={styles.main}>
+      <ProductVisitTracker productId={params.id} />
       <div className={styles.container}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>
@@ -164,18 +183,21 @@ export default async function ProductDetailPage({ params }) {
               </div>
 
               {/* Botón de compra */}
-              {product.affiliate_link && (
-                <a
-                  href={product.affiliate_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ textDecoration: 'none' }}
-                >
-                  <button className={styles.primaryButton}>
-                    Comprar en Amazon
-                  </button>
-                </a>
-              )}
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                {product.affiliate_link && (
+                  <a
+                    href={product.affiliate_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: 'none', flex: '1' }}
+                  >
+                    <button className={styles.primaryButton} style={{ width: '100%' }}>
+                      Comprar en Amazon
+                    </button>
+                  </a>
+                )}
+                <FavoriteButton productId={product.id} />
+              </div>
             </div>
 
             {/* ASIN */}

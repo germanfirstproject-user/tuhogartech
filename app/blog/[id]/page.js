@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import { getBlogs, getBlogBySlug, getBlogById } from '@/lib/supabase';
 import { ArrowLeft } from 'lucide-react';
+import BlogReadTracker from '@/components/BlogReadTracker';
 import styles from './page.module.css';
+
+// Revalidar cada 10 minutos (600 segundos)
+export const revalidate = 600;
 
 export async function generateStaticParams() {
   const result = await getBlogs();
@@ -30,16 +34,35 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const title = blog.seo_title || `${blog.title} - AffiliPro`;
+  const description = blog.seo_description || blog.excerpt || blog.title;
+  const keywords = blog.seo_keywords || blog.tags?.join(', ') || blog.category;
+  const image = blog.og_image || blog.featured_image;
+
   return {
-    title: blog.seo_title || `${blog.title} - AffiliPro`,
-    description: blog.seo_description || blog.excerpt || blog.title,
-    keywords: blog.seo_keywords,
+    title: title,
+    description: description,
+    keywords: keywords,
+    authors: blog.author_name ? [{ name: blog.author_name }] : [],
     openGraph: {
-      title: blog.og_title || blog.title,
-      description: blog.og_description || blog.excerpt,
-      images: blog.og_image ? [{ url: blog.og_image }] : blog.featured_image ? [{ url: blog.featured_image }] : [],
+      title: blog.og_title || title,
+      description: blog.og_description || description,
+      images: image ? [{ url: image, alt: blog.featured_image_alt || blog.title }] : [],
       type: 'article',
       publishedTime: blog.published_at,
+      authors: blog.author_name ? [blog.author_name] : [],
+      tags: blog.tags || [],
+      siteName: 'AffiliPro',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: blog.og_title || title,
+      description: blog.og_description || description,
+      images: image ? [image] : [],
+      creator: blog.author_name ? `@${blog.author_name.replace(/\s+/g, '')}` : undefined,
+    },
+    alternates: {
+      canonical: `https://tupagina.com/blog/${blog.slug || params.id}`,
     },
   };
 }
@@ -71,6 +94,7 @@ export default async function BlogPostPage({ params }) {
 
   return (
     <main className={styles.container}>
+      <BlogReadTracker blogId={blog.id} />
       <article className={styles.article}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>
@@ -122,11 +146,10 @@ export default async function BlogPostPage({ params }) {
         )}
 
         {/* Content */}
-        <div className={styles.content}>
-          {blog.content.split('\n').map((paragraph, idx) => (
-            paragraph.trim() ? <p key={idx}>{paragraph}</p> : <br key={idx} />
-          ))}
-        </div>
+        <div 
+          className={styles.content}
+          dangerouslySetInnerHTML={{ __html: blog.content }}
+        />
 
         {/* Tags */}
         {blog.tags && blog.tags.length > 0 && (

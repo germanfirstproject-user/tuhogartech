@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { addFavoriteProduct, removeFavoriteProduct, getUserData } from '@/lib/supabase';
 import styles from './FavoriteButton.module.css';
 
-export default function FavoriteButton({ productId, compact = false }) {
+function FavoriteButton({ productId, compact = false }) {
   const { user, isLoggedIn } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ export default function FavoriteButton({ productId, compact = false }) {
     checkFavorite();
   }, [isLoggedIn, user, productId]);
 
-  const handleToggleFavorite = async (e) => {
+  const handleToggleFavorite = useCallback(async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -61,7 +61,7 @@ export default function FavoriteButton({ productId, compact = false }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isLoggedIn, isFavorite, user, productId]);
 
   if (compact) {
     return (
@@ -89,3 +89,5 @@ export default function FavoriteButton({ productId, compact = false }) {
     </button>
   );
 }
+
+export default memo(FavoriteButton);

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { getProducts, insertProduct, updateProduct, deleteProduct, getProductSeo, upsertProductSeo, getCategories } from '@/lib/supabase';
 import styles from './page.module.css';
 
+const PRODUCTS_PER_PAGE = 30;
+
 export default function ProductsAdminPage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -12,6 +14,7 @@ export default function ProductsAdminPage() {
   const [showSeoModal, setShowSeoModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingSeoProduct, setEditingSeoProduct] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [seoFormData, setSeoFormData] = useState({
     seo_title: '',
     seo_description: '',
@@ -261,16 +264,30 @@ export default function ProductsAdminPage() {
     return <div className={styles.container}><p>Cargando productos...</p></div>;
   }
 
+  // Paginación
+  const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
+  const startIdx = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const endIdx = startIdx + PRODUCTS_PER_PAGE;
+  const currentProducts = products.slice(startIdx, endIdx);
+
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Gestión de Productos</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className={styles.addButton}
-        >
-          ➕ Nuevo Producto
-        </button>
+        <div className={styles.headerInfo}>
+          <span className={styles.totalCount}>{products.length} productos totales</span>
+          <button
+            onClick={() => setShowForm(true)}
+            className={styles.addButton}
+          >
+            ➕ Nuevo Producto
+          </button>
+        </div>
       </div>
 
       {showForm && (
@@ -690,7 +707,7 @@ export default function ProductsAdminPage() {
       )}
 
       <div className={styles.productsGrid}>
-        {products.map((product) => (
+        {currentProducts.map((product) => (
           <div key={product.id} className={styles.productCard}>
             {product.images && product.images.length > 0 && (
               <img src={product.images[0]} alt={product.title} className={styles.productImage} />
@@ -724,6 +741,38 @@ export default function ProductsAdminPage() {
       {products.length === 0 && (
         <div className={styles.empty}>
           <p>No hay productos. ¡Crea el primero!</p>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button 
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={styles.paginationButton}
+          >
+            ← Anterior
+          </button>
+          
+          <div className={styles.paginationNumbers}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => goToPage(page)}
+                className={`${styles.paginationNumber} ${currentPage === page ? styles.active : ''}`}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button 
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={styles.paginationButton}
+          >
+            Siguiente →
+          </button>
         </div>
       )}
     </div>

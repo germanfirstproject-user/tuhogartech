@@ -1,86 +1,296 @@
-﻿.carousel {
+﻿/* Carousel Wrapper - Contenedor principal */
+.carouselWrapper {
   position: relative;
   width: 100%;
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+/* Carousel Container - Área visible del carrusel */
+.carouselContainer {
   overflow: hidden;
-  border-radius: 1rem;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  width: 100%;
+  border-radius: var(--radius-lg);
 }
-.track {
+
+/* Carousel Track - Contenedor que se mueve */
+.carouselTrack {
   display: flex;
-  transition: transform 0.5s ease-in-out;
+  gap: 1.5rem;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.5rem 0;
 }
-.slide {
-  min-width: 100%;
-  height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-.image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-.controls {
+
+/* Navigation Buttons */
+.navButton {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 1rem;
-  pointer-events: none;
-}
-.button {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: white;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  pointer-events: all;
-  color: #6366f1;
-  font-size: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.button:hover {
-  background: #6366f1;
+
+.navButton:hover {
+  background: var(--color-primary);
   color: white;
-  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
 }
-.indicators {
-  position: absolute;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
+
+.navButton:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.navButtonPrev {
+  left: 0;
+}
+
+.navButtonNext {
+  right: 0;
+}
+
+/* Product Card */
+.card {
+  flex: 0 0 calc(25% - 1.125rem);
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  border-color: var(--color-primary);
+}
+
+/* Image Container */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover .image {
+  transform: scale(1.08);
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+}
+
+/* Card Content */
+.cardContent {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.brand {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.category {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8b5cf6;
+  background: #f3e8ff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  display: inline-block;
+  width: fit-content;
+  margin: 0;
+}
+
+.title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.8rem;
+}
+
+.excerpt {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Rating */
+.rating {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
+  font-size: 0.875rem;
 }
-.indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
+
+.stars {
+  font-size: 1rem;
 }
-.indicator.active {
-  background: #6366f1;
-  width: 24px;
-  border-radius: 4px;
+
+.ratingValue {
+  font-weight: 600;
+  color: #fbbf24;
 }
-@media (max-width: 768px) {
-  .slide {
-    height: 300px;
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.stock {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #10b981;
+  background: #d1fae5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+/* Blog Footer */
+.blogFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.date {
+  font-weight: 500;
+}
+
+.views {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .card {
+    flex: 0 0 calc(33.333% - 1rem);
   }
-  .button {
+}
+
+@media (max-width: 768px) {
+  .carouselWrapper {
+    padding: 0 2.5rem;
+  }
+
+  .card {
+    flex: 0 0 calc(50% - 0.75rem);
+  }
+
+  .navButton {
     width: 40px;
     height: 40px;
+    font-size: 1.5rem;
+  }
+
+  .title {
+    font-size: 0.875rem;
+  }
+
+  .price {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carouselWrapper {
+    padding: 0 2rem;
+  }
+
+  .card {
+    flex: 0 0 100%;
+  }
+
+  .carouselTrack {
+    gap: 1rem;
+  }
+
+  .navButton {
+    width: 36px;
+    height: 36px;
     font-size: 1.25rem;
+  }
+
+  .cardContent {
+    padding: 1rem;
   }
 }

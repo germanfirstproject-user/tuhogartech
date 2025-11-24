@@ -92,9 +92,78 @@ export default async function BlogPostPage({ params }) {
     );
   }
 
+  // Schema.org - Article
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": blog.title,
+    "description": blog.excerpt || blog.title,
+    "image": blog.featured_image ? [blog.featured_image] : [],
+    "datePublished": blog.published_at,
+    "dateModified": blog.updated_at || blog.published_at,
+    "author": blog.author_name ? {
+      "@type": "Person",
+      "name": blog.author_name
+    } : {
+      "@type": "Organization",
+      "name": "AffiliPro"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "AffiliPro",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tupagina.com/logo.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://tupagina.com/blog/${blog.slug || params.id}`
+    },
+    "keywords": blog.tags?.join(', ') || blog.category,
+    "articleSection": blog.category
+  };
+
+  // Schema.org - BreadcrumbList
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": "https://tupagina.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://tupagina.com/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": blog.title,
+        "item": `https://tupagina.com/blog/${blog.slug || params.id}`
+      }
+    ]
+  };
+
   return (
-    <main className={styles.container}>
-      <BlogReadTracker blogId={blog.id} />
+    <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      <main className={styles.container}>
+        <BlogReadTracker blogId={blog.id} />
       <article className={styles.article}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>
@@ -164,6 +233,7 @@ export default async function BlogPostPage({ params }) {
         )}
       </article>
     </main>
+    </>
   );
 }
 

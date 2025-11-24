@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import FavoriteButton from '@/components/FavoriteButton';
 import styles from './ProductsGrid.module.css';
 
@@ -17,12 +18,15 @@ export default function ProductsGrid({ products }) {
               {/* Imagen */}
               <div className={styles.imageContainer}>
                 {product.images?.[0] ? (
-                  <img
+                  <Image
                     src={product.images[0]}
                     alt={product.title}
                     className={styles.productImage}
+                    width={300}
+                    height={300}
                     loading="lazy"
-                    decoding="async"
+                    quality={85}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 ) : (
                   <div className={styles.imagePlaceholder}>

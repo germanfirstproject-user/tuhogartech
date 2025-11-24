@@ -10,6 +10,20 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.totalCount {
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .title {
@@ -275,6 +289,67 @@
   color: #6b7280;
 }
 
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding: 2rem 0;
+}
+
+.paginationButton {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.paginationButton:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.paginationButton:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.paginationNumbers {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.paginationNumber {
+  padding: 0.5rem 0.75rem;
+  background: white;
+  color: #374151;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  min-width: 40px;
+}
+
+.paginationNumber:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.paginationNumber.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}
+
 @media (max-width: 768px) {
   .formRow {
     grid-template-columns: 1fr;
@@ -282,5 +357,16 @@
   
   .formOverlay {
     padding: 1rem;
+  }
+
+  .paginationNumbers {
+    max-width: 200px;
+    justify-content: center;
+  }
+
+  .paginationNumber {
+    padding: 0.4rem 0.6rem;
+    min-width: 35px;
+    font-size: 0.9rem;
   }
 }

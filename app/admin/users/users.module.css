@@ -273,6 +273,97 @@
   margin-bottom: 0.5rem;
 }
 
+.errorMessage {
+  color: #721c24;
+  background: #f8d7da;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.errorHelp {
+  background: #fff3cd;
+  border: 2px solid #ffc107;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.errorHelp h3 {
+  margin: 0 0 1rem 0;
+  color: #856404;
+  font-size: 1.1rem;
+}
+
+.errorHelp ol,
+.errorHelp ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  color: #856404;
+}
+
+.errorHelp li {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.errorHelp code {
+  background: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: #d63384;
+  font-size: 0.85rem;
+}
+
+.errorHelp pre {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  color: #333;
+  margin: 0.5rem 0;
+}
+
+.errorHelp p {
+  color: #856404;
+  margin: 0.5rem 0;
+}
+
+.infoMessage {
+  background: #e7f3ff;
+  border: 2px solid #0066cc;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  color: #004080;
+  font-size: 0.95rem;
+}
+
+.loginButton {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.loginButton:hover {
+  background: #0052a3;
+  transform: translateY(-1px);
+}
+
+
+
 .retryButton {
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;

@@ -5,6 +5,8 @@ import { supabase, getBlogs, insertBlog, updateBlog, deleteBlog, uploadBlogImage
 import RichTextEditor from '@/components/RichTextEditor';
 import styles from './page.module.css';
 
+const BLOGS_PER_PAGE = 20;
+
 export default function BlogsAdminPage() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,6 +15,7 @@ export default function BlogsAdminPage() {
   const [editingBlog, setEditingBlog] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -191,16 +194,30 @@ export default function BlogsAdminPage() {
     return <div className={styles.container}><p>Cargando blogs...</p></div>;
   }
 
+  // Paginación
+  const totalPages = Math.ceil(blogs.length / BLOGS_PER_PAGE);
+  const startIdx = (currentPage - 1) * BLOGS_PER_PAGE;
+  const endIdx = startIdx + BLOGS_PER_PAGE;
+  const currentBlogs = blogs.slice(startIdx, endIdx);
+
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Gestión de Blogs</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className={styles.addButton}
-        >
-          ➕ Nuevo Blog
-        </button>
+        <div className={styles.headerInfo}>
+          <span className={styles.totalCount}>{blogs.length} blogs totales</span>
+          <button
+            onClick={() => setShowForm(true)}
+            className={styles.addButton}
+          >
+            ➕ Nuevo Blog
+          </button>
+        </div>
       </div>
 
       {showForm && (
@@ -420,7 +437,7 @@ export default function BlogsAdminPage() {
       )}
 
       <div className={styles.blogsGrid}>
-        {blogs.map((blog) => (
+        {currentBlogs.map((blog) => (
           <div key={blog.id} className={styles.blogCard}>
             {blog.featured_image && (
               <img src={blog.featured_image} alt={blog.featured_image_alt || blog.title} className={styles.blogImage} />
@@ -453,6 +470,38 @@ export default function BlogsAdminPage() {
       {blogs.length === 0 && (
         <div className={styles.empty}>
           <p>No hay blogs. ¡Crea el primero!</p>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button 
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={styles.paginationButton}
+          >
+            ← Anterior
+          </button>
+          
+          <div className={styles.paginationNumbers}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => goToPage(page)}
+                className={`${styles.paginationNumber} ${currentPage === page ? styles.active : ''}`}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button 
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={styles.paginationButton}
+          >
+            Siguiente →
+          </button>
         </div>
       )}
     </div>

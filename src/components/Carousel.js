@@ -69,15 +69,16 @@ export default function Carousel({ items, type = 'product' }) {
 
 function ProductCard({ product }) {
   return (
-    <Link href={`/producto/${product.id}`} className={styles.card} prefetch={true}>
+    <Link href={`/producto/${product.id}`} className={styles.card} prefetch={false}>
       <div className={styles.imageContainer}>
         {product.images?.[0] ? (
           <img
             src={product.images[0]}
             alt={product.title}
             className={styles.image}
+            width={250}
+            height={250}
             loading="lazy"
-            decoding="async"
           />
         ) : (
           <div className={styles.imagePlaceholder}>

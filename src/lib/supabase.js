@@ -183,6 +183,169 @@ export async function searchProducts(query) {
   }
 }
 
+// Búsqueda unificada de productos y blogs relacionados
+export async function searchUnified(query, orderBy = 'rating') {
+  try {
+    const searchTerm = query.trim();
+    
+    if (!searchTerm) {
+      return {
+        success: true,
+        data: { products: [], blogs: [], stats: { productsCount: 0, blogsCount: 0, hasResults: false } }
+      };
+    }
+    
+    // 1. Buscar productos con ordenamiento
+    let productsQuery = supabase
+      .from('products')
+      .select('*')
+      .or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,brand.ilike.%${searchTerm}%,category.ilike.%${searchTerm}%`);
+    
+    // Aplicar ordenamiento según el parámetro
+    switch (orderBy) {
+      case 'rating':
+        productsQuery = productsQuery.order('rating', { ascending: false, nullsLast: true });
+        break;
+      case 'price_asc':
+        productsQuery = productsQuery.order('price', { ascending: true });
+        break;
+      case 'price_desc':
+        productsQuery = productsQuery.order('price', { ascending: false });
+        break;
+      default:
+        productsQuery = productsQuery.order('rating', { ascending: false, nullsLast: true });
+    }
+    
+    const { data: products, error: productsError } = await productsQuery;
+    
+    if (productsError) {
+      console.error('Error searching products:', productsError);
+      return { success: false, error: productsError.message, data: { products: [], blogs: [], stats: {} } };
+    }
+    
+    // 2. Buscar blogs que mencionen el término directamente
+    const { data: directBlogs, error: blogsError } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('status', 'published')
+      .or(`title.ilike.%${searchTerm}%,content.ilike.%${searchTerm}%,excerpt.ilike.%${searchTerm}%`)
+      .order('published_at', { ascending: false });
+    
+    if (blogsError) {
+      console.error('Error searching blogs:', blogsError);
+    }
+    
+    // 3. Buscar blogs que mencionen los productos encontrados
+    let relatedBlogs = [];
+    if (products && products.length > 0) {
+      const productTitles = products.slice(0, 5).map(p => p.title);
+      const productBrands = [...new Set(products.map(p => p.brand).filter(Boolean))];
+      
+      const relatedConditions = [];
+      
+      // Buscar por títulos de productos (primeros 3 para no hacer query muy larga)
+      productTitles.slice(0, 3).forEach(title => {
+        if (title) relatedConditions.push(`content.ilike.%${title}%`);
+      });
+      
+      // Buscar por marcas
+      productBrands.slice(0, 3).forEach(brand => {
+        if (brand) relatedConditions.push(`content.ilike.%${brand}%`);
+      });
+      
+      if (relatedConditions.length > 0) {
+        const { data: related } = await supabase
+          .from('blogs')
+          .select('*')
+          .eq('status', 'published')
+          .or(relatedConditions.join(','))
+          .order('published_at', { ascending: false })
+          .limit(10);
+        
+        if (related) {
+          relatedBlogs = related;
+        }
+      }
+    }
+    
+    // Combinar y deduplicar blogs
+    const allBlogsMap = new Map();
+    [...(directBlogs || []), ...(relatedBlogs || [])].forEach(blog => {
+      allBlogsMap.set(blog.id, blog);
+    });
+    const blogs = Array.from(allBlogsMap.values());
+    
+    return {
+      success: true,
+      data: {
+        products: products || [],
+        blogs: blogs,
+        stats: {
+          productsCount: products?.length || 0,
+          blogsCount: blogs.length,
+          hasResults: (products?.length || 0) > 0 || blogs.length > 0
+        }
+      }
+    };
+    
+  } catch (err) {
+    console.error('Error in unified search:', err);
+    return {
+      success: false,
+      error: err.message,
+      data: { products: [], blogs: [], stats: { productsCount: 0, blogsCount: 0, hasResults: false } }
+    };
+  }
+}
+
+// Obtener productos relacionados (misma categoría, excluyendo el producto actual)
+export async function getRelatedProducts(productId, category, limit = 4) {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('category', category)
+      .neq('id', productId)
+      .order('rating', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error('Error fetching related products:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: data || [] };
+  } catch (err) {
+    console.error('Error in getRelatedProducts:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+// Obtener blogs que mencionan un producto específico
+export async function getBlogsReferencingProduct(productId, productTitle, limit = 4) {
+  try {
+    // Buscar blogs que mencionen el ID o título del producto en su contenido
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .or(`content.ilike.%${productId}%,content.ilike.%${productTitle}%,title.ilike.%${productTitle}%`)
+      .not('published_at', 'is', null)
+      .order('published_at', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error('Error fetching blogs referencing product:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: data || [] };
+  } catch (err) {
+    console.error('Error in getBlogsReferencingProduct:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+
 // Insertar producto (para cuando uses la API de Amazon)
 export async function insertProduct(productData) {
   try {
@@ -751,14 +914,71 @@ export async function getCategoryById(id) {
 // Obtener categoría por slug
 export async function getCategoryBySlug(slug) {
   try {
+    // Primero intentar buscar por slug
     const { data, error } = await supabase
       .from('categories')
       .select('*')
       .eq('slug', slug)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error fetching category:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    // Si se encontró la categoría, retornarla
+    if (data) {
+      return { success: true, data };
+    }
+
+    // Si no se encontró, intentar buscar todas las categorías y encontrar una que coincida
+    const { data: allCategories, error: categoriesError } = await supabase
+      .from('categories')
+      .select('*');
+
+    if (categoriesError) {
+      return { success: false, error: categoriesError.message, data: null };
+    }
+
+    // Buscar categoría cuyo nombre convertido a slug coincida
+    const categoryToSlug = (name) => {
+      if (!name) return '';
+      return name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    };
+
+    const matchedCategory = allCategories?.find(cat => 
+      categoryToSlug(cat.name) === slug || cat.slug === slug
+    );
+
+    if (matchedCategory) {
+      return { success: true, data: matchedCategory };
+    }
+
+    return { success: false, error: 'Categoría no encontrada', data: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Obtener categoría por nombre (para obtener el slug real)
+export async function getCategoryByName(name) {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('name', name)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching category by name:', error);
       return { success: false, error: error.message, data: null };
     }
 
@@ -955,19 +1175,54 @@ export async function deleteBlogImage(imagePath) {
 // Obtener todos los usuarios (solo admins via RPC function)
 export async function getAuthUsers() {
   try {
+    // Verificar que tenemos sesión antes de llamar RPC
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      console.error('❌ No hay sesión activa al intentar llamar get_auth_users');
+      return { success: false, error: 'No hay sesión activa. Por favor, inicia sesión nuevamente.', data: [] };
+    }
+
     const { data, error } = await supabase.rpc('get_auth_users');
 
     if (error) {
-      // Silenciar errores de permisos - normal si no es admin
-      if (error.code === '42501' || error.message?.includes('permission')) {
-        return { success: false, error: 'No autorizado', data: [] };
+      console.error('❌ ERROR EN GET_AUTH_USERS:');
+      console.error('   Código:', error.code);
+      console.error('   Mensaje:', error.message);
+      console.error('   Detalles:', error.details);
+      console.error('   Hint:', error.hint);
+      console.error('   Objeto completo:', error);
+      
+      // Mostrar el error completo para diagnóstico
+      const fullError = `${error.message}${error.details ? ` | Detalles: ${error.details}` : ''}${error.hint ? ` | Sugerencia: ${error.hint}` : ''}`;
+      
+      // Error de permisos o función no autorizada
+      if (error.code === '42501' || error.message?.includes('Acceso denegado')) {
+        return { success: false, error: fullError, data: [] };
       }
-      return { success: false, error: error.message, data: [] };
+      
+      // Función no existe en Supabase
+      if (error.code === '42883' || error.message?.includes('function') || error.message?.includes('does not exist')) {
+        return { 
+          success: false, 
+          error: 'La función get_auth_users no existe. Ejecuta FIX_GET_AUTH_USERS.sql', 
+          data: [] 
+        };
+      }
+
+      // Usuario no autenticado
+      if (error.message?.includes('no autenticado')) {
+        return { success: false, error: 'Sesión no reconocida por Supabase. Cierra sesión y vuelve a iniciar.', data: [] };
+      }
+      
+      // Retornar el error completo para que el usuario vea exactamente qué pasa
+      return { success: false, error: fullError, data: [] };
     }
 
     return { success: true, data: data || [], error: null };
   } catch (err) {
-    return { success: false, error: 'Error de conexión', data: [] };
+    console.error('❌ Excepción en get_auth_users:', err);
+    return { success: false, error: `Error de conexión: ${err.message}`, data: [] };
   }
 }
 

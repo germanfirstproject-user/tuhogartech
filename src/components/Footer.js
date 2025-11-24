@@ -47,11 +47,6 @@ export default function Footer() {
                   Blog
                 </Link>
               </li>
-              <li>
-                <Link href="/generar-excel" className={styles.link}>
-                  Generar Excel
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -61,17 +56,12 @@ export default function Footer() {
             <ul className={styles.linkList}>
               <li>
                 <Link href="/privacidad" className={styles.link}>
-                  Privacidad
+                  Política de Privacidad
                 </Link>
               </li>
               <li>
                 <Link href="/terminos" className={styles.link}>
-                  Términos
-                </Link>
-              </li>
-              <li>
-                <Link href="/cookies" className={styles.link}>
-                  Cookies
+                  Términos y Condiciones
                 </Link>
               </li>
             </ul>

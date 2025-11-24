@@ -1,9 +1,15 @@
 import Link from 'next/link';
-import { getProducts, getProductById, getProductSeo } from '@/lib/supabase';
+import { getProducts, getProductById, getProductSeo, getRelatedProducts, getBlogsReferencingProduct, getFeaturedProducts, getCategoryByName } from '@/lib/supabase';
+import { categoryToSlug } from '@/lib/utils';
 import { ArrowLeft, Package, Star, Users } from 'lucide-react';
 import ProductVisitTracker from '@/components/ProductVisitTracker';
 import FavoriteButton from '@/components/FavoriteButton';
+import Carousel from '@/components/Carousel';
+import BlogCard from '@/components/BlogCard';
 import styles from './page.module.css';
+
+// Revalidar cada 5 minutos (300 segundos)
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   const result = await getProducts();
@@ -65,9 +71,100 @@ export default async function ProductDetailPage({ params }) {
     );
   }
 
+  // Obtener datos relacionados
+  const [relatedResult, blogsResult, featuredResult, categoryResult] = await Promise.all([
+    getRelatedProducts(params.id, product.category, 4),
+    getBlogsReferencingProduct(params.id, product.title, 4),
+    getFeaturedProducts(),
+    getCategoryByName(product.category)
+  ]);
+
+  const relatedProducts = relatedResult.success ? relatedResult.data : [];
+  const referencingBlogs = blogsResult.success ? blogsResult.data : [];
+  const featuredProducts = featuredResult.success ? featuredResult.data : [];
+  const categoryData = categoryResult.success ? categoryResult.data : null;
+  
+  // Usar el slug real de la BD, o generarlo como fallback
+  const categorySlug = categoryData?.slug || categoryToSlug(product.category);
+
+  // Schema.org - Product
+  const productSchema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.title,
+    "image": product.images || [],
+    "description": product.description || product.title,
+    "brand": product.brand ? {
+      "@type": "Brand",
+      "name": product.brand
+    } : undefined,
+    "sku": product.asin || product.id,
+    "offers": {
+      "@type": "Offer",
+      "url": `https://tupagina.com/producto/${params.id}`,
+      "priceCurrency": product.currency || "EUR",
+      "price": product.price,
+      "availability": product.stock === 'in_stock' 
+        ? "https://schema.org/InStock" 
+        : "https://schema.org/OutOfStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "AffiliPro"
+      }
+    },
+    "aggregateRating": product.rating ? {
+      "@type": "AggregateRating",
+      "ratingValue": product.rating,
+      "reviewCount": product.reviews_count || 1
+    } : undefined
+  };
+
+  // Schema.org - BreadcrumbList
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": "https://tupagina.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Productos",
+        "item": "https://tupagina.com/productos"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": product.category,
+        "item": `https://tupagina.com/categoria/${categorySlug}`
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": product.title,
+        "item": `https://tupagina.com/producto/${params.id}`
+      }
+    ]
+  };
+
   return (
-    <main className={styles.main}>
-      <ProductVisitTracker productId={params.id} />
+    <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      <main className={styles.main}>
+        <ProductVisitTracker productId={params.id} />
       <div className={styles.container}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>
@@ -76,7 +173,7 @@ export default async function ProductDetailPage({ params }) {
           </Link>
           <span className={styles.breadcrumbSeparator}>/</span>
           <Link
-            href={`/productos/${encodeURIComponent(product.category)}`}
+            href={`/categoria/${categorySlug}`}
             className={styles.breadcrumbLink}
           >
             {product.category}
@@ -119,7 +216,7 @@ export default async function ProductDetailPage({ params }) {
           <div className={styles.infoSection}>
             {/* Categoría */}
             <Link
-              href={`/productos/${encodeURIComponent(product.category)}`}
+              href={`/categoria/${categorySlug}`}
               className={styles.breadcrumbLink}
               style={{ alignSelf: 'flex-start' }}
             >
@@ -243,6 +340,128 @@ export default async function ProductDetailPage({ params }) {
           </div>
         )}
 
+        {/* Productos Relacionados */}
+        {relatedProducts.length > 0 && (
+          <section style={{ 
+            marginBottom: 'var(--space-12)',
+            padding: 'var(--space-8)',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid #e5e7eb'
+          }}>
+            <h2 style={{ 
+              fontSize: 'var(--font-size-2xl)', 
+              fontWeight: 'bold', 
+              marginBottom: 'var(--space-2)',
+              color: 'var(--color-text-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem'
+            }}>
+              <span style={{
+                width: '4px',
+                height: '2rem',
+                background: 'var(--color-primary)',
+                borderRadius: '2px'
+              }}></span>
+              Productos Relacionados de {product.category}
+            </h2>
+            <p style={{
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--color-text-secondary)',
+              marginBottom: 'var(--space-6)',
+              marginLeft: '1.5rem'
+            }}>
+              Otros productos que podrían interesarte
+            </p>
+            <Carousel items={relatedProducts} type="product" />
+          </section>
+        )}
+
+        {/* Blogs que mencionan este producto */}
+        {referencingBlogs.length > 0 && (
+          <section style={{ 
+            marginBottom: 'var(--space-12)',
+            padding: 'var(--space-8)',
+            background: 'linear-gradient(135deg, #faf5ff 0%, #ffffff 100%)',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid #e9d5ff'
+          }}>
+            <h2 style={{ 
+              fontSize: 'var(--font-size-2xl)', 
+              fontWeight: 'bold', 
+              marginBottom: 'var(--space-2)',
+              color: 'var(--color-text-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem'
+            }}>
+              <span style={{
+                width: '4px',
+                height: '2rem',
+                background: '#8b5cf6',
+                borderRadius: '2px'
+              }}></span>
+              Artículos Relacionados
+            </h2>
+            <p style={{
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--color-text-secondary)',
+              marginBottom: 'var(--space-6)',
+              marginLeft: '1.5rem'
+            }}>
+              Lee más sobre este producto en nuestro blog
+            </p>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+              gap: 'var(--space-6)' 
+            }}>
+              {referencingBlogs.map(blog => (
+                <BlogCard key={blog.id} blog={blog} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Productos Destacados */}
+        {featuredProducts.length > 0 && (
+          <section style={{ 
+            marginBottom: 'var(--space-12)',
+            padding: 'var(--space-8)',
+            background: 'linear-gradient(135deg, #fef3c7 0%, #ffffff 100%)',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid #fde68a'
+          }}>
+            <h2 style={{ 
+              fontSize: 'var(--font-size-2xl)', 
+              fontWeight: 'bold', 
+              marginBottom: 'var(--space-2)',
+              color: 'var(--color-text-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem'
+            }}>
+              <span style={{
+                width: '4px',
+                height: '2rem',
+                background: '#f59e0b',
+                borderRadius: '2px'
+              }}></span>
+              ⭐ Productos Destacados
+            </h2>
+            <p style={{
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--color-text-secondary)',
+              marginBottom: 'var(--space-6)',
+              marginLeft: '1.5rem'
+            }}>
+              Los mejores productos seleccionados para ti
+            </p>
+            <Carousel items={featuredProducts} type="product" />
+          </section>
+        )}
+
         {/* CTA Final */}
         <div style={{
           backgroundColor: 'rgba(37, 99, 235, 0.05)',
@@ -270,5 +489,6 @@ export default async function ProductDetailPage({ params }) {
         </div>
       </div>
     </main>
+    </>
   );
 }

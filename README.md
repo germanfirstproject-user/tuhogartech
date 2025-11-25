@@ -153,73 +153,127 @@ Abre [http://localhost:3000](http://localhost:3000)
 
 ### Pre-Deploy Checklist
 
-#### 1. **Cambiar URLs placeholder**
+⚠️ **NOTA:** Si vas a usar el dominio de Netlify (`tu-sitio.netlify.app`) por ahora, puedes saltarte el paso 1 y hacer estos cambios después cuando tengas tu dominio personalizado.
 
-Buscar y reemplazar `https://tupagina.com` por tu dominio real en:
-- `app/producto/[id]/page.js` (2 lugares)
-- `app/blog/[id]/page.js` (2 lugares)
-- `app/categoria/[slug]/page.js` (1 lugar)
+#### 1. **Cambiar URLs placeholder (OPCIONAL - solo si ya tienes dominio)**
+
+Si ya tienes tu dominio final, buscar y reemplazar `https://tupagina.com` por tu dominio real en:
+- `app/producto/[id]/page.js` (2 lugares - Schema.org)
+- `app/blog/[id]/page.js` (2 lugares - Schema.org)
+- `app/categoria/[slug]/page.js` (1 lugar - Schema.org)
 - `app/robots.js` (1 lugar)
 - `app/sitemap.js` (1 lugar)
 
+**Si usarás el dominio de Netlify inicialmente:** Déjalo como está, lo cambiarás cuando configures tu dominio personalizado.
+
 #### 2. **Actualizar variables de entorno**
 
-En `.env.local` (y luego en Netlify):
+Prepara estas variables para configurar en Netlify:
 ```env
-NEXT_PUBLIC_SITE_URL=https://tudominio.com
+NEXT_PUBLIC_SUPABASE_URL=tu_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_supabase_anon_key
+NEXT_PUBLIC_ADMIN_EMAIL=tu_email@gmail.com
+NEXT_PUBLIC_SITE_URL=https://tu-sitio.netlify.app  # Usa tu subdominio de Netlify
 ```
 
 #### 3. **Verificar configuración de Supabase**
 
 - ✅ Todas las tablas creadas
-- ✅ Storage buckets configurados
+- ✅ Storage buckets configurados (public)
 - ✅ RLS policies habilitadas
 - ✅ Admin configurado correctamente
+- ✅ Función `get_auth_users()` funcionando
 
 ### Deploy Steps
 
-1. **Push a GitHub**
+1. **Instalar dependencia de Netlify (si no está instalada)**
+   ```bash
+   npm install --save-dev @netlify/plugin-nextjs
+   ```
+
+2. **Push a GitHub**
    ```bash
    git add .
    git commit -m "Ready for deploy"
    git push origin main
    ```
 
-2. **Conectar con Netlify**
+3. **Conectar con Netlify**
    - Ve a [Netlify](https://app.netlify.com/)
-   - New site from Git
-   - Selecciona tu repositorio
-   - Configure build settings:
-     - Build command: `npm run build`
-     - Publish directory: `.next`
+   - Click en "Add new site" → "Import an existing project"
+   - Selecciona "Deploy with GitHub"
+   - Autoriza a Netlify y selecciona tu repositorio
+   
+4. **Configurar Build Settings**
+   
+   **⚠️ Netlify detectará automáticamente Next.js gracias al archivo `netlify.toml`**
+   
+   - **Build command:** `npm run build` (ya configurado)
+   - **Publish directory:** `.next` (ya configurado)
+   - **Framework preset:** Next.js (detectado automáticamente)
+   
+   **Configuración Avanzada (Build & Deploy → Environment):**
+   - Añade todas las variables de entorno:
+     ```
+     NEXT_PUBLIC_SUPABASE_URL=tu_supabase_url
+     NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_supabase_anon_key
+     NEXT_PUBLIC_ADMIN_EMAIL=tu_email@gmail.com
+     NEXT_PUBLIC_SITE_URL=https://tu-sitio.netlify.app
+     ```
+   
+5. **Deploy inicial**
+   - Click en "Deploy site"
+   - Espera a que termine el build (2-5 minutos)
+   - Tu sitio estará en `https://random-name-123.netlify.app`
 
-3. **Configurar variables de entorno en Netlify**
-   - Site settings → Environment variables
-   - Añade todas las variables de `.env.local`
+6. **Cambiar nombre del sitio (opcional)**
+   - Site settings → Site details → Change site name
+   - Elige un nombre: `tu-sitio.netlify.app`
+   - Actualiza `NEXT_PUBLIC_SITE_URL` con el nuevo dominio
+   - Redeploy: Deploys → Trigger deploy → Deploy site
 
-4. **Configurar dominio personalizado**
+7. **Configurar dominio personalizado (cuando lo tengas)**
    - Domain management → Add custom domain
-   - Sigue las instrucciones para DNS
+   - Añade tu dominio: `tudominio.com`
+   - Configura DNS según las instrucciones de Netlify
+   - Actualiza `NEXT_PUBLIC_SITE_URL=https://tudominio.com`
+   - Redeploy nuevamente
 
-5. **Habilitar HTTPS**
+8. **HTTPS**
    - Se activa automáticamente con Let's Encrypt
+   - Puede tardar 1-2 horas en estar disponible
 
 ### Post-Deploy
 
-1. **Verificar SEO**
-   - https://search.google.com/test/rich-results
-   - Validar Schema.org de productos y blogs
+1. **Verificar que el sitio funciona**
+   - Abre `https://tu-sitio.netlify.app`
+   - Prueba la navegación básica
+   - Verifica que las imágenes cargan desde Supabase
 
-2. **Configurar Google Search Console**
-   - Añade tu sitio
-   - Envía sitemap: `https://tudominio.com/sitemap.xml`
+2. **Probar funcionalidades críticas**
+   - ✅ Login/registro funciona
+   - ✅ Admin panel accesible (`/admin`)
+   - ✅ Crear/editar producto
+   - ✅ Crear/editar blog
+   - ✅ Upload de imágenes funciona
+   - ✅ Favoritos funciona (requiere login)
+   - ✅ Búsqueda funciona
 
-3. **Probar funcionalidades**
-   - ✅ Login/registro
-   - ✅ Admin panel
-   - ✅ Crear producto
-   - ✅ Crear blog
-   - ✅ Upload de imágenes
+3. **Verificar SEO (cuando tengas contenido)**
+   - Usa [Google Rich Results Test](https://search.google.com/test/rich-results)
+   - Valida productos: `https://tu-sitio.netlify.app/producto/[id]`
+   - Valida blogs: `https://tu-sitio.netlify.app/blog/[id]`
+
+4. **Configurar Google Search Console (opcional)**
+   - Añade tu sitio en [Google Search Console](https://search.google.com/search-console)
+   - Verifica la propiedad del sitio
+   - Envía sitemap: `https://tu-sitio.netlify.app/sitemap.xml`
+
+5. **Cuando configures tu dominio personalizado:**
+   - Actualiza `NEXT_PUBLIC_SITE_URL` en Netlify
+   - Busca y reemplaza `https://tupagina.com` en los archivos mencionados
+   - Redeploy el sitio
+   - Actualiza Google Search Console con el nuevo dominio
 
 ---
 
@@ -332,6 +386,38 @@ import Image from 'next/image';
 ```
 
 **Razón:** Next.js Image requiere configuración de hostname en `next.config.js` que puede causar conflictos con el cache del build. Usar `<img>` evita estos problemas y las imágenes cargan perfectamente desde Supabase Storage.
+
+### 🚨 Troubleshooting Deploy en Netlify
+
+#### Error: "Build failed" o "Command failed"
+- Verifica que todas las variables de entorno están configuradas
+- Revisa los logs del build en Netlify
+- Asegúrate de que `package.json` tiene todos los scripts necesarios
+
+#### Error: "Page not found" o 404 en rutas dinámicas
+- Next.js en Netlify requiere el plugin oficial
+- Netlify debería detectarlo automáticamente
+- Si no, añade `@netlify/plugin-nextjs` a las dependencias
+
+#### Las imágenes de Supabase no cargan
+1. Verifica que los buckets son públicos en Supabase
+2. Verifica las policies de RLS permiten lectura pública
+3. Comprueba las URLs en el navegador (F12 → Network)
+
+#### Variables de entorno no funcionan
+- Asegúrate de usar el prefijo `NEXT_PUBLIC_` para variables del cliente
+- Después de cambiar variables, haz un nuevo deploy
+- Variables sin `NEXT_PUBLIC_` solo están disponibles en el servidor
+
+#### El sitio no se actualiza después de cambios
+- Netlify hace deploy automático con cada push a `main`
+- Puedes hacer deploy manual: Deploys → Trigger deploy
+- Limpia la caché: Deploys → Deploy settings → Clear cache and deploy
+
+#### Errores de autenticación (401/403)
+- Verifica que `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` son correctos
+- Comprueba que el email admin coincide con `admin_config.admin_email`
+- Revisa las RLS policies en Supabase
 
 ### Admin - Gestión de Usuarios
 Si los usuarios no aparecen en la lista:

@@ -520,10 +520,13 @@ export async function signIn(email, password) {
 // Sign in with Google OAuth
 export async function signInWithGoogle() {
   try {
+    // Usar NEXT_PUBLIC_SITE_URL si está disponible, sino usar el origin actual
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/`,
+        redirectTo: `${siteUrl}/`,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',

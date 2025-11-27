@@ -9,7 +9,7 @@
 
 .main {
   min-height: 100vh;
-  background: linear-gradient(135deg, rgb(254, 249, 225) 0%, rgb(229, 208, 172) 100%);
+  background: var(--color-background);
   padding: var(--space-16) var(--space-4);
   position: relative;
 }
@@ -21,7 +21,7 @@
   left: 0;
   right: 0;
   height: 300px;
-  background: linear-gradient(135deg, rgba(229, 208, 172, 0.3) 0%, rgba(169, 132, 85, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(37, 99, 235, 0.01) 100%);
   z-index: 0;
 }
 

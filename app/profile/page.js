@@ -112,6 +112,10 @@ export default function ProfilePage() {
     alert('Funcionalidad de cambio de contraseña en desarrollo');
   };
 
+  // Detectar si el usuario inició sesión con Google (OAuth)
+  const isGoogleUser = user?.app_metadata?.provider === 'google' || 
+                       user?.identities?.some(identity => identity.provider === 'google');
+
   const handleDeleteAccount = () => {
     if (confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
       // Implementar eliminación de cuenta
@@ -350,19 +354,42 @@ export default function ProfilePage() {
               <h2 className={styles.sectionTitle}>Seguridad de la cuenta</h2>
               
               <div className={styles.securitySection}>
+                {/* Solo mostrar cambio de contraseña para usuarios con email/password */}
+                {!isGoogleUser && (
+                  <div className={styles.securityItem}>
+                    <div className={styles.securityInfo}>
+                      <h3 className={styles.securityTitle}>Cambiar contraseña</h3>
+                      <p className={styles.securityDescription}>
+                        Actualiza tu contraseña regularmente para mantener tu cuenta segura
+                      </p>
+                    </div>
+                    <button 
+                      onClick={handleChangePassword}
+                      className={styles.actionButtonSecondary}
+                    >
+                      Cambiar contraseña
+                    </button>
+                  </div>
+                )}
+
+                {/* Información del método de autenticación */}
                 <div className={styles.securityItem}>
                   <div className={styles.securityInfo}>
-                    <h3 className={styles.securityTitle}>Cambiar contraseña</h3>
+                    <h3 className={styles.securityTitle}>Método de inicio de sesión</h3>
                     <p className={styles.securityDescription}>
-                      Actualiza tu contraseña regularmente para mantener tu cuenta segura
+                      {isGoogleUser ? (
+                        <>
+                          <span className={styles.badge}>✓ Google</span>
+                          {' '}Tu cuenta está vinculada con Google
+                        </>
+                      ) : (
+                        <>
+                          <span className={styles.badge}>✉️ Email</span>
+                          {' '}Inicio de sesión con email y contraseña
+                        </>
+                      )}
                     </p>
                   </div>
-                  <button 
-                    onClick={handleChangePassword}
-                    className={styles.actionButtonSecondary}
-                  >
-                    Cambiar contraseña
-                  </button>
                 </div>
               </div>
 

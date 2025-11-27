@@ -51,7 +51,7 @@ export async function generateMetadata({ params }) {
       images: seo?.twitter_image ? [seo.twitter_image] : seo?.og_image ? [seo.og_image] : product.images?.[0] ? [product.images[0]] : [],
     },
     alternates: {
-      canonical: seo?.canonical_url || `https://tupagina.com/producto/${params.id}`,
+      canonical: seo?.canonical_url || `https://tuhogartech.com/producto/${params.id}`,
     },
   };
 }
@@ -101,7 +101,7 @@ export default async function ProductDetailPage({ params }) {
     "sku": product.asin || product.id,
     "offers": {
       "@type": "Offer",
-      "url": `https://tupagina.com/producto/${params.id}`,
+      "url": `https://tuhogartech.com/producto/${params.id}`,
       "priceCurrency": product.currency || "EUR",
       "price": product.price,
       "availability": product.stock === 'in_stock' 
@@ -128,25 +128,25 @@ export default async function ProductDetailPage({ params }) {
         "@type": "ListItem",
         "position": 1,
         "name": "Inicio",
-        "item": "https://tupagina.com"
+        "item": "https://tuhogartech.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Productos",
-        "item": "https://tupagina.com/productos"
+        "item": "https://tuhogartech.com/productos"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": product.category,
-        "item": `https://tupagina.com/categoria/${categorySlug}`
+        "item": `https://tuhogartech.com/categoria/${categorySlug}`
       },
       {
         "@type": "ListItem",
         "position": 4,
         "name": product.title,
-        "item": `https://tupagina.com/producto/${params.id}`
+        "item": `https://tuhogartech.com/producto/${params.id}`
       }
     ]
   };

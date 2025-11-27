@@ -62,7 +62,7 @@ export async function generateMetadata({ params }) {
       creator: blog.author_name ? `@${blog.author_name.replace(/\s+/g, '')}` : undefined,
     },
     alternates: {
-      canonical: `https://tupagina.com/blog/${blog.slug || params.id}`,
+      canonical: `https://tuhogartech.com/blog/${blog.slug || params.id}`,
     },
   };
 }
@@ -113,12 +113,12 @@ export default async function BlogPostPage({ params }) {
       "name": "AffiliPro",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://tupagina.com/logo.png"
+        "url": "https://tuhogartech.com/logo.png"
       }
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://tupagina.com/blog/${blog.slug || params.id}`
+      "@id": `https://tuhogartech.com/blog/${blog.slug || params.id}`
     },
     "keywords": blog.tags?.join(', ') || blog.category,
     "articleSection": blog.category
@@ -133,19 +133,19 @@ export default async function BlogPostPage({ params }) {
         "@type": "ListItem",
         "position": 1,
         "name": "Inicio",
-        "item": "https://tupagina.com"
+        "item": "https://tuhogartech.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Blog",
-        "item": "https://tupagina.com/blog"
+        "item": "https://tuhogartech.com/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": blog.title,
-        "item": `https://tupagina.com/blog/${blog.slug || params.id}`
+        "item": `https://tuhogartech.com/blog/${blog.slug || params.id}`
       }
     ]
   };

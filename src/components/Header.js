@@ -13,7 +13,7 @@ export default function Header() {
   const { user, isLoggedIn, isAdmin, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [siteName, setSiteName] = useState('AffiliPro');
+  const [siteName, setSiteName] = useState('Tu Hogar Tech');
   const userMenuRef = useRef(null);
   const mobileMenuRef = useRef(null);
 
@@ -44,7 +44,7 @@ export default function Header() {
   const loadSiteSettings = async () => {
     const result = await getSiteSettings();
     if (result.success && result.data) {
-      setSiteName(result.data.site_name || 'AffiliPro');
+      setSiteName(result.data.site_name || 'Tu Hogar Tech');
     }
   };
 
@@ -66,25 +66,28 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        {/* Logo */}
-        <Link href="/" className={styles.logo}>
-          {siteName}
-        </Link>
+        {/* Logo and Navigation Group */}
+        <div className={styles.logoNavGroup}>
+          {/* Logo */}
+          <Link href="/" className={styles.logo}>
+            {siteName}
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className={styles.desktopNav}>
+            <Link href="/productos" className={styles.navLink}>
+              Productos
+            </Link>
+            <Link href="/blog" className={styles.navLink}>
+              Blog
+            </Link>
+          </nav>
+        </div>
 
         {/* Search Bar */}
         <div className={styles.searchContainer}>
           <SearchBar />
         </div>
-
-        {/* Desktop Navigation */}
-        <nav className={styles.desktopNav}>
-          <Link href="/productos" className={styles.navLink}>
-            Productos
-          </Link>
-          <Link href="/blog" className={styles.navLink}>
-            Blog
-          </Link>
-        </nav>
 
         {/* Auth Section */}
         <div className={styles.authSection}>

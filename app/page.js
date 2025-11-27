@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getSiteStats } from '@/lib/supabase';
 import Carousel from '@/components/Carousel';
 import AdminLink from '@/components/AdminLink';
+import HeroCarousel from '@/components/HeroCarousel';
 import styles from './page.module.css';
 
 // Revalidar cada 5 minutos (300 segundos) - buen balance entre rendimiento y frescura
@@ -25,7 +26,17 @@ export default async function HomePage() {
   const settings = settingsResult.success && settingsResult.data 
     ? {
         home_title: settingsResult.data.home_title || 'Encuentra los mejores productos',
-        home_description: settingsResult.data.home_description || 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra'
+        home_description: settingsResult.data.home_description || 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra',
+        hero_image_1: settingsResult.data.hero_image_1,
+        hero_image_2: settingsResult.data.hero_image_2,
+        hero_image_2_link: settingsResult.data.hero_image_2_link,
+        hero_image_2_alt: settingsResult.data.hero_image_2_alt,
+        hero_image_3: settingsResult.data.hero_image_3,
+        hero_image_3_link: settingsResult.data.hero_image_3_link,
+        hero_image_3_alt: settingsResult.data.hero_image_3_alt,
+        hero_image_4: settingsResult.data.hero_image_4,
+        hero_image_4_link: settingsResult.data.hero_image_4_link,
+        hero_image_4_alt: settingsResult.data.hero_image_4_alt,
       }
     : {
         home_title: 'Encuentra los mejores productos',
@@ -37,38 +48,10 @@ export default async function HomePage() {
   const recentBlogs = blogsResult.success ? blogsResult.data : [];
   const stats = statsResult.success ? statsResult.data : { productsCount: 0, categoriesCount: 0 };
 
-  // Dividir el título en partes (antes y después del salto de línea si existe)
-  const titleParts = settings.home_title.split(' al mejor precio');
-  const mainTitle = titleParts[0] || settings.home_title;
-  const highlightText = titleParts.length > 1 ? 'al mejor precio' : '';
-
   return (
     <main className={styles.main}>
-      {/* Hero Section */}
-      <section className={styles.hero}>
-        <div className={styles.heroContainer}>
-          <h1 className={styles.heroTitle}>
-            {mainTitle}
-            {highlightText && (
-              <>
-                <br />
-                <span style={{color: '#a78bfa'}}>{highlightText}</span>
-              </>
-            )}
-          </h1>
-          <p className={styles.heroSubtitle}>
-            {settings.home_description}
-          </p>
-          <div className={styles.heroCTA}>
-            <Link href="/productos" className={`${styles.heroButton} ${styles.heroButtonPrimary}`}>
-              Explorar productos
-            </Link>
-            <Link href="/blog" className={`${styles.heroButton} ${styles.heroButtonSecondary}`}>
-              Leer guías
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* Hero Carousel Section */}
+      <HeroCarousel heroImages={settings} />
 
       {/* Stats Section - CON DATOS REALES */}
       <section className={styles.stats}>

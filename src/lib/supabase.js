@@ -517,6 +517,32 @@ export async function signIn(email, password) {
   }
 }
 
+// Sign in with Google OAuth
+export async function signInWithGoogle() {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      }
+    });
+
+    if (error) {
+      console.error('Error signing in with Google:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Google sign in error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
 // Sign out - Cerrar sesión
 export async function signOut() {
   try {

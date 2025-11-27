@@ -225,21 +225,21 @@
 }
 
 .stockIn {
-  background-color: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background-color: rgb(220, 252, 231);
+  color: rgb(22, 163, 74);
+  border: 1px solid rgb(34, 197, 94);
 }
 
 .stockOut {
-  background-color: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+  background-color: rgb(254, 226, 226);
+  color: rgb(220, 38, 38);
+  border: 1px solid rgb(239, 68, 68);
 }
 
 .stockLow {
-  background-color: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  background-color: rgb(254, 243, 199);
+  color: rgb(161, 98, 7);
+  border: 1px solid rgb(245, 158, 11);
 }
 
 /* Description */

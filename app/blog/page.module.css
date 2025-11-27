@@ -90,8 +90,8 @@
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   padding: var(--space-1) var(--space-3);
-  background-color: #f3e8ff;
-  color: #7c3aed;
+  background-color: rgb(219, 234, 254);
+  color: rgb(37, 99, 235);
   border-radius: var(--radius-sm);
   text-transform: uppercase;
   letter-spacing: 0.05em;

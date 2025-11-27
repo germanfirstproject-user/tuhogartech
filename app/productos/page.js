@@ -1,5 +1,7 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { getCategories } from '@/lib/supabase';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import styles from './page.module.css';
 
 // Revalidar cada 5 minutos (300 segundos)
@@ -14,7 +16,7 @@ export const metadata = {
   },
 };
 
-export default async function ProductosPage() {
+async function CategoriesContent() {
   const result = await getCategories();
   const allCategories = result.success ? result.data : [];
   
@@ -24,67 +26,77 @@ export default async function ProductosPage() {
     .sort((a, b) => a.display_order - b.display_order);
 
   return (
+    <>
+      {/* Header */}
+      <div className={styles.header}>
+        <h1 className={styles.title}>Todos los Productos</h1>
+        <p className={styles.subtitle}>
+          Explora nuestras {categories.length} categorías de productos seleccionados
+        </p>
+      </div>
+
+      {/* Grid de Categorías */}
+      <div className={styles.categoriesGrid}>
+        {categories.length > 0 ? (
+          categories.map((category) => (
+            <Link
+              key={category.id}
+              href={`/productos/${category.slug}`}
+              className={styles.categoryLink}
+              prefetch={true}
+            >
+              <div className={styles.categoryCard}>
+                {/* Imagen de fondo */}
+                {category.image_url ? (
+                  <img
+                    src={category.image_url}
+                    alt={category.name}
+                    className={styles.categoryImage}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <div className={styles.categoryImagePlaceholder}>
+                    <span className={styles.placeholderIcon}>📦</span>
+                  </div>
+                )}
+
+                {/* Overlay */}
+                <div className={styles.categoryOverlay}>
+                  <h2 className={styles.categoryTitle}>
+                    {category.name}
+                  </h2>
+                  <p className={styles.categoryCount}>
+                    {category.product_count} {category.product_count === 1 ? 'producto' : 'productos'}
+                  </p>
+                  {category.description && (
+                    <p className={styles.categoryDescription}>
+                      {category.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))
+        ) : (
+          <div className={styles.emptyState}>
+            <p className={styles.emptyStateText}>
+              No hay productos disponibles aún
+            </p>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+export default function ProductosPage() {
+  return (
     <main className={styles.main}>
       <div className={styles.container}>
-        {/* Header */}
-        <div className={styles.header}>
-          <h1 className={styles.title}>Todos los Productos</h1>
-          <p className={styles.subtitle}>
-            Explora nuestras {categories.length} categorías de productos seleccionados
-          </p>
-        </div>
-
-        {/* Grid de Categorías */}
-        <div className={styles.categoriesGrid}>
-          {categories.length > 0 ? (
-            categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/productos/${category.slug}`}
-                className={styles.categoryLink}
-                prefetch={true}
-              >
-                <div className={styles.categoryCard}>
-                  {/* Imagen de fondo */}
-                  {category.image_url ? (
-                    <img
-                      src={category.image_url}
-                      alt={category.name}
-                      className={styles.categoryImage}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ) : (
-                    <div className={styles.categoryImagePlaceholder}>
-                      <span className={styles.placeholderIcon}>📦</span>
-                    </div>
-                  )}
-
-                  {/* Overlay */}
-                  <div className={styles.categoryOverlay}>
-                    <h2 className={styles.categoryTitle}>
-                      {category.name}
-                    </h2>
-                    <p className={styles.categoryCount}>
-                      {category.product_count} {category.product_count === 1 ? 'producto' : 'productos'}
-                    </p>
-                    {category.description && (
-                      <p className={styles.categoryDescription}>
-                        {category.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className={styles.emptyState}>
-              <p className={styles.emptyStateText}>
-                No hay productos disponibles aún
-              </p>
-            </div>
-          )}
-        </div>
+        <Suspense fallback={<LoadingSpinner />}>
+          <CategoriesContent />
+        </Suspense>
       </div>
     </main>
   );

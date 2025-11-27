@@ -36,7 +36,7 @@ export async function generateMetadata({ params }) {
       type: 'website',
     },
     alternates: {
-      canonical: `https://tupagina.com/categoria/${params.slug}`,
+      canonical: `https://tuhogartech.com/categoria/${params.slug}`,
     },
   };
 }

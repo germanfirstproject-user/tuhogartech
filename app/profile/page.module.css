@@ -1,7 +1,7 @@
 .container {
   min-height: calc(100vh - 200px);
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 100%);
+  background: linear-gradient(135deg, rgb(254, 249, 225) 0%, rgb(229, 208, 172) 100%);
 }
 
 .profileWrapper {
@@ -35,14 +35,14 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 3rem;
   font-weight: bold;
-  box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
   flex-shrink: 0;
 }
 
@@ -53,7 +53,7 @@
 .userName {
   font-size: 2rem;
   font-weight: bold;
-  color: #1f2937;
+  color: rgb(17, 24, 39);
   margin: 0 0 0.5rem 0;
 }
 
@@ -62,7 +62,8 @@
 }
 
 .adminBadge,
-.userBadge {
+.userBadge,
+.badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -73,13 +74,21 @@
 }
 
 .adminBadge {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  color: #78350f;
+  background: linear-gradient(135deg, rgb(219, 234, 254) 0%, rgb(147, 197, 253) 100%);
+  color: rgb(37, 99, 235);
 }
 
 .userBadge {
-  background: #e0e7ff;
-  color: #4338ca;
+  background: rgb(243, 244, 246);
+  color: rgb(55, 65, 81);
+}
+
+.badge {
+  background: rgb(239, 246, 255);
+  color: rgb(37, 99, 235);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 12px;
 }
 
 .memberSince {

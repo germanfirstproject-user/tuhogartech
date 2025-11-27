@@ -7,6 +7,6 @@ export default function robots() {
         disallow: ['/admin/', '/api/'],
       },
     ],
-    sitemap: 'https://affilpro.com/sitemap.xml',
+    sitemap: 'https://tuhogartech.com/sitemap.xml',
   };
 }

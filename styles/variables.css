@@ -4,50 +4,50 @@
    ========================================= */
 
 :root {
-  /* ========== COLORES PRINCIPALES - Tech Theme ========== */
-  --color-primary: #6366f1;           /* Indigo tech */
-  --color-primary-dark: #4f46e5;      /* Indigo oscuro */
-  --color-primary-light: #818cf8;     /* Indigo claro */
-  --color-primary-very-light: #e0e7ff;/* Indigo muy claro */
+  /* ========== COLORES PRINCIPALES - Paleta Simplificada ========== */
+  --color-primary: rgb(37, 99, 235);            /* Azul royal para CTAs */
+  --color-primary-dark: rgb(29, 78, 216);       /* Azul más oscuro para hover */
+  --color-primary-light: rgb(96, 165, 250);     /* Azul claro */
+  --color-primary-very-light: rgb(191, 219, 254); /* Azul ultra claro */
 
-  --color-secondary: #06b6d4;         /* Cyan tech */
-  --color-secondary-dark: #0891b2;    /* Cyan oscuro */
-  --color-secondary-light: #22d3ee;   /* Cyan claro */
+  --color-secondary: rgb(107, 114, 128);        /* Gris medio */
+  --color-secondary-dark: rgb(55, 65, 81);      /* Gris oscuro */
+  --color-secondary-light: rgb(209, 213, 219);  /* Gris claro */
 
-  --color-accent: #ec4899;            /* Pink tech */
-  --color-accent-dark: #db2777;       /* Pink oscuro */
-  --color-accent-light: #f472b6;      /* Pink claro */
+  --color-accent: rgb(37, 99, 235);             /* Azul royal */
+  --color-accent-dark: rgb(29, 78, 216);        /* Azul más oscuro */
+  --color-accent-light: rgb(96, 165, 250);      /* Azul claro */
 
-  --color-danger: #ef4444;            /* Rojo error */
-  --color-danger-dark: #dc2626;       /* Rojo oscuro */
-  --color-danger-light: #fca5a5;      /* Rojo claro */
+  --color-danger: rgb(239, 68, 68);             /* Rojo para negativos */
+  --color-danger-dark: rgb(220, 38, 38);        /* Rojo oscuro */
+  --color-danger-light: rgb(254, 202, 202);     /* Rojo claro */
 
-  --color-warning: #f59e0b;           /* Amarillo/Naranja */
-  --color-warning-light: #fcd34d;     /* Amarillo claro */
+  --color-warning: rgb(245, 158, 11);           /* Ámbar para advertencias */
+  --color-warning-light: rgb(253, 230, 138);    /* Ámbar claro */
 
-  --color-success: #10b981;           /* Verde éxito */
-  --color-success-dark: #059669;      /* Verde oscuro */
+  --color-success: rgb(34, 197, 94);            /* Verde para positivos */
+  --color-success-dark: rgb(22, 163, 74);       /* Verde oscuro */
 
-  /* ========== COLORES NEUTROS - Dark Mode Ready ========== */
-  --color-dark: #0f172a;              /* Casi negro */
-  --color-dark-secondary: #1e293b;    /* Gris muy oscuro */
-  --color-dark-tertiary: #334155;     /* Gris oscuro */
+  /* ========== COLORES NEUTROS - Negros y Grises ========== */
+  --color-dark: rgb(17, 24, 39);                /* Gris casi negro */
+  --color-dark-secondary: rgb(31, 41, 55);      /* Gris muy oscuro */
+  --color-dark-tertiary: rgb(55, 65, 81);       /* Gris oscuro */
   
-  --color-light: #f8fafc;             /* Blanco roto */
-  --color-light-secondary: #f1f5f9;   /* Gris muy claro */
-  --color-light-tertiary: #e2e8f0;    /* Gris claro */
+  --color-light: rgb(249, 250, 251);            /* Blanco suave (no puro) */
+  --color-light-secondary: rgb(243, 244, 246);  /* Gris ultra claro */
+  --color-light-tertiary: rgb(229, 231, 235);   /* Gris muy claro */
 
-  --color-text: #0f172a;              /* Texto principal */
-  --color-text-secondary: #64748b;    /* Texto secundario */
-  --color-text-muted: #94a3b8;        /* Texto muted */
-  --color-text-light: #f8fafc;        /* Texto en fondo oscuro */
+  --color-text: rgb(17, 24, 39);                /* Texto principal negro */
+  --color-text-secondary: rgb(107, 114, 128);   /* Texto secundario gris */
+  --color-text-muted: rgb(156, 163, 175);       /* Texto muted gris claro */
+  --color-text-light: rgb(255, 255, 255);       /* Texto en fondo oscuro */
 
-  --color-background: #f8fafc;        /* Fondo principal */
-  --color-background-secondary: #ffffff; /* Fondo secundario */
-  --color-background-tertiary: #f1f5f9;  /* Fondo terciario */
+  --color-background: rgb(249, 250, 251);       /* Fondo blanco suave */
+  --color-background-secondary: #ffffff;        /* Fondo blanco puro */
+  --color-background-tertiary: rgb(243, 244, 246); /* Fondo gris ultra claro */
 
-  --color-border: #e2e8f0;            /* Bordes */
-  --color-border-dark: #cbd5e1;       /* Bordes oscuros */
+  --color-border: rgb(229, 231, 235);           /* Bordes grises claros */
+  --color-border-dark: rgb(209, 213, 219);      /* Bordes grises */
 
   /* ========== SHADOW ========== */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);

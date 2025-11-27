@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  background: linear-gradient(135deg, rgb(249, 250, 251) 0%, white 100%);
   padding: var(--space-4);
 }
 
@@ -22,7 +22,7 @@
 .title {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
-  color: #1f2937;
+  color: rgb(17, 24, 39);
   margin: 0 0 var(--space-6) 0;
   text-align: center;
 }
@@ -42,7 +42,7 @@
 .label {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
-  color: #374151;
+  color: rgb(55, 65, 81);
 }
 
 .input {
@@ -55,13 +55,13 @@
 
 .input:focus {
   outline: none;
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .button {
   padding: var(--space-3) var(--space-4);
-  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -73,7 +73,7 @@
 
 .button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
 }
 
 .button:disabled {
@@ -81,46 +81,82 @@
   cursor: not-allowed;
 }
 
+.googleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: white;
+  color: rgb(55, 65, 81);
+  border: 2px solid rgb(229, 231, 235);
+  border-radius: 8px;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: var(--font-size-base);
+  width: 100%;
+}
+
+.googleButton:hover:not(:disabled) {
+  background: rgb(249, 250, 251);
+  border-color: rgb(37, 99, 235);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.googleButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.googleIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
 .divider {
   text-align: center;
-  color: #9ca3af;
+  color: rgb(156, 163, 175);
   position: relative;
   margin: var(--space-6) 0;
   font-size: var(--font-size-sm);
 }
 
-.divider::before,
-.divider::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 35%;
-  height: 1px;
-  background-color: #d1d5db;
+.divider span {
+  background: white;
+  padding: 0 var(--space-3);
+  position: relative;
+  z-index: 1;
 }
 
 .divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
   left: 0;
-}
-
-.divider::after {
   right: 0;
+  height: 1px;
+  background-color: rgb(229, 231, 235);
+  z-index: 0;
 }
 
 .toggleButton {
   background-color: transparent;
-  border: 1px solid #e5e7eb;
-  color: #7c3aed;
+  border: 1px solid rgb(229, 231, 235);
+  color: rgb(37, 99, 235);
   padding: var(--space-3) var(--space-4);
   border-radius: 8px;
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.3s ease;
+  width: 100%;
 }
 
 .toggleButton:hover {
-  background-color: rgba(124, 58, 237, 0.05);
-  border-color: #7c3aed;
+  background-color: rgb(239, 246, 255);
+  border-color: rgb(37, 99, 235);
 }
 
 .backLink {

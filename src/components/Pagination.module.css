@@ -12,8 +12,8 @@
   padding: 0 0.75rem;
   border-radius: 0.5rem;
   background: white;
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  color: #6366f1;
+  border: 2px solid rgb(229, 231, 235);
+  color: rgb(55, 65, 81);
   font-weight: 600;
   font-size: 0.9375rem;
   cursor: pointer;
@@ -23,15 +23,17 @@
   justify-content: center;
 }
 .button:hover {
-  background: rgba(99, 102, 241, 0.1);
-  border-color: #6366f1;
+  background: rgb(243, 244, 246);
+  border-color: rgb(107, 114, 128);
+  color: rgb(17, 24, 39);
+  font-weight: 700;
   transform: translateY(-2px);
 }
 .button.active {
-  background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+  background: linear-gradient(135deg, rgb(17, 24, 39) 0%, rgb(31, 41, 55) 100%);
   color: white;
   border-color: transparent;
-  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 .button:disabled {
   opacity: 0.5;
@@ -40,7 +42,7 @@
 }
 .ellipsis {
   padding: 0 0.5rem;
-  color: #64748b;
+  color: rgb(107, 114, 128);
   font-weight: 600;
 }
 @media (max-width: 480px) {

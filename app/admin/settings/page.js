@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getSiteSettings, updateSiteSettings } from '@/lib/supabase';
+import { getSiteSettings, updateSiteSettings, supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
 export default function SettingsPage() {
@@ -16,10 +16,21 @@ export default function SettingsPage() {
     home_twitter_description: '',
     home_twitter_image: '',
     site_name: '',
-    site_url: ''
+    site_url: '',
+    hero_image_1: '',
+    hero_image_2: '',
+    hero_image_2_link: '',
+    hero_image_2_alt: '',
+    hero_image_3: '',
+    hero_image_3_link: '',
+    hero_image_3_alt: '',
+    hero_image_4: '',
+    hero_image_4_link: '',
+    hero_image_4_alt: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState({});
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -40,6 +51,73 @@ export default function SettingsPage() {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleImageUpload = async (e, imageKey) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validar tipo de archivo
+    if (!file.type.startsWith('image/')) {
+      setMessage('❌ Por favor selecciona un archivo de imagen válido');
+      return;
+    }
+
+    // Validar tamaño (máx 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage('❌ La imagen debe ser menor a 5MB');
+      return;
+    }
+
+    setUploading(prev => ({ ...prev, [imageKey]: true }));
+    setMessage('');
+
+    try {
+      // Generar nombre único para el archivo
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${imageKey}_${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      // Subir a Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('hero-images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Obtener URL pública
+      const { data: { publicUrl } } = supabase.storage
+        .from('hero-images')
+        .getPublicUrl(filePath);
+
+      // Actualizar estado
+      setSettings(prev => ({
+        ...prev,
+        [imageKey]: publicUrl
+      }));
+
+      setMessage(`✅ Imagen ${imageKey} subida correctamente`);
+      setTimeout(() => setMessage(''), 3000);
+
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setMessage('❌ Error al subir la imagen: ' + error.message);
+    } finally {
+      setUploading(prev => ({ ...prev, [imageKey]: false }));
+    }
+  };
+
+  const handleDeleteImage = async (imageKey) => {
+    if (!confirm('¿Estás seguro de eliminar esta imagen?')) return;
+
+    setSettings(prev => ({
+      ...prev,
+      [imageKey]: ''
+    }));
+    setMessage('✅ Imagen eliminada (guarda para confirmar)');
   };
 
   const handleSubmit = async (e) => {
@@ -170,6 +248,226 @@ export default function SettingsPage() {
               className={styles.input}
               placeholder="productos, ofertas, comparativas, reseñas"
             />
+          </div>
+        </div>
+
+        {/* Hero Carousel Images */}
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>🎨 Hero Carousel - Imágenes</h2>
+          <p className={styles.sectionDescription}>
+            Configura las imágenes del carrusel de la página principal. La primera imagen muestra texto y botones, las otras 2-4 son solo imágenes con links opcionales.
+          </p>
+
+          {/* Imagen 1 - Hero con texto */}
+          <div className={styles.imageUploadGroup}>
+            <h3 className={styles.imageTitle}>Imagen 1 - Fondo del Hero (con texto y botones)</h3>
+            <div className={styles.imagePreviewContainer}>
+              {settings.hero_image_1 && (
+                <div className={styles.imagePreview}>
+                  <img src={settings.hero_image_1} alt="Hero background" />
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteImage('hero_image_1')}
+                    className={styles.deleteImageButton}
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              )}
+              <div className={styles.uploadControl}>
+                <label className={styles.uploadButton}>
+                  {uploading.hero_image_1 ? 'Subiendo...' : '📤 Seleccionar Imagen'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, 'hero_image_1')}
+                    disabled={uploading.hero_image_1}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+                <span className={styles.hint}>Recomendado: 1920x600px</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Imagen 2 */}
+          <div className={styles.imageUploadGroup}>
+            <h3 className={styles.imageTitle}>Imagen 2 - Slide Completo</h3>
+            <div className={styles.imagePreviewContainer}>
+              {settings.hero_image_2 && (
+                <div className={styles.imagePreview}>
+                  <img src={settings.hero_image_2} alt="Slide 2" />
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteImage('hero_image_2')}
+                    className={styles.deleteImageButton}
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              )}
+              <div className={styles.uploadControl}>
+                <label className={styles.uploadButton}>
+                  {uploading.hero_image_2 ? 'Subiendo...' : '📤 Seleccionar Imagen'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, 'hero_image_2')}
+                    disabled={uploading.hero_image_2}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+                <span className={styles.hint}>Recomendado: 1920x600px</span>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="hero_image_2_link" className={styles.label}>
+                Link de destino (opcional)
+              </label>
+              <input
+                type="url"
+                id="hero_image_2_link"
+                name="hero_image_2_link"
+                value={settings.hero_image_2_link || ''}
+                onChange={handleChange}
+                className={styles.input}
+                placeholder="https://ejemplo.com/producto"
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="hero_image_2_alt" className={styles.label}>
+                Texto alternativo (ALT)
+              </label>
+              <input
+                type="text"
+                id="hero_image_2_alt"
+                name="hero_image_2_alt"
+                value={settings.hero_image_2_alt || ''}
+                onChange={handleChange}
+                className={styles.input}
+                placeholder="Descripción de la imagen"
+              />
+            </div>
+          </div>
+
+          {/* Imagen 3 */}
+          <div className={styles.imageUploadGroup}>
+            <h3 className={styles.imageTitle}>Imagen 3 - Slide Completo</h3>
+            <div className={styles.imagePreviewContainer}>
+              {settings.hero_image_3 && (
+                <div className={styles.imagePreview}>
+                  <img src={settings.hero_image_3} alt="Slide 3" />
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteImage('hero_image_3')}
+                    className={styles.deleteImageButton}
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              )}
+              <div className={styles.uploadControl}>
+                <label className={styles.uploadButton}>
+                  {uploading.hero_image_3 ? 'Subiendo...' : '📤 Seleccionar Imagen'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, 'hero_image_3')}
+                    disabled={uploading.hero_image_3}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+                <span className={styles.hint}>Recomendado: 1920x600px</span>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="hero_image_3_link" className={styles.label}>
+                Link de destino (opcional)
+              </label>
+              <input
+                type="url"
+                id="hero_image_3_link"
+                name="hero_image_3_link"
+                value={settings.hero_image_3_link || ''}
+                onChange={handleChange}
+                className={styles.input}
+                placeholder="https://ejemplo.com/producto"
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="hero_image_3_alt" className={styles.label}>
+                Texto alternativo (ALT)
+              </label>
+              <input
+                type="text"
+                id="hero_image_3_alt"
+                name="hero_image_3_alt"
+                value={settings.hero_image_3_alt || ''}
+                onChange={handleChange}
+                className={styles.input}
+                placeholder="Descripción de la imagen"
+              />
+            </div>
+          </div>
+
+          {/* Imagen 4 */}
+          <div className={styles.imageUploadGroup}>
+            <h3 className={styles.imageTitle}>Imagen 4 - Slide Completo</h3>
+            <div className={styles.imagePreviewContainer}>
+              {settings.hero_image_4 && (
+                <div className={styles.imagePreview}>
+                  <img src={settings.hero_image_4} alt="Slide 4" />
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteImage('hero_image_4')}
+                    className={styles.deleteImageButton}
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              )}
+              <div className={styles.uploadControl}>
+                <label className={styles.uploadButton}>
+                  {uploading.hero_image_4 ? 'Subiendo...' : '📤 Seleccionar Imagen'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, 'hero_image_4')}
+                    disabled={uploading.hero_image_4}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+                <span className={styles.hint}>Recomendado: 1920x600px</span>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="hero_image_4_link" className={styles.label}>
+                Link de destino (opcional)
+              </label>
+              <input
+                type="url"
+                id="hero_image_4_link"
+                name="hero_image_4_link"
+                value={settings.hero_image_4_link || ''}
+                onChange={handleChange}
+                className={styles.input}
+                placeholder="https://ejemplo.com/producto"
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="hero_image_4_alt" className={styles.label}>
+                Texto alternativo (ALT)
+              </label>
+              <input
+                type="text"
+                id="hero_image_4_alt"
+                name="hero_image_4_alt"
+                value={settings.hero_image_4_alt || ''}
+                onChange={handleChange}
+                className={styles.input}
+                placeholder="Descripción de la imagen"
+              />
+            </div>
           </div>
         </div>
 

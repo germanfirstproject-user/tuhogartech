@@ -26,13 +26,6 @@ export async function generateMetadata() {
     description: settings?.home_description || defaultDescription,
     keywords: settings?.home_keywords?.split(',').map(k => k.trim()) || ['productos', 'reseñas', 'comparativas', 'ofertas', 'tecnología', 'hogar'],
     authors: [{ name: settings?.site_name || 'TuHogarTech' }],
-    icons: {
-      icon: [
-        { url: '/icon.svg', type: 'image/svg+xml' },
-        { url: '/icon.png', type: 'image/png', sizes: '256x256' },
-      ],
-      apple: '/icon.png',
-    },
     openGraph: {
       type: 'website',
       locale: 'es_ES',

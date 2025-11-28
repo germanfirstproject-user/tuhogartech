@@ -2,20 +2,16 @@
 
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { addVisitedProduct, getProductById } from '@/lib/supabase';
+import { addVisitedProduct } from '@/lib/supabase';
 import { trackProductView } from '@/lib/analytics';
 
-export default function ProductVisitTracker({ productId }) {
+export default function ProductVisitTracker({ productId, product }) {
   const { user, isLoggedIn } = useAuth();
 
   useEffect(() => {
     const trackVisit = async () => {
       try {
-        // Obtener datos del producto para Analytics
-        const productResult = await getProductById(productId);
-        const product = productResult.success ? productResult.data : null;
-
-        // Trackear en Google Analytics
+        // Trackear en Google Analytics si tenemos datos del producto
         if (product) {
           trackProductView({
             id: product.id,
@@ -38,7 +34,7 @@ export default function ProductVisitTracker({ productId }) {
     const timer = setTimeout(trackVisit, 1000);
 
     return () => clearTimeout(timer);
-  }, [isLoggedIn, user, productId]);
+  }, [isLoggedIn, user, productId, product]);
 
   return null; // Este componente no renderiza nada
 }

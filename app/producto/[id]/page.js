@@ -165,7 +165,7 @@ export default async function ProductDetailPage({ params }) {
       />
 
       <main className={styles.main}>
-        <ProductVisitTracker productId={params.id} />
+        <ProductVisitTracker productId={params.id} product={product} />
       <div className={styles.container}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>

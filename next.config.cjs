@@ -53,6 +53,7 @@ const nextConfig = {
   // Experimental: Optimizaciones de rendimiento
   experimental: {
     optimizeCss: true,
+    optimizePackageImports: ['lucide-react'],
   },
   
   async rewrites() {

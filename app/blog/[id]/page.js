@@ -163,7 +163,7 @@ export default async function BlogPostPage({ params }) {
       />
 
       <main className={styles.container}>
-        <BlogReadTracker blogId={blog.id} />
+        <BlogReadTracker blogId={blog.id} blog={blog} />
       <article className={styles.article}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>

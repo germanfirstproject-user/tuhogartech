@@ -1,0 +1,80 @@
+/* Amazon Affiliate Disclaimer Styles */
+.disclaimer {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fbbf24;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin: var(--space-8) 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.container {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.icon {
+  font-size: var(--font-size-2xl);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.content {
+  flex: 1;
+}
+
+.text {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-dark-tertiary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.text strong {
+  color: var(--color-dark);
+  font-weight: var(--font-weight-semibold);
+}
+
+.subtext {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-style: italic;
+}
+
+/* Price Disclaimer (inline variant) */
+.priceDisclaimer {
+  background: #fef3c7;
+  border-left: 3px solid #f59e0b;
+  padding: var(--space-3) var(--space-4);
+  margin: var(--space-4) 0;
+  border-radius: var(--radius-sm);
+}
+
+.priceText {
+  font-size: var(--font-size-xs);
+  color: var(--color-dark-tertiary);
+  margin: 0;
+  line-height: var(--line-height-relaxed);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .disclaimer {
+    padding: var(--space-4);
+  }
+  
+  .container {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .icon {
+    font-size: var(--font-size-xl);
+  }
+  
+  .text {
+    font-size: var(--font-size-xs);
+  }
+}

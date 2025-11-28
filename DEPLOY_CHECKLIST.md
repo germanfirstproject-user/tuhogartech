@@ -55,6 +55,7 @@ Buscar y reemplazar `https://tupagina.com` por tu dominio real:
 - [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - [ ] `NEXT_PUBLIC_ADMIN_EMAIL`
 - [ ] `NEXT_PUBLIC_SITE_URL` (con https://)
+- [ ] `NEXT_PUBLIC_GA_MEASUREMENT_ID` (Google Analytics)
 
 ### Dominio
 - [ ] Dominio personalizado configurado
@@ -82,9 +83,11 @@ Buscar y reemplazar `https://tupagina.com` por tu dominio real:
 - [ ] Favoritos funcionan
 
 ### Analytics (Opcional)
-- [ ] Configurar Google Analytics 4
-- [ ] Configurar Hotjar o similar
-- [ ] Configurar email notifications
+- [ ] Variable `NEXT_PUBLIC_GA_MEASUREMENT_ID` configurada
+- [ ] Google Analytics 4 verificado en Realtime
+- [ ] Eventos personalizados aparecen correctamente
+- [ ] (Opcional) Configurar Hotjar o similar
+- [ ] (Opcional) Banner de cookies para GDPR
 
 ---
 

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signIn as supabaseSignIn, signUp as supabaseSignUp, signInWithGoogle } from '@/lib/supabase';
+import { trackUserLogin, trackUserSignup } from '@/lib/analytics';
 import { useAuth } from '@/contexts/AuthContext';
 import styles from './page.module.css';
 
@@ -32,6 +33,9 @@ export default function LoginPage() {
         result = await supabaseSignIn(email, password);
         
         if (result.success) {
+          // Trackear login exitoso
+          trackUserLogin('email');
+          
           // Actualizar contexto de autenticación
           authSignIn(result.user);
           setMessage('¡Sesión iniciada! Redirigiendo...');
@@ -58,6 +62,9 @@ export default function LoginPage() {
         result = await supabaseSignUp(email, password, fullName);
         
         if (result.success) {
+          // Trackear registro exitoso
+          trackUserSignup('email');
+          
           setMessage(result.message || 'Cuenta creada exitosamente.');
           
           // Actualizar contexto de autenticación

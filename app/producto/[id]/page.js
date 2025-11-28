@@ -3,7 +3,8 @@ import { getProducts, getProductById, getProductSeo, getRelatedProducts, getBlog
 import { categoryToSlug } from '@/lib/utils';
 import { ArrowLeft, Package, Star, Users } from 'lucide-react';
 import ProductVisitTracker from '@/components/ProductVisitTracker';
-import FavoriteButton from '@/components/FavoriteButton';
+import ProductActions from './ProductActions';
+import ProductCTA from './ProductCTA';
 import Carousel from '@/components/Carousel';
 import BlogCard from '@/components/BlogCard';
 import styles from './page.module.css';
@@ -280,21 +281,7 @@ export default async function ProductDetailPage({ params }) {
               </div>
 
               {/* Botón de compra */}
-              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                {product.affiliate_link && (
-                  <a
-                    href={product.affiliate_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ textDecoration: 'none', flex: '1' }}
-                  >
-                    <button className={styles.primaryButton} style={{ width: '100%' }}>
-                      Comprar en Amazon
-                    </button>
-                  </a>
-                )}
-                <FavoriteButton productId={product.id} />
-              </div>
+              <ProductActions product={product} styles={styles} />
             </div>
 
             {/* ASIN */}
@@ -463,30 +450,7 @@ export default async function ProductDetailPage({ params }) {
         )}
 
         {/* CTA Final */}
-        <div style={{
-          backgroundColor: 'rgba(37, 99, 235, 0.05)',
-          border: '2px solid var(--color-primary)',
-          borderRadius: 'var(--radius-lg)',
-          padding: 'var(--space-8)',
-          textAlign: 'center',
-          marginBottom: 'var(--space-12)'
-        }}>
-          <h3 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'bold', marginBottom: 'var(--space-4)', margin: 0 }}>
-            {product.title}
-          </h3>
-          <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-6)', margin: 'var(--space-4) 0' }}>
-            Precio: <span style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'bold', color: 'var(--color-primary)' }}>
-              {product.price}€
-            </span>
-          </p>
-          {product.affiliate_link && (
-            <a href={product.affiliate_link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-              <button className={styles.primaryButton}>
-                Ir a Amazon - Comprar Ahora
-              </button>
-            </a>
-          )}
-        </div>
+        <ProductCTA product={product} styles={styles} />
       </div>
     </main>
     </>

@@ -8,6 +8,7 @@ Plataforma moderna de afiliados con gestión de productos, blog y panel de admin
 - **Estilos:** CSS Modules + Variables CSS
 - **Base de datos:** Supabase (PostgreSQL)
 - **Autenticación:** Supabase Auth
+- **Analytics:** Google Analytics 4 (GA4)
 - **Optimización:** Next/Image, ISR, SWC Minify
 - **SEO:** Schema.org (Product, Article, Breadcrumbs)
 
@@ -53,6 +54,18 @@ Plataforma moderna de afiliados con gestión de productos, blog y panel de admin
 - ✅ Lazy loading de imágenes
 - ✅ React.memo en componentes críticos
 
+### Analytics y Tracking
+- ✅ Google Analytics 4 integrado
+- ✅ Tracking automático de eventos:
+  - Vista de productos
+  - Clics en enlaces de afiliados
+  - Lectura de blogs
+  - Búsquedas
+  - Registro y login
+  - Favoritos
+- ✅ Solo se ejecuta en producción
+- ✅ Eventos personalizados para conversiones
+
 ---
 
 ## ⚙️ Configuración Inicial
@@ -72,7 +85,7 @@ bun install
 
 ### 3. Configurar variables de entorno
 
-Crea un archivo `.env.local` en la raíz:
+Crea un archivo `.env.local` en la raíz (o copia `.env.example`):
 
 ```env
 # Supabase
@@ -84,6 +97,9 @@ NEXT_PUBLIC_ADMIN_EMAIL=tu_email@gmail.com
 
 # Site URL (IMPORTANTE: cambiar antes de deploy)
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# Google Analytics (opcional, solo producción)
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XYYJ6ELDVR
 ```
 
 ### 4. Configurar Supabase

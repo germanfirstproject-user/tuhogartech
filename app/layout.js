@@ -3,6 +3,7 @@ import '../styles/variables.css';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { getSiteSettings } from '@/lib/supabase';
 
@@ -76,8 +77,10 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://m.media-amazon.com" />
         <link rel="preconnect" href="https://images-na.ssl-images-amazon.com" />
         <link rel="dns-prefetch" href="https://m.media-amazon.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
       </head>
       <body className={inter.className}>
+        <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         <AuthProvider>
           <Header />
           {children}

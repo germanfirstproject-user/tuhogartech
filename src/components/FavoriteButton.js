@@ -3,6 +3,7 @@
 import { useState, useEffect, memo, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { addFavoriteProduct, removeFavoriteProduct, getUserData } from '@/lib/supabase';
+import { trackFavorite } from '@/lib/analytics';
 import styles from './FavoriteButton.module.css';
 
 function FavoriteButton({ productId, compact = false }) {
@@ -49,11 +50,13 @@ function FavoriteButton({ productId, compact = false }) {
         const result = await removeFavoriteProduct(user.id, productId);
         if (result.success) {
           setIsFavorite(false);
+          trackFavorite('remove', productId);
         }
       } else {
         const result = await addFavoriteProduct(user.id, productId);
         if (result.success) {
           setIsFavorite(true);
+          trackFavorite('add', productId);
         }
       }
     } catch (error) {

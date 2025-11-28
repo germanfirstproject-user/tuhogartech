@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { getCurrentUser, signOut as supabaseSignOut } from '@/lib/supabase';
+import { trackUserLogin } from '@/lib/analytics';
 
 const AuthContext = createContext({});
 
@@ -60,6 +61,12 @@ export function AuthProvider({ children }) {
   const signIn = (userData) => {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    
+    // Trackear login si viene de Google OAuth
+    if (userData?.app_metadata?.provider === 'google' || 
+        userData?.identities?.some(identity => identity.provider === 'google')) {
+      trackUserLogin('google');
+    }
   };
 
   const signOut = async () => {

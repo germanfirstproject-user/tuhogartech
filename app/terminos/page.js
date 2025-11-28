@@ -27,10 +27,9 @@ export default function TerminosPage() {
         <section className={styles.section}>
           <h2>2. Identificación y Datos de Contacto</h2>
           <p>
-            <strong>Titular:</strong> [NOMBRE DE LA EMPRESA O PERSONA FÍSICA]<br />
-            <strong>NIF/CIF:</strong> [NÚMERO DE IDENTIFICACIÓN FISCAL]<br />
-            <strong>Domicilio:</strong> [DIRECCIÓN COMPLETA], España<br />
-            <strong>Email de contacto:</strong> [EMAIL DE CONTACTO]
+            <strong>Titular:</strong> Germán García<br />
+            <strong>Domicilio:</strong> Guadalajara, España<br />
+            <strong>Email de contacto:</strong> contacto@tuhogartech.com
           </p>
         </section>
 
@@ -257,8 +256,8 @@ export default function TerminosPage() {
             contactarnos en:
           </p>
           <p>
-            <strong>Email:</strong> [EMAIL DE CONTACTO]<br />
-            <strong>Dirección postal:</strong> [DIRECCIÓN COMPLETA]
+            <strong>Email:</strong> contacto@tuhogartech.com<br />
+            <strong>Dirección postal:</strong> Guadalajara, España
           </p>
         </section>
 

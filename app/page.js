@@ -3,6 +3,7 @@ import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlo
 import Carousel from '@/components/Carousel';
 import AdminLink from '@/components/AdminLink';
 import HeroCarousel from '@/components/HeroCarousel';
+import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 import styles from './page.module.css';
 
 // Revalidar cada 5 minutos (300 segundos) - buen balance entre rendimiento y frescura
@@ -125,6 +126,9 @@ export default async function HomePage() {
           <div className={styles.emptyCarousel}>No hay artículos disponibles</div>
         )}
       </section>
+
+      {/* Amazon Affiliate Disclaimer */}
+      <AmazonDisclaimer />
 
       {/* Admin Section - Solo visible si es admin */}
       <AdminLink />

@@ -7,6 +7,7 @@ import ProductActions from './ProductActions';
 import ProductCTA from './ProductCTA';
 import Carousel from '@/components/Carousel';
 import BlogCard from '@/components/BlogCard';
+import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 import styles from './page.module.css';
 
 // Revalidar cada 5 minutos (300 segundos)
@@ -282,6 +283,9 @@ export default async function ProductDetailPage({ params }) {
 
               {/* Botón de compra */}
               <ProductActions product={product} styles={styles} />
+              
+              {/* Amazon Price Disclaimer */}
+              <AmazonDisclaimer variant="price" />
             </div>
 
             {/* ASIN */}
@@ -448,6 +452,9 @@ export default async function ProductDetailPage({ params }) {
             <Carousel items={featuredProducts} type="product" />
           </section>
         )}
+
+        {/* Amazon Affiliate Disclaimer */}
+        <AmazonDisclaimer />
 
         {/* CTA Final */}
         <ProductCTA product={product} styles={styles} />

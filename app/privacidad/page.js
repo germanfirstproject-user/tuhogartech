@@ -66,15 +66,47 @@ export default function PrivacidadPage() {
 
         <section className={styles.section}>
           <h2>5. Cookies y Tecnologías de Seguimiento</h2>
-          <p>Utilizamos las siguientes cookies:</p>
+          <p>Utilizamos las siguientes cookies y tecnologías de seguimiento:</p>
+          
+          <h3 className={styles.subsectionTitle}>5.1. Cookies Propias</h3>
           <ul>
             <li><strong>Cookies técnicas (necesarias):</strong> Para mantener tu sesión iniciada y funcionamiento del sitio</li>
-            <li><strong>Cookies de preferencias:</strong> Para recordar tu configuración (tema, idioma)</li>
-            <li><strong>Cookies analíticas:</strong> Para entender cómo usas el sitio y mejorarlo</li>
+            <li><strong>Cookies de preferencias:</strong> Para recordar tu configuración (tema, idioma, consentimiento de cookies)</li>
           </ul>
+
+          <h3 className={styles.subsectionTitle}>5.2. Cookies de Terceros</h3>
+          <ul>
+            <li>
+              <strong>Google Analytics:</strong> Utilizamos Google Analytics para analizar el uso del sitio web. 
+              Esta herramienta utiliza cookies que recopilan información de forma anónima, incluyendo el número de visitantes, 
+              las páginas visitadas y el origen del tráfico. Puedes desactivar Google Analytics instalando el 
+              <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer"> complemento de inhabilitación</a>.
+            </li>
+            <li>
+              <strong>Amazon Associates:</strong> Como participante del Programa de Afiliados de Amazon, cuando haces clic en 
+              enlaces de productos de Amazon, pueden establecerse cookies de seguimiento de afiliados. Estas cookies ayudan a 
+              rastrear las compras realizadas a través de nuestros enlaces. Amazon gestiona estas cookies bajo su propia 
+              <a href="https://www.amazon.es/gp/help/customer/display.html?nodeId=201909010" target="_blank" rel="noopener noreferrer"> política de privacidad</a>.
+            </li>
+          </ul>
+
+          <h3 className={styles.subsectionTitle}>5.3. Control de Cookies</h3>
           <p>
-            Puedes configurar tu navegador para rechazar cookies, pero esto puede afectar la funcionalidad del sitio.
+            Puedes aceptar o rechazar las cookies mediante el banner de cookies que aparece al visitar nuestro sitio por primera vez.
+            Puedes cambiar tus preferencias en cualquier momento eliminando las cookies desde la configuración de tu navegador.
           </p>
+          <p>
+            <strong>Nota:</strong> Rechazar las cookies técnicas puede afectar la funcionalidad del sitio, como mantener la sesión iniciada.
+          </p>
+
+          <h3 className={styles.subsectionTitle}>5.4. Configuración del Navegador</h3>
+          <p>Puedes configurar tu navegador para rechazar cookies:</p>
+          <ul>
+            <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer">Google Chrome</a></li>
+            <li><a href="https://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-sitios-web-rastrear-preferencias" target="_blank" rel="noopener noreferrer">Mozilla Firefox</a></li>
+            <li><a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer">Safari</a></li>
+            <li><a href="https://support.microsoft.com/es-es/microsoft-edge/eliminar-las-cookies-en-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener noreferrer">Microsoft Edge</a></li>
+          </ul>
         </section>
 
         <section className={styles.section}>

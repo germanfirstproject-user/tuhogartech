@@ -69,7 +69,12 @@ export default function Carousel({ items, type = 'product' }) {
 
 function ProductCard({ product }) {
   return (
-    <Link href={`/producto/${product.id}`} className={styles.card} prefetch={false}>
+    <Link 
+      href={`/producto/${product.id}`} 
+      className={styles.card} 
+      prefetch={false}
+      scroll={true}
+    >
       <div className={styles.imageContainer}>
         {product.images?.[0] ? (
           <img
@@ -124,7 +129,12 @@ function BlogCard({ blog }) {
   };
 
   return (
-    <Link href={`/blog/${blog.id}`} className={styles.card} prefetch={true}>
+    <Link 
+      href={`/blog/${blog.slug || blog.id}`} 
+      className={styles.card} 
+      prefetch={false}
+      scroll={true}
+    >
       <div className={styles.imageContainer}>
         {blog.featured_image ? (
           <img

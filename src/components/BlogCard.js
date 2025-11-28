@@ -16,7 +16,11 @@ export default function BlogCard({ blog }) {
   };
 
   return (
-    <Link href={`/blog/${blog.slug || blog.id}`} className={styles.card}>
+    <Link 
+      href={`/blog/${blog.slug || blog.id}`} 
+      className={styles.card}
+      prefetch={false}
+    >
       {blog.featured_image && (
         <div className={styles.imageContainer}>
           <img 

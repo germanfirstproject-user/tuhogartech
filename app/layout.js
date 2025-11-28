@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import CookieConsent from '@/components/CookieConsent';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { getSiteSettings } from '@/lib/supabase';
 
@@ -85,6 +86,7 @@ export default function RootLayout({ children }) {
           <Header />
           {children}
           <Footer />
+          <CookieConsent />
         </AuthProvider>
       </body>
     </html>

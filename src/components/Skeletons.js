@@ -96,14 +96,77 @@ export function CarouselSkeleton() {
 // Skeleton para página de detalle de producto
 export function ProductDetailSkeleton() {
   return (
-    <div className={styles.detailContainer}>
-      <div className={styles.detailGrid}>
-        <div className={styles.imageLarge} />
-        <div className={styles.detailContent}>
-          <div className={styles.titleLarge} />
+    <div className={styles.productDetailPage}>
+      <div className={styles.detailContainer}>
+        {/* Breadcrumb Skeleton */}
+        <div className={styles.breadcrumbSkeleton}>
+          <div className={styles.shortLine} style={{ width: '80px' }} />
+          <div className={styles.separator} />
+          <div className={styles.shortLine} style={{ width: '120px' }} />
+        </div>
+
+        {/* Main Content Grid */}
+        <div className={styles.detailGrid}>
+          {/* Image Section */}
+          <div className={styles.imageSection}>
+            <div className={styles.imageLarge} style={{ height: '500px', borderRadius: 'var(--radius-lg)' }} />
+            {/* Thumbnails */}
+            <div className={styles.thumbnailGrid}>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className={styles.thumbnail} />
+              ))}
+            </div>
+          </div>
+
+          {/* Info Section */}
+          <div className={styles.detailContent}>
+            {/* Category badge */}
+            <div className={styles.badge} style={{ width: '100px', marginBottom: '1rem' }} />
+            
+            {/* Brand */}
+            <div className={styles.shortLine} style={{ width: '150px', marginBottom: '0.5rem' }} />
+            
+            {/* Title */}
+            <div className={styles.titleLarge} style={{ marginBottom: '1rem' }} />
+            
+            {/* Rating */}
+            <div className={styles.ratingBox} />
+            
+            {/* Price Section */}
+            <div className={styles.priceSection}>
+              <div className={styles.priceLabel} />
+              <div className={styles.priceValue} />
+              <div className={styles.stockBadge} />
+            </div>
+            
+            {/* Action Buttons */}
+            <div className={styles.actionButtons}>
+              <div className={styles.buttonBox} style={{ flex: 1 }} />
+              <div className={styles.buttonSmall} />
+            </div>
+          </div>
+        </div>
+
+        {/* Description Section */}
+        <div className={styles.descriptionSection}>
+          <div className={styles.titleLine} style={{ marginBottom: '1rem' }} />
           <div className={styles.mediumLine} />
           <div className={styles.mediumLine} />
-          <div className={styles.buttonBox} style={{ marginTop: '2rem' }} />
+          <div className={styles.shortLine} />
+        </div>
+
+        {/* Features Section */}
+        <div className={styles.featuresSection}>
+          <div className={styles.titleLine} style={{ marginBottom: '1rem' }} />
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className={styles.featureLine} />
+          ))}
+        </div>
+
+        {/* Related Products Carousel */}
+        <div className={styles.carouselSection}>
+          <div className={styles.titleLine} style={{ marginBottom: '1rem' }} />
+          <CarouselSkeleton />
         </div>
       </div>
     </div>

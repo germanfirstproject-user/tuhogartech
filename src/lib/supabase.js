@@ -789,19 +789,9 @@ export async function insertBlog(blogData) {
 // Actualizar blog
 export async function updateBlog(id, blogData) {
   try {
-    // Primero verificar que el blog existe
-    const { data: existingBlog, error: checkError } = await supabase
-      .from('blogs')
-      .select('id')
-      .eq('id', id)
-      .single();
-
-    if (checkError || !existingBlog) {
-      console.error('Blog no encontrado:', checkError);
-      return { success: false, error: 'Blog no encontrado' };
-    }
-
-    // Actualizar el blog
+    console.log('updateBlog llamado con:', { id, blogData });
+    
+    // Actualizar el blog directamente sin verificación previa
     const { data, error } = await supabase
       .from('blogs')
       .update({
@@ -812,19 +802,23 @@ export async function updateBlog(id, blogData) {
       .select();
 
     if (error) {
-      console.error('Error updating blog:', error);
-      return { success: false, error: error.message };
+      console.error('Error de Supabase al actualizar blog:', error);
+      return { success: false, error: error.message || 'Error desconocido al actualizar' };
     }
+
+    console.log('Resultado de actualización:', data);
 
     // Verificar que se actualizó correctamente
     if (!data || data.length === 0) {
-      return { success: false, error: 'No se pudo actualizar el blog' };
+      console.error('No se encontró el blog con id:', id);
+      return { success: false, error: 'Blog no encontrado o no se pudo actualizar. Verifica que el ID sea correcto.' };
     }
 
+    console.log('Blog actualizado exitosamente:', data[0]);
     return { success: true, data: data[0] };
   } catch (err) {
-    console.error('Error en updateBlog:', err);
-    return { success: false, error: err.message };
+    console.error('Excepción en updateBlog:', err);
+    return { success: false, error: err.message || 'Error inesperado' };
   }
 }
 

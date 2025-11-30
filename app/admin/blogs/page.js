@@ -86,17 +86,32 @@ export default function BlogsAdminPage() {
       // Obtener el usuario actual
       const { data: { user } } = await supabase.auth.getUser();
       
+      // Preparar datos del blog limpiando campos vacíos
       const blogData = {
-        ...formData,
-        featured_image: featuredImageUrl,
-        tags: formData.tags ? formData.tags.split(',').map(t => t.trim()) : [],
-        published_at: formData.status === 'published' ? new Date().toISOString() : null,
+        title: formData.title,
+        slug: formData.slug || formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        content: formData.content,
+        excerpt: formData.excerpt || '',
+        featured_image: featuredImageUrl || '',
+        featured_image_alt: formData.featured_image_alt || '',
+        category: formData.category || '',
+        tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(t => t) : [],
+        status: formData.status || 'draft',
+        seo_title: formData.seo_title || '',
+        seo_description: formData.seo_description || '',
+        seo_keywords: formData.seo_keywords || '',
+        og_title: formData.og_title || '',
+        og_description: formData.og_description || '',
+        og_image: formData.og_image || '',
+        published_at: formData.status === 'published' ? (editingBlog?.published_at || new Date().toISOString()) : null,
         author_id: user?.id || null,
         author_name: user?.email || null,
       };
 
       let result;
       if (editingBlog) {
+        console.log('Actualizando blog con ID:', editingBlog.id);
+        console.log('Datos a enviar:', blogData);
         result = await updateBlog(editingBlog.id, blogData);
       } else {
         result = await insertBlog(blogData);

@@ -1,49 +1,169 @@
-﻿.editor {
+﻿/* Editor Wrapper */
+.editorWrapper {
+  position: relative;
+}
+
+.helpText {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid #3b82f6;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #1e40af;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.helpText code {
+  background: #1e40af;
+  color: white;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.editor {
   border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: 0.5rem;
   overflow: hidden;
   background: white;
 }
-.toolbar {
-  display: flex;
-  gap: 0.5rem;
-  padding: 0.75rem;
+
+/* Mejorar visibilidad de la barra de herramientas */
+.editor :global(.ql-toolbar) {
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-  flex-wrap: wrap;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.2) !important;
+  padding: 0.75rem !important;
 }
-.toolbarButton {
-  min-width: 36px;
-  height: 36px;
-  padding: 0 0.75rem;
+
+/* Destacar el botón de code-block */
+.editor :global(.ql-toolbar .ql-code-block) {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: white !important;
   border-radius: 0.375rem;
-  background: white;
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  color: #6366f1;
-  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  font-weight: 700;
+  border: 2px solid #1e293b;
+  transition: all 0.2s ease;
+}
+
+.editor :global(.ql-toolbar .ql-code-block:hover) {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.editor :global(.ql-toolbar .ql-code-block.ql-active) {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Estilizar bloques de código en el contenido */
+.editor :global(.ql-editor pre.ql-syntax) {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  font-family: 'Courier New', Consolas, Monaco, monospace;
   font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.toolbarButton:hover {
-  background: rgba(99, 102, 241, 0.1);
-  border-color: #6366f1;
-}
-.toolbarButton.active {
-  background: #6366f1;
-  color: white;
-  border-color: transparent;
-}
-.content {
-  padding: 1rem;
-  min-height: 200px;
-  font-size: 1rem;
   line-height: 1.6;
-  color: #1e293b;
+  overflow-x: auto;
+  border-left: 4px solid #3b82f6;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
-.content:focus {
-  outline: none;
+
+/* Agregar indicador visual de "CÓDIGO" */
+.editor :global(.ql-editor pre.ql-syntax::before) {
+  content: '{ CÓDIGO }';
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: #3b82f6;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-family: sans-serif;
+}
+
+/* Mejorar el placeholder */
+.editor :global(.ql-editor.ql-blank::before) {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Contenedor del editor */
+.editor :global(.ql-container) {
+  font-size: 1rem;
+  min-height: 300px;
+}
+
+.editor :global(.ql-editor) {
+  min-height: 300px;
+  padding: 1.5rem;
+}
+
+/* Mejorar código inline */
+.editor :global(.ql-editor code) {
+  background: #f1f5f9;
+  color: #1e293b;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875em;
+  border: 1px solid #cbd5e1;
+}
+
+/* Mejorar blockquotes */
+.editor :global(.ql-editor blockquote) {
+  border-left: 4px solid #6366f1;
+  padding-left: 1rem;
+  margin-left: 0;
+  color: #475569;
+  font-style: italic;
+}
+
+/* Todos los botones de la toolbar */
+.editor :global(.ql-toolbar button) {
+  transition: all 0.2s ease;
+}
+
+.editor :global(.ql-toolbar button:hover) {
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 0.25rem;
+}
+
+.editor :global(.ql-toolbar button.ql-active) {
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .helpText {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .editor :global(.ql-toolbar) {
+    padding: 0.5rem !important;
+  }
+
+  .editor :global(.ql-editor) {
+    padding: 1rem;
+    min-height: 250px;
+  }
+
+  .editor :global(.ql-editor pre.ql-syntax) {
+    padding: 1rem;
+    font-size: 0.75rem;
+  }
 }

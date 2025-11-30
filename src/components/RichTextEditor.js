@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useEffect } from 'react';
+import { useMemo, useRef, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { uploadBlogImage } from '@/lib/supabase';
 import 'react-quill/dist/quill.snow.css';
@@ -14,6 +14,32 @@ const ReactQuill = dynamic(() => import('react-quill'), {
 
 export default function RichTextEditor({ value, onChange, placeholder = 'Escribe el contenido aquí...' }) {
   const quillRef = useRef(null);
+  const [showHtml, setShowHtml] = useState(false);
+  const [htmlContent, setHtmlContent] = useState(value || '');
+
+  // Sincronizar htmlContent con value cuando cambia externamente
+  useEffect(() => {
+    if (!showHtml) {
+      setHtmlContent(value || '');
+    }
+  }, [value, showHtml]);
+
+  const toggleHtmlMode = () => {
+    if (showHtml) {
+      // Cambiar de HTML a visual
+      onChange(htmlContent);
+      setShowHtml(false);
+    } else {
+      // Cambiar de visual a HTML
+      setHtmlContent(value || '');
+      setShowHtml(true);
+    }
+  };
+
+  const handleHtmlChange = (e) => {
+    setHtmlContent(e.target.value);
+    onChange(e.target.value);
+  };
 
   // Agregar tooltips personalizados a los botones
   useEffect(() => {
@@ -135,18 +161,40 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Escribe
   return (
     <div className={styles.editorWrapper}>
       <div className={styles.helpText}>
-        💡 <strong>Consejo:</strong> Para insertar código, selecciona el texto y haz clic en el botón <code>&lt;/&gt;</code> (Bloque de Código) en la barra de herramientas.
+        💡 <strong>Consejo:</strong> Para insertar HTML con estilos, usa el botón "Modo HTML" y pega tu código directamente.
       </div>
-      <ReactQuill
-        ref={quillRef}
-        theme="snow"
-        value={value}
-        onChange={onChange}
-        modules={modules}
-        formats={formats}
-        placeholder={placeholder}
-        className={styles.editor}
-      />
+      
+      <div className={styles.editorControls}>
+        <button 
+          type="button"
+          onClick={toggleHtmlMode} 
+          className={styles.htmlToggle}
+          title={showHtml ? "Cambiar a modo visual" : "Cambiar a modo HTML"}
+        >
+          {showHtml ? '👁️ Modo Visual' : '📝 Modo HTML'}
+        </button>
+      </div>
+
+      {showHtml ? (
+        <textarea
+          value={htmlContent}
+          onChange={handleHtmlChange}
+          className={styles.htmlEditor}
+          placeholder="Pega tu HTML aquí..."
+          spellCheck={false}
+        />
+      ) : (
+        <ReactQuill
+          ref={quillRef}
+          theme="snow"
+          value={value}
+          onChange={onChange}
+          modules={modules}
+          formats={formats}
+          placeholder={placeholder}
+          className={styles.editor}
+        />
+      )}
     </div>
   );
 }

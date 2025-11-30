@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { uploadBlogImage } from '@/lib/supabase';
 import 'react-quill/dist/quill.snow.css';
@@ -13,6 +13,42 @@ const ReactQuill = dynamic(() => import('react-quill'), {
 });
 
 export default function RichTextEditor({ value, onChange, placeholder = 'Escribe el contenido aquí...' }) {
+  const quillRef = useRef(null);
+
+  // Agregar tooltips personalizados a los botones
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const timer = setTimeout(() => {
+      // Agregar tooltip al botón de code-block
+      const codeBlockButton = document.querySelector('.ql-code-block');
+      if (codeBlockButton) {
+        codeBlockButton.setAttribute('title', 'Bloque de Código - Haz clic para insertar/editar código');
+        codeBlockButton.setAttribute('aria-label', 'Insertar bloque de código');
+      }
+
+      // Agregar tooltip al botón de blockquote
+      const blockquoteButton = document.querySelector('.ql-blockquote');
+      if (blockquoteButton) {
+        blockquoteButton.setAttribute('title', 'Cita - Para texto destacado');
+      }
+
+      // Agregar tooltip al botón de link
+      const linkButton = document.querySelector('.ql-link');
+      if (linkButton) {
+        linkButton.setAttribute('title', 'Insertar enlace');
+      }
+
+      // Agregar tooltip al botón de image
+      const imageButton = document.querySelector('.ql-image');
+      if (imageButton) {
+        imageButton.setAttribute('title', 'Insertar imagen - Sube desde tu dispositivo');
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   // Handler para subir imágenes
   const imageHandler = function() {
     const input = document.createElement('input');
@@ -98,7 +134,11 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Escribe
 
   return (
     <div className={styles.editorWrapper}>
+      <div className={styles.helpText}>
+        💡 <strong>Consejo:</strong> Para insertar código, selecciona el texto y haz clic en el botón <code>&lt;/&gt;</code> (Bloque de Código) en la barra de herramientas.
+      </div>
       <ReactQuill
+        ref={quillRef}
         theme="snow"
         value={value}
         onChange={onChange}

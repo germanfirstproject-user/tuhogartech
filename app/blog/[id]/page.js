@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getBlogs, getBlogBySlug, getBlogById } from '@/lib/supabase';
 import { ArrowLeft } from 'lucide-react';
 import BlogReadTracker from '@/components/BlogReadTracker';
+import BlogContentRenderer from '@/components/BlogContentRenderer';
 import styles from './page.module.css';
 
 // Revalidar cada 10 minutos (600 segundos)
@@ -214,10 +215,11 @@ export default async function BlogPostPage({ params }) {
           </div>
         )}
 
-        {/* Content */}
-        <div 
+        {/* Content - Ahora con soporte para etiquetas <style> */}
+        <BlogContentRenderer
+          content={blog.content}
+          blogId={blog.id}
           className={styles.content}
-          dangerouslySetInnerHTML={{ __html: blog.content }}
         />
 
         {/* Tags */}

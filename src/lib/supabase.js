@@ -761,22 +761,27 @@ export async function insertBlog(blogData) {
       author_id: user?.id,
       author_name: user?.email || 'Admin',
       created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
 
     const { data, error } = await supabase
       .from('blogs')
       .insert([newBlog])
-      .select()
-      .single();
+      .select();
 
     if (error) {
       console.error('Error inserting blog:', error);
       return { success: false, error: error.message };
     }
 
-    return { success: true, data };
+    // Verificar que se insertó correctamente
+    if (!data || data.length === 0) {
+      return { success: false, error: 'No se pudo crear el blog' };
+    }
+
+    return { success: true, data: data[0] };
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error en insertBlog:', err);
     return { success: false, error: err.message };
   }
 }
@@ -784,21 +789,41 @@ export async function insertBlog(blogData) {
 // Actualizar blog
 export async function updateBlog(id, blogData) {
   try {
+    // Primero verificar que el blog existe
+    const { data: existingBlog, error: checkError } = await supabase
+      .from('blogs')
+      .select('id')
+      .eq('id', id)
+      .single();
+
+    if (checkError || !existingBlog) {
+      console.error('Blog no encontrado:', checkError);
+      return { success: false, error: 'Blog no encontrado' };
+    }
+
+    // Actualizar el blog
     const { data, error } = await supabase
       .from('blogs')
-      .update(blogData)
+      .update({
+        ...blogData,
+        updated_at: new Date().toISOString()
+      })
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) {
       console.error('Error updating blog:', error);
       return { success: false, error: error.message };
     }
 
-    return { success: true, data };
+    // Verificar que se actualizó correctamente
+    if (!data || data.length === 0) {
+      return { success: false, error: 'No se pudo actualizar el blog' };
+    }
+
+    return { success: true, data: data[0] };
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error en updateBlog:', err);
     return { success: false, error: err.message };
   }
 }

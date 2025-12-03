@@ -38,3 +38,43 @@
     transform: scale(1);
   }
 }
+
+/* Compact Button - Para ProductsGrid */
+.favoriteButtonCompact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  flex: 1;
+}
+
+.favoriteButtonCompact:hover {
+  border-color: #ec4899;
+  background: rgba(236, 72, 153, 0.05);
+  transform: translateY(-2px);
+}
+
+.favoriteButtonCompact.active {
+  border-color: #ec4899;
+  background: rgba(236, 72, 153, 0.1);
+  color: #ec4899;
+}
+
+.compactIcon {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.compactText {
+  font-size: 0.875rem;
+  font-weight: 600;
+}

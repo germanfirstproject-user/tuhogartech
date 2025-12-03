@@ -74,7 +74,8 @@ function FavoriteButton({ productId, compact = false }) {
         className={`${styles.favoriteButtonCompact} ${isFavorite ? styles.active : ''}`}
         title={isFavorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}
       >
-        {isFavorite ? '❤️' : '🤍'}
+        <span className={styles.compactIcon}>{isFavorite ? '❤️' : '🤍'}</span>
+        <span className={styles.compactText}>{isFavorite ? 'Guardado' : 'Guardar'}</span>
       </button>
     );
   }

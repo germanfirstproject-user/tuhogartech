@@ -1,12 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './Carousel.module.css';
 
 export default function Carousel({ items, type = 'product' }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsPerView = 4;
+  const [itemsPerView, setItemsPerView] = useState(4);
+  const trackRef = useRef(null);
+
+  // Detectar el tamaño de pantalla y ajustar itemsPerView
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      if (window.innerWidth <= 480) {
+        setItemsPerView(1);
+      } else if (window.innerWidth <= 768) {
+        setItemsPerView(2);
+      } else if (window.innerWidth <= 1200) {
+        setItemsPerView(3);
+      } else {
+        setItemsPerView(4);
+      }
+    };
+
+    updateItemsPerView();
+    window.addEventListener('resize', updateItemsPerView);
+    return () => window.removeEventListener('resize', updateItemsPerView);
+  }, []);
+
+  // Resetear currentIndex si excede el máximo después de cambiar itemsPerView
+  useEffect(() => {
+    const newMaxIndex = Math.max(0, items.length - itemsPerView);
+    if (currentIndex > newMaxIndex) {
+      setCurrentIndex(newMaxIndex);
+    }
+  }, [itemsPerView, items.length, currentIndex]);
+
   const maxIndex = Math.max(0, items.length - itemsPerView);
 
   const handlePrev = () => {
@@ -15,6 +44,20 @@ export default function Carousel({ items, type = 'product' }) {
 
   const handleNext = () => {
     setCurrentIndex(prev => Math.min(maxIndex, prev + 1));
+  };
+
+  // Calcular el desplazamiento basado en el ancho real de los elementos
+  const getTransformValue = () => {
+    if (!trackRef.current) return 0;
+    
+    const firstCard = trackRef.current.querySelector(`.${styles.card}`);
+    if (!firstCard) return 0;
+    
+    const cardWidth = firstCard.offsetWidth;
+    const gap = parseFloat(getComputedStyle(trackRef.current).gap) || 0;
+    const offset = currentIndex * (cardWidth + gap);
+    
+    return offset;
   };
 
   if (!items || items.length === 0) {
@@ -39,9 +82,10 @@ export default function Carousel({ items, type = 'product' }) {
 
       <div className={styles.carouselContainer}>
         <div 
+          ref={trackRef}
           className={styles.carouselTrack}
           style={{ 
-            transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
+            transform: `translateX(-${getTransformValue()}px)`,
           }}
         >
           {items.map((item, index) => (

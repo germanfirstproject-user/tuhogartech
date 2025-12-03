@@ -108,55 +108,90 @@
   transform: translateY(-4px);
 }
 
-.stats {
-  background: linear-gradient(135deg, rgb(249, 250, 251) 0%, white 100%);
-  padding: 4rem 1.5rem;
-  border-bottom: 2px solid rgb(229, 231, 235);
-}
-
-.statsContainer {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2.5rem;
-}
-
-.statItem {
-  text-align: center;
-  padding: 1.5rem;
+/* Combined Value Section */
+.valueSection {
   background: white;
-  border-radius: 1rem;
-  border: 2px solid rgb(229, 231, 235);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
+  padding: 2.5rem 1.5rem;
+  border-bottom: 1px solid rgb(229, 231, 235);
 }
 
-.statItem:hover {
-  transform: translateY(-4px);
-  border-color: rgb(59, 130, 246);
+.valueContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
 }
 
-.statNumber {
-  font-size: 2.5rem;
+/* Stats Row */
+.statsRow {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.statCompact {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.statNumberCompact {
+  font-size: 2rem;
   font-weight: 800;
   background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.5rem;
 }
 
-.statLabel {
-  font-size: 1rem;
+.statLabelCompact {
+  font-size: 0.875rem;
   color: rgb(107, 114, 128);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+}
+
+/* Features Compact */
+.featuresCompact {
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.featureCompact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba(219, 234, 254, 0.3) 0%, rgba(147, 197, 253, 0.1) 100%);
+  border-radius: 0.5rem;
+  border: 1px solid rgb(191, 219, 254);
+  transition: all 0.2s ease;
+}
+
+.featureCompact:hover {
+  background: linear-gradient(135deg, rgba(219, 234, 254, 0.5) 0%, rgba(147, 197, 253, 0.2) 100%);
+  border-color: rgb(147, 197, 253);
+  transform: translateY(-2px);
+}
+
+.featureIconCompact {
+  font-size: 1.25rem;
+}
+
+.featureTextCompact {
+  font-size: 0.875rem;
+  color: rgb(55, 65, 81);
+  font-weight: 500;
 }
 
 .main {
-  padding: 4rem 1.5rem;
+  padding: 2rem 1.5rem 4rem 1.5rem;
   background: linear-gradient(135deg, rgb(249, 250, 251) 0%, #ffffff 100%);
 }
 
@@ -464,8 +499,20 @@
   .heroButton {
     width: 100%;
   }
-  .statsContainer {
-    grid-template-columns: 1fr 1fr;
+  .valueSection {
+    padding: 2rem 1rem;
+  }
+  .statsRow {
+    gap: 2rem;
+  }
+  .featuresCompact {
+    gap: 1rem;
+    flex-direction: column;
+    width: 100%;
+  }
+  .featureCompact {
+    width: 100%;
+    justify-content: center;
   }
   .categoriesGrid {
     grid-template-columns: 1fr;
@@ -483,14 +530,22 @@
     padding: 0 1rem;
   }
   .main {
-    padding: 3rem 1rem;
+    padding: 1.5rem 0rem;
   }
   .heroTitle {
     font-size: 2rem;
   }
-  .statsContainer {
-    grid-template-columns: 1fr;
+  .valueSection {
+    padding: 1.5rem 1rem;
+  }
+  .statsRow {
     gap: 1.5rem;
+  }
+  .statNumberCompact {
+    font-size: 1.5rem;
+  }
+  .statLabelCompact {
+    font-size: 0.75rem;
   }
   .adminSection {
     margin: 3rem 1rem;

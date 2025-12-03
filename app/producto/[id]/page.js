@@ -259,17 +259,11 @@ export default async function ProductDetailPage({ params }) {
             {/* Price Section */}
             <div className={styles.priceSection}>
               <div className={styles.priceContainer}>
-                <p className={styles.priceLabel}>Precio</p>
+                <p className={styles.priceLabel}>Precio:</p>
                 <h2 className={styles.price}>{product.price}€</h2>
               </div>
 
-              {product.currency && (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', margin: 'var(--space-4) 0' }}>
-                  Moneda: {product.currency}
-                </p>
-              )}
-
-              <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div className={styles.metaInfo}>
                 <span className={product.stock === 'in_stock' ? styles.stockIn : styles.stockOut} style={{
                   padding: 'var(--space-2) var(--space-3)',
                   borderRadius: 'var(--radius-md)',
@@ -279,6 +273,11 @@ export default async function ProductDetailPage({ params }) {
                 }}>
                   {product.stock === 'in_stock' ? '✓ En stock' : 'Agotado'}
                 </span>
+                {product.currency && (
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>
+                    Moneda: {product.currency}
+                  </span>
+                )}
               </div>
 
               {/* Botón de compra */}
@@ -288,21 +287,19 @@ export default async function ProductDetailPage({ params }) {
               <AmazonDisclaimer variant="price" />
             </div>
 
-            {/* ASIN */}
-            {product.asin && (
-              <div style={{ padding: 'var(--space-4)', borderBottom: '1px solid var(--color-border)' }}>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', margin: 0 }}>
-                  ASIN: <span style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>{product.asin}</span>
-                </p>
-              </div>
-            )}
-
-            {/* Subcategoría */}
-            {product.subcategory && (
-              <div style={{ padding: 'var(--space-4)' }}>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', margin: 0 }}>
-                  Subcategoría: <span style={{ fontWeight: 'bold' }}>{product.subcategory}</span>
-                </p>
+            {/* Metadata compacta */}
+            {(product.asin || product.subcategory) && (
+              <div className={styles.compactMeta}>
+                {product.asin && (
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
+                    ASIN: <span style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>{product.asin}</span>
+                  </span>
+                )}
+                {product.subcategory && (
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
+                    Subcategoría: <span style={{ fontWeight: 'bold' }}>{product.subcategory}</span>
+                  </span>
+                )}
               </div>
             )}
           </div>
@@ -328,6 +325,47 @@ export default async function ProductDetailPage({ params }) {
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* Pros y Contras */}
+        {(product.pros || product.cons) && (
+          <div className={styles.prosConsSection}>
+            {/* Pros */}
+            {product.pros && product.pros.length > 0 && (
+              <div className={styles.prosColumn}>
+                <h2 className={styles.prosTitle}>
+                  <span className={styles.prosIcon}>✓</span>
+                  Ventajas
+                </h2>
+                <ul className={styles.prosList}>
+                  {product.pros.map((pro, idx) => (
+                    <li key={idx} className={styles.prosItem}>
+                      <span className={styles.prosBullet}>+</span>
+                      <span className={styles.prosText}>{pro}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Contras */}
+            {product.cons && product.cons.length > 0 && (
+              <div className={styles.consColumn}>
+                <h2 className={styles.consTitle}>
+                  <span className={styles.consIcon}>✗</span>
+                  Desventajas
+                </h2>
+                <ul className={styles.consList}>
+                  {product.cons.map((con, idx) => (
+                    <li key={idx} className={styles.consItem}>
+                      <span className={styles.consBullet}>−</span>
+                      <span className={styles.consText}>{con}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
 

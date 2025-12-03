@@ -7,7 +7,7 @@ import BlogCard from '@/components/BlogCard';
 import { searchUnified } from '@/lib/supabase';
 import styles from './page.module.css';
 
-const PRODUCTS_PER_PAGE = 5;
+const PRODUCTS_PER_PAGE = 6;
 
 export default function SearchPageContent() {
   const searchParams = useSearchParams();

@@ -22,9 +22,9 @@
   padding: 0 .5rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 2rem;
   height: 70px;
+  justify-content: space-between;
 }
 
 /* ===================================
@@ -36,7 +36,7 @@
   color: rgb(17, 24, 39);
   text-decoration: none;
   letter-spacing: -0.5px;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   flex-shrink: 0;
 }
 
@@ -48,6 +48,21 @@
 
 .logo:hover {
   color: rgb(59, 130, 246);
+  font-size: 1.6rem;
+}
+
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: rgb(59, 130, 246);
+  transition: width 0.3s ease;
+}
+.logo:hover::after {
+  width: 100%;
 }
 
 /* ===================================
@@ -280,6 +295,48 @@
   color: rgb(37, 99, 235);
 }
 
+.mobileLinkProfile {
+  display: block;
+  padding: 1rem;
+  color: rgb(55, 65, 81);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin-bottom: 0.25rem;
+  background: rgba(219, 234, 254, 0.3);
+}
+
+.mobileLinkProfile:hover {
+  background: rgb(219, 234, 254);
+  color: rgb(37, 99, 235);
+  font-weight: 600;
+}
+
+.mobileLinkLogout {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  background: rgba(254, 226, 226, 0.3);
+  border: none;
+  color: rgb(55, 65, 81);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.mobileLinkLogout:hover {
+  background: rgb(254, 226, 226);
+  color: rgb(239, 68, 68);
+  font-weight: 600;
+}
+
 /* ===================================
    TABLET BREAKPOINT (768px - 1024px)
    =================================== */
@@ -305,6 +362,13 @@
     height: 60px;
     padding: 0 1rem;
     gap: 0.75rem;
+    justify-content: space-between;
+  }
+  
+  .logoNavGroup {
+    order: 0;
+    flex: 0 0 auto;
+    justify-content: flex-start;
   }
   
   .logo {
@@ -312,8 +376,15 @@
   }
   
   .searchContainer {
+    order: 1;
     flex: 0 0 auto;
-    max-width: none;
+    max-width: 160px;
+    margin-left: auto;
+  }
+  
+  .mobileMenuButton {
+    display: block;
+    order: 2;
   }
   
   .desktopNav {
@@ -322,10 +393,6 @@
   
   .authSection {
     display: none;
-  }
-  
-  .mobileMenuButton {
-    display: block;
   }
   
   .mobileMenu {

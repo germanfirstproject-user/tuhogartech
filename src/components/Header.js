@@ -66,6 +66,15 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
+        {/* Mobile Menu Button */}
+        <button
+          className={styles.mobileMenuButton}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Menú de navegación"
+        >
+          ☰
+        </button>
+
         {/* Logo and Navigation Group */}
         <div className={styles.logoNavGroup}>
           {/* Logo */}
@@ -135,15 +144,6 @@ export default function Header() {
             </Link>
           )}
         </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className={styles.mobileMenuButton}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Menú de navegación"
-        >
-          ☰
-        </button>
       </div>
 
       {/* Mobile Menu */}
@@ -167,7 +167,7 @@ export default function Header() {
             <>
               <Link 
                 href="/profile" 
-                className={styles.mobileLink}
+                className={styles.mobileLinkProfile}
                 onClick={closeMobileMenu}
               >
                 Mi Perfil
@@ -183,8 +183,7 @@ export default function Header() {
               )}
               <button
                 onClick={handleLogout}
-                className={styles.mobileLink}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' }}
+                className={styles.mobileLinkLogout}
               >
                 Cerrar Sesión
               </button>

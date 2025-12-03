@@ -97,8 +97,8 @@
 }
 
 .image {
-  max-width: 85%;
-  max-height: 85%;
+  max-width: 75%;
+  max-height: 75%;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -266,6 +266,14 @@
     height: 40px;
     font-size: 1.5rem;
   }
+  
+  .navButtonPrev {
+    left: 0.25rem;
+  }
+  
+  .navButtonNext {
+    right: 0.25rem;
+  }
 
   .title {
     font-size: 0.875rem;
@@ -293,6 +301,14 @@
     width: 36px;
     height: 36px;
     font-size: 1.25rem;
+  }
+  
+  .navButtonPrev {
+    left: 0.25rem;
+  }
+  
+  .navButtonNext {
+    right: 0.25rem;
   }
 
   .cardContent {

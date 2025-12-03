@@ -68,16 +68,16 @@ export default function ProductsGrid({ products }) {
                 {/* Footer */}
                 <div className={styles.footer}>
                   <div className={styles.price}>{product.price}€</div>
-                  <div className={product.stock === 'in_stock' ? styles.stockIn : styles.stockOut}>
-                    {product.stock === 'in_stock' ? 'En stock' : 'Agotado'}
-                  </div>
                 </div>
               </div>
             </div>
           </Link>
           
-          {/* Botón de favorito fuera del Link */}
-          <div className={styles.favoriteContainer}>
+          {/* Stock y Botón de favorito en la misma línea */}
+          <div className={styles.actionBar}>
+            <div className={product.stock === 'in_stock' ? styles.stockIn : styles.stockOut}>
+              {product.stock === 'in_stock' ? 'En stock' : 'Agotado'}
+            </div>
             <FavoriteButton productId={product.id} compact />
           </div>
         </div>

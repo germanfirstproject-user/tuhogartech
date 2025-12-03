@@ -54,38 +54,35 @@ export default async function HomePage() {
       {/* Hero Carousel Section */}
       <HeroCarousel heroImages={settings} />
 
-      {/* Stats Section - CON DATOS REALES */}
-      <section className={styles.stats}>
-        <div className={styles.statsContainer}>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>{stats.productsCount}+</div>
-            <div className={styles.statLabel}>Productos</div>
+      {/* Combined Stats & Features Section */}
+      <section className={styles.valueSection}>
+        <div className={styles.valueContainer}>
+          {/* Stats */}
+          <div className={styles.statsRow}>
+            <div className={styles.statCompact}>
+              <span className={styles.statNumberCompact}>{stats.productsCount}+</span>
+              <span className={styles.statLabelCompact}>Productos</span>
+            </div>
+            <div className={styles.statCompact}>
+              <span className={styles.statNumberCompact}>{stats.categoriesCount}+</span>
+              <span className={styles.statLabelCompact}>Categorías</span>
+            </div>
           </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>{stats.categoriesCount}+</div>
-            <div className={styles.statLabel}>Categorías</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className={styles.features}>
-        <h2 className={styles.featuresTitle}>¿Por qué elegirnos?</h2>
-        <div className={styles.featuresGrid}>
-          <div className={styles.featureCard}>
-            <div className={styles.featureIcon}>✓</div>
-            <h3 className={styles.featureTitle}>Reseñas Honestas</h3>
-            <p className={styles.featureDescription}>Análisis imparciales y detallados de cada producto</p>
-          </div>
-          <div className={styles.featureCard}>
-            <div className={styles.featureIcon}>📊</div>
-            <h3 className={styles.featureTitle}>Comparativas Completas</h3>
-            <p className={styles.featureDescription}>Compara especificaciones y precios lado a lado</p>
-          </div>
-          <div className={styles.featureCard}>
-            <div className={styles.featureIcon}>💰</div>
-            <h3 className={styles.featureTitle}>Mejores Ofertas</h3>
-            <p className={styles.featureDescription}>Descubre las mejores ofertas disponibles</p>
+          
+          {/* Features */}
+          <div className={styles.featuresCompact}>
+            <div className={styles.featureCompact}>
+              <span className={styles.featureIconCompact}>✓</span>
+              <span className={styles.featureTextCompact}>Reseñas honestas e imparciales</span>
+            </div>
+            <div className={styles.featureCompact}>
+              <span className={styles.featureIconCompact}>📊</span>
+              <span className={styles.featureTextCompact}>Comparativas detalladas</span>
+            </div>
+            <div className={styles.featureCompact}>
+              <span className={styles.featureIconCompact}>💰</span>
+              <span className={styles.featureTextCompact}>Mejores ofertas actualizadas</span>
+            </div>
           </div>
         </div>
       </section>

@@ -15,11 +15,13 @@ export default function ProductCTA({ product, styles }) {
       <h3 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'bold', marginBottom: 'var(--space-4)', margin: 0 }}>
         {product.title}
       </h3>
-      <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-6)', margin: 'var(--space-4) 0' }}>
-        Precio: <span style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'bold', color: 'var(--color-primary)' }}>
-          {product.price}€
-        </span>
-      </p>
+      {product.price != null && (
+        <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-6)', margin: 'var(--space-4) 0' }}>
+          Precio: <span style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'bold', color: 'var(--color-primary)' }}>
+            {product.price}€
+          </span>
+        </p>
+      )}
       {product.affiliate_link && (
         <AffiliateLink 
           href={product.affiliate_link}

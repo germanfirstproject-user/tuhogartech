@@ -716,11 +716,14 @@ export default function ProductsAdminPage() {
               <h3 className={styles.productTitle}>{product.title}</h3>
               <p className={styles.productBrand}>{product.brand}</p>
               <p className={styles.productCategory}>{product.category}</p>
-              <p className={styles.productPrice}>
-                {product.price} {product.currency || 'EUR'}
-              </p>
+              {product.price != null && (
+                <p className={styles.productPrice}>
+                  {product.price} {product.currency || 'EUR'}
+                </p>
+              )}
               {product.rating && (
-                <p className={styles.productRating}>⭐ {product.rating}/5 ({product.reviews_count || 0} reseñas)</p>
+                <p className={styles.productRating}>⭐ {product.rating}/5 {product.reviews_count != null && product.reviews_count > 0 && `(${product.reviews_count} reseñas)`}
+                </p>
               )}
               <div className={styles.productActions}>
                 <button onClick={() => handleEdit(product)} className={styles.editButton}>

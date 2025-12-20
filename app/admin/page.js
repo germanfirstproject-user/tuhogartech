@@ -202,7 +202,9 @@ export default function AdminDashboard() {
                     <h4>{product.title || 'Producto sin nombre'}</h4>
                     <p>ID: {product.id.substring(0, 8)}...</p>
                   </div>
-                  <div className={styles.recentItemPrice}>${product.price || '0'}</div>
+                  {product.price != null && (
+                    <div className={styles.recentItemPrice}>${product.price}</div>
+                  )}
                 </div>
               ))}
             </div>

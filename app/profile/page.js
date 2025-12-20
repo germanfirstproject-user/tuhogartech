@@ -316,7 +316,9 @@ export default function ProfilePage() {
                         </div>
                         <div className={styles.productContent}>
                           <h4 className={styles.productTitle}>{product.title}</h4>
-                          <p className={styles.productPrice}>{product.price}€</p>
+                          {product.price != null && (
+                            <p className={styles.productPrice}>{product.price}€</p>
+                          )}
                         </div>
                       </Link>
                     ))}

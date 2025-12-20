@@ -151,7 +151,9 @@ function ProductCard({ product }) {
         )}
         
         <div className={styles.footer}>
-          <span className={styles.price}>{product.price}€</span>
+          {product.price != null && (
+            <span className={styles.price}>{product.price}€</span>
+          )}
           {product.stock === 'in_stock' && (
             <span className={styles.stock}>En stock</span>
           )}

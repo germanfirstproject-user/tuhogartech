@@ -37,7 +37,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: seo?.seo_title || `${product.title} - AffiliPro`,
-    description: seo?.seo_description || product.description || `${product.title} por ${product.brand || 'N/A'}. Precio: ${product.price}€. Valoración: ${product.rating}/5.`,
+    description: seo?.seo_description || product.description || `${product.title} por ${product.brand || 'N/A'}${product.price != null ? `. Precio: ${product.price}€` : ''}${product.rating ? `. Valoración: ${product.rating}/5` : ''}.`,
     keywords: seo?.seo_keywords || `${product.title}, ${product.brand}, ${product.category}`,
     robots: seo?.meta_robots || 'index, follow',
     openGraph: {
@@ -101,7 +101,7 @@ export default async function ProductDetailPage({ params }) {
       "name": product.brand
     } : undefined,
     "sku": product.asin || product.id,
-    "offers": {
+    "offers": product.price != null ? {
       "@type": "Offer",
       "url": `https://tuhogartech.com/producto/${params.id}`,
       "priceCurrency": product.currency || "EUR",
@@ -113,7 +113,7 @@ export default async function ProductDetailPage({ params }) {
         "@type": "Organization",
         "name": "AffiliPro"
       }
-    },
+    } : undefined,
     "aggregateRating": product.rating ? {
       "@type": "AggregateRating",
       "ratingValue": product.rating,
@@ -246,7 +246,7 @@ export default async function ProductDetailPage({ params }) {
                   </div>
                   <div className={styles.ratingText}>
                     <span className={styles.ratingScore}>{product.rating}/5</span>
-                    {product.reviews_count > 0 && (
+                    {product.reviews_count != null && product.reviews_count > 0 && (
                       <span className={styles.ratingCount}>
                         ({product.reviews_count.toLocaleString('es-ES')} reseñas)
                       </span>
@@ -258,10 +258,12 @@ export default async function ProductDetailPage({ params }) {
 
             {/* Price Section */}
             <div className={styles.priceSection}>
-              <div className={styles.priceContainer}>
-                <p className={styles.priceLabel}>Precio:</p>
-                <h2 className={styles.price}>{product.price}€</h2>
-              </div>
+              {product.price != null && (
+                <div className={styles.priceContainer}>
+                  <p className={styles.priceLabel}>Precio:</p>
+                  <h2 className={styles.price}>{product.price}€</h2>
+                </div>
+              )}
 
               <div className={styles.metaInfo}>
                 <span className={product.stock === 'in_stock' ? styles.stockIn : styles.stockOut} style={{

@@ -113,7 +113,9 @@ export default function FeaturedProductsPage() {
                 <div className={styles.productInfo}>
                   <h3 className={styles.productTitle}>{product.title}</h3>
                   <p className={styles.productBrand}>{product.brand}</p>
-                  <p className={styles.productPrice}>{product.price}€</p>
+                  {product.price != null && (
+                    <p className={styles.productPrice}>{product.price}€</p>
+                  )}
                 </div>
                 <button
                   onClick={() => handleRemoveFeatured(product.id)}
@@ -156,7 +158,9 @@ export default function FeaturedProductsPage() {
                   <h3 className={styles.productTitle}>{product.title}</h3>
                   <p className={styles.productBrand}>{product.brand}</p>
                   <div className={styles.productMeta}>
-                    <span className={styles.productPrice}>{product.price}€</span>
+                    {product.price != null && (
+                      <span className={styles.productPrice}>{product.price}€</span>
+                    )}
                     {product.rating && (
                       <span className={styles.productRating}>⭐ {product.rating}</span>
                     )}

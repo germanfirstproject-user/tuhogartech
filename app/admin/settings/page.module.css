@@ -85,6 +85,12 @@
   border: 1px solid #e5e7eb;
 }
 
+.variantBlock {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #e5e7eb;
+}
+
 .imageTitle {
   font-size: 1.1rem;
   font-weight: 600;

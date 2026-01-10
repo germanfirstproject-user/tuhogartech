@@ -1557,7 +1557,21 @@ export async function getSiteSettings() {
           home_title: 'AffiliPro - Los mejores productos',
           home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas',
           site_name: 'AffiliPro',
-          site_url: ''
+          site_url: '',
+          hero_image_1: '',
+          hero_image_1_mobile: '',
+          hero_image_2: '',
+          hero_image_2_mobile: '',
+          hero_image_2_link: '',
+          hero_image_2_alt: '',
+          hero_image_3: '',
+          hero_image_3_mobile: '',
+          hero_image_3_link: '',
+          hero_image_3_alt: '',
+          hero_image_4: '',
+          hero_image_4_mobile: '',
+          hero_image_4_link: '',
+          hero_image_4_alt: ''
         },
         error: null
       };
@@ -1573,7 +1587,21 @@ export async function getSiteSettings() {
         home_title: 'AffiliPro - Los mejores productos',
         home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas',
         site_name: 'AffiliPro',
-        site_url: ''
+          site_url: '',
+          hero_image_1: '',
+          hero_image_1_mobile: '',
+          hero_image_2: '',
+          hero_image_2_mobile: '',
+          hero_image_2_link: '',
+          hero_image_2_alt: '',
+          hero_image_3: '',
+          hero_image_3_mobile: '',
+          hero_image_3_link: '',
+          hero_image_3_alt: '',
+          hero_image_4: '',
+          hero_image_4_mobile: '',
+          hero_image_4_link: '',
+          hero_image_4_alt: ''
       }
     };
   }

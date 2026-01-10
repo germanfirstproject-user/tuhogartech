@@ -29,19 +29,37 @@ export default async function HomePage() {
         home_title: settingsResult.data.home_title || 'Encuentra los mejores productos',
         home_description: settingsResult.data.home_description || 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra',
         hero_image_1: settingsResult.data.hero_image_1,
+        hero_image_1_mobile: settingsResult.data.hero_image_1_mobile,
         hero_image_2: settingsResult.data.hero_image_2,
+        hero_image_2_mobile: settingsResult.data.hero_image_2_mobile,
         hero_image_2_link: settingsResult.data.hero_image_2_link,
         hero_image_2_alt: settingsResult.data.hero_image_2_alt,
         hero_image_3: settingsResult.data.hero_image_3,
+        hero_image_3_mobile: settingsResult.data.hero_image_3_mobile,
         hero_image_3_link: settingsResult.data.hero_image_3_link,
         hero_image_3_alt: settingsResult.data.hero_image_3_alt,
         hero_image_4: settingsResult.data.hero_image_4,
+        hero_image_4_mobile: settingsResult.data.hero_image_4_mobile,
         hero_image_4_link: settingsResult.data.hero_image_4_link,
         hero_image_4_alt: settingsResult.data.hero_image_4_alt,
       }
     : {
         home_title: 'Encuentra los mejores productos',
-        home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra'
+        home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra',
+        hero_image_1: '',
+        hero_image_1_mobile: '',
+        hero_image_2: '',
+        hero_image_2_mobile: '',
+        hero_image_2_link: '',
+        hero_image_2_alt: '',
+        hero_image_3: '',
+        hero_image_3_mobile: '',
+        hero_image_3_link: '',
+        hero_image_3_alt: '',
+        hero_image_4: '',
+        hero_image_4_mobile: '',
+        hero_image_4_link: '',
+        hero_image_4_alt: '',
       };
 
   const featuredProducts = featuredResult.success ? featuredResult.data : [];

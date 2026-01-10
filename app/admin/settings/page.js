@@ -18,13 +18,17 @@ export default function SettingsPage() {
     site_name: '',
     site_url: '',
     hero_image_1: '',
+    hero_image_1_mobile: '',
     hero_image_2: '',
+    hero_image_2_mobile: '',
     hero_image_2_link: '',
     hero_image_2_alt: '',
     hero_image_3: '',
+    hero_image_3_mobile: '',
     hero_image_3_link: '',
     hero_image_3_alt: '',
     hero_image_4: '',
+    hero_image_4_mobile: '',
     hero_image_4_link: '',
     hero_image_4_alt: '',
   });
@@ -40,7 +44,10 @@ export default function SettingsPage() {
   const loadSettings = async () => {
     const result = await getSiteSettings();
     if (result.success && result.data) {
-      setSettings(result.data);
+      setSettings(prev => ({
+        ...prev,
+        ...result.data
+      }));
     }
     setLoading(false);
   };
@@ -288,6 +295,37 @@ export default function SettingsPage() {
                 <span className={styles.hint}>Recomendado: 1920x600px</span>
               </div>
             </div>
+
+            <div className={styles.variantBlock}>
+              <h4 className={styles.imageTitle}>Versión móvil (Imagen 1)</h4>
+              <div className={styles.imagePreviewContainer}>
+                {settings.hero_image_1_mobile && (
+                  <div className={styles.imagePreview}>
+                    <img src={settings.hero_image_1_mobile} alt="Hero background móvil" />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImage('hero_image_1_mobile')}
+                      className={styles.deleteImageButton}
+                    >
+                      🗑️ Eliminar
+                    </button>
+                  </div>
+                )}
+                <div className={styles.uploadControl}>
+                  <label className={styles.uploadButton}>
+                    {uploading.hero_image_1_mobile ? 'Subiendo...' : '📤 Seleccionar Imagen'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, 'hero_image_1_mobile')}
+                      disabled={uploading.hero_image_1_mobile}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <span className={styles.hint}>Recomendado: 1080x1350px</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Imagen 2 */}
@@ -318,6 +356,37 @@ export default function SettingsPage() {
                   />
                 </label>
                 <span className={styles.hint}>Recomendado: 1920x600px</span>
+              </div>
+            </div>
+
+            <div className={styles.variantBlock}>
+              <h4 className={styles.imageTitle}>Versión móvil (Imagen 2)</h4>
+              <div className={styles.imagePreviewContainer}>
+                {settings.hero_image_2_mobile && (
+                  <div className={styles.imagePreview}>
+                    <img src={settings.hero_image_2_mobile} alt="Slide 2 móvil" />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImage('hero_image_2_mobile')}
+                      className={styles.deleteImageButton}
+                    >
+                      🗑️ Eliminar
+                    </button>
+                  </div>
+                )}
+                <div className={styles.uploadControl}>
+                  <label className={styles.uploadButton}>
+                    {uploading.hero_image_2_mobile ? 'Subiendo...' : '📤 Seleccionar Imagen'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, 'hero_image_2_mobile')}
+                      disabled={uploading.hero_image_2_mobile}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <span className={styles.hint}>Recomendado: 1080x1350px</span>
+                </div>
               </div>
             </div>
             <div className={styles.formGroup}>
@@ -380,6 +449,37 @@ export default function SettingsPage() {
                 <span className={styles.hint}>Recomendado: 1920x600px</span>
               </div>
             </div>
+
+            <div className={styles.variantBlock}>
+              <h4 className={styles.imageTitle}>Versión móvil (Imagen 3)</h4>
+              <div className={styles.imagePreviewContainer}>
+                {settings.hero_image_3_mobile && (
+                  <div className={styles.imagePreview}>
+                    <img src={settings.hero_image_3_mobile} alt="Slide 3 móvil" />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImage('hero_image_3_mobile')}
+                      className={styles.deleteImageButton}
+                    >
+                      🗑️ Eliminar
+                    </button>
+                  </div>
+                )}
+                <div className={styles.uploadControl}>
+                  <label className={styles.uploadButton}>
+                    {uploading.hero_image_3_mobile ? 'Subiendo...' : '📤 Seleccionar Imagen'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, 'hero_image_3_mobile')}
+                      disabled={uploading.hero_image_3_mobile}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <span className={styles.hint}>Recomendado: 1080x1350px</span>
+                </div>
+              </div>
+            </div>
             <div className={styles.formGroup}>
               <label htmlFor="hero_image_3_link" className={styles.label}>
                 Link de destino (opcional)
@@ -438,6 +538,37 @@ export default function SettingsPage() {
                   />
                 </label>
                 <span className={styles.hint}>Recomendado: 1920x600px</span>
+              </div>
+            </div>
+
+            <div className={styles.variantBlock}>
+              <h4 className={styles.imageTitle}>Versión móvil (Imagen 4)</h4>
+              <div className={styles.imagePreviewContainer}>
+                {settings.hero_image_4_mobile && (
+                  <div className={styles.imagePreview}>
+                    <img src={settings.hero_image_4_mobile} alt="Slide 4 móvil" />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImage('hero_image_4_mobile')}
+                      className={styles.deleteImageButton}
+                    >
+                      🗑️ Eliminar
+                    </button>
+                  </div>
+                )}
+                <div className={styles.uploadControl}>
+                  <label className={styles.uploadButton}>
+                    {uploading.hero_image_4_mobile ? 'Subiendo...' : '📤 Seleccionar Imagen'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, 'hero_image_4_mobile')}
+                      disabled={uploading.hero_image_4_mobile}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <span className={styles.hint}>Recomendado: 1080x1350px</span>
+                </div>
               </div>
             </div>
             <div className={styles.formGroup}>

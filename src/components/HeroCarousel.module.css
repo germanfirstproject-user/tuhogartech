@@ -180,9 +180,65 @@
   z-index: 10;
 }
 
+.navButtons {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--space-4);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.navButton {
+  pointer-events: auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.25);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.navButton:hover {
+  background: rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.navButton:active {
+  transform: translateY(0);
+}
+
+.navButtonPrev {
+  margin-right: auto;
+}
+
+.navButtonNext {
+  margin-left: auto;
+}
+
 .dot {
   width: 12px;
   height: 12px;
+
+  .navButtons {
+    padding: 0 var(--space-3);
+  }
+
+  .navButton {
+    width: 42px;
+    height: 42px;
+    font-size: 1.25rem;
+  }
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.5);
   border: 2px solid white;

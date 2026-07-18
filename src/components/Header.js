@@ -108,7 +108,7 @@ export default function Header() {
                 title={user?.email}
                 aria-label="Menú de usuario"
               >
-                👤
+                {user?.email?.charAt(0)?.toUpperCase() || 'U'}
               </button>
               {userDropdownOpen && (
                 <div className={styles.dropdown}>
@@ -126,7 +126,7 @@ export default function Header() {
                       className={styles.dropdownItem}
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      📊 Panel Admin
+                      Panel de administración
                     </Link>
                   )}
                   <button
@@ -178,7 +178,7 @@ export default function Header() {
                   className={styles.mobileLink}
                   onClick={closeMobileMenu}
                 >
-                  📊 Panel Admin
+                  Panel de administración
                 </Link>
               )}
               <button

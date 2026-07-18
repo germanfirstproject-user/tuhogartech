@@ -12,13 +12,13 @@
 .title {
   font-size: 2rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0 0 0.5rem 0;
 }
 
 .subtitle {
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -55,14 +55,14 @@
 
 .statLabel {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 0 0.25rem 0;
 }
 
 .statValue {
   font-size: 2rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0;
 }
 
@@ -73,7 +73,7 @@
 .sectionTitle {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0 0 1rem 0;
 }
 
@@ -84,7 +84,7 @@
 }
 
 .actionCard {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary);
   color: white;
   padding: 1.5rem;
   border-radius: 12px;
@@ -148,7 +148,7 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
-  background-color: #ef4444;
+  background-color: var(--color-danger);
   color: white;
   border: none;
   border-radius: var(--radius-md);
@@ -160,7 +160,7 @@
 }
 
 .logoutButton:hover {
-  background-color: #dc2626;
+  background-color: var(--color-danger);
   transform: translateY(-2px);
 }
 
@@ -213,7 +213,7 @@
 
 .statChange {
   font-size: var(--font-size-sm);
-  color: #10b981;
+  color: var(--color-success);
   margin-top: var(--space-2);
 }
 
@@ -303,11 +303,11 @@
 }
 
 .buttonDanger {
-  background-color: #dc2626;
+  background-color: var(--color-danger);
 }
 
 .buttonDanger:hover {
-  background-color: #991b1b;
+  background-color: var(--color-danger-dark);
 }
 
 .buttonSmall {
@@ -325,13 +325,13 @@
 }
 
 .statusActive {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--color-success-light);
+  color: var(--color-success-dark);
 }
 
 .statusInactive {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background-color: var(--color-danger-light);
+  color: var(--color-danger-dark);
 }
 
 .statusPending {
@@ -371,7 +371,7 @@
 .input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px var(--color-primary-very-light);
 }
 
 .textarea {
@@ -389,7 +389,7 @@
 .textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px var(--color-primary-very-light);
 }
 
 /* Alert */
@@ -407,21 +407,21 @@
 }
 
 .alertSuccess {
-  background-color: #dcfce7;
-  border-color: #10b981;
-  color: #166534;
+  background-color: var(--color-success-light);
+  border-color: var(--color-success);
+  color: var(--color-success-dark);
 }
 
 .alertWarning {
   background-color: #fef3c7;
-  border-color: #f59e0b;
+  border-color: var(--color-warning);
   color: #92400e;
 }
 
 .alertError {
-  background-color: #fee2e2;
-  border-color: #ef4444;
-  color: #991b1b;
+  background-color: var(--color-danger-light);
+  border-color: var(--color-danger);
+  color: var(--color-danger-dark);
 }
 
 /* Empty State */
@@ -434,7 +434,7 @@
 }
 
 .emptyStateIcon {
-  font-size: var(--font-size-6xl);
+  font-size: 3.5rem;
   margin-bottom: var(--space-4);
 }
 

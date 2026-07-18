@@ -11,20 +11,20 @@
 .title {
   font-size: 2rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0 0 0.5rem 0;
 }
 
 .subtitle {
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .loading {
   text-align: center;
   padding: 3rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-size: 1.1rem;
 }
 
@@ -36,15 +36,15 @@
 }
 
 .message.success {
-  background: #d1fae5;
-  color: #065f46;
-  border: 1px solid #10b981;
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+  border: 1px solid var(--color-success);
 }
 
 .message.error {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #ef4444;
+  background: var(--color-danger-light);
+  color: var(--color-danger-dark);
+  border: 1px solid var(--color-danger);
 }
 
 .form {
@@ -63,14 +63,14 @@
 .sectionTitle {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0 0 1.5rem 0;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #f3f4f6;
+  border-bottom: 2px solid var(--color-light-secondary);
 }
 
 .sectionDescription {
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
   line-height: 1.6;
@@ -80,21 +80,21 @@
 .imageUploadGroup {
   margin-bottom: 2.5rem;
   padding: 1.5rem;
-  background: #f9fafb;
+  background: var(--color-light);
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
 }
 
 .variantBlock {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px dashed #e5e7eb;
+  border-top: 1px dashed var(--color-border);
 }
 
 .imageTitle {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-secondary);
   margin: 0 0 1rem 0;
 }
 
@@ -136,7 +136,7 @@
 }
 
 .deleteImageButton:hover {
-  background: rgb(220, 38, 38);
+  background: var(--color-danger-dark);
   transform: scale(1.05);
 }
 
@@ -149,7 +149,7 @@
 
 .uploadButton {
   display: inline-block;
-  background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(29, 78, 216) 100%);
+  background: var(--color-primary);
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -184,14 +184,14 @@
   align-items: center;
   justify-content: space-between;
   font-weight: 500;
-  color: #374151;
+  color: var(--color-text-secondary);
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
 }
 
 .hint {
   font-size: 0.85rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   font-weight: normal;
 }
 
@@ -199,7 +199,7 @@
 .textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
@@ -210,13 +210,13 @@
 .input:focus,
 .textarea:focus {
   outline: none;
-  border-color: #a78bfa;
+  border-color: var(--color-primary-light);
   box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
 }
 
 .input::placeholder,
 .textarea::placeholder {
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 .textarea {
@@ -229,7 +229,7 @@
   right: 0.75rem;
   bottom: 0.75rem;
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   background: white;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -242,7 +242,7 @@
 }
 
 .submitButton {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  background: var(--color-primary);
   color: white;
   padding: 0.875rem 2rem;
   border: none;
@@ -251,12 +251,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);
+  box-shadow: 0 4px 6px rgba(29, 28, 24, 0.08);
 }
 
 .submitButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 6px 12px rgba(29, 28, 24, 0.1);
 }
 
 .submitButton:disabled {

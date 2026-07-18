@@ -139,7 +139,7 @@ export default function ProfilePage() {
     const result = await updateUserPreferences(user.id, preferences);
 
     if (result.success) {
-      setMessage('✅ Preferencias guardadas correctamente');
+      setMessage('Preferencias guardadas correctamente');
       setTimeout(() => setMessage(''), 3000);
     } else {
       setMessage('❌ Error al guardar: ' + result.error);
@@ -171,7 +171,7 @@ export default function ProfilePage() {
                 {isAdmin ? (
                   <span className={styles.adminBadge}>👑 Administrador</span>
                 ) : (
-                  <span className={styles.userBadge}>👤 Usuario</span>
+                  <span className={styles.userBadge}>Usuario</span>
                 )}
               </p>
               <p className={styles.memberSince}>
@@ -193,13 +193,13 @@ export default function ProfilePage() {
             className={`${styles.tab} ${activeTab === 'stats' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('stats')}
           >
-            📊 Estadísticas
+            Estadísticas
           </button>
           <button 
             className={`${styles.tab} ${activeTab === 'security' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('security')}
           >
-            🔒 Seguridad
+            Seguridad
           </button>
           <button 
             className={`${styles.tab} ${activeTab === 'preferences' ? styles.activeTab : ''}`}
@@ -231,9 +231,9 @@ export default function ProfilePage() {
                   <label className={styles.infoLabel}>Email verificado</label>
                   <div className={styles.infoValue}>
                     {user.email_confirmed_at ? (
-                      <span className={styles.verified}>✅ Verificado</span>
+                      <span className={styles.verified}>Verificado</span>
                     ) : (
-                      <span className={styles.unverified}>⚠️ No verificado</span>
+                      <span className={styles.unverified}>No verificado</span>
                     )}
                   </div>
                 </div>
@@ -252,7 +252,7 @@ export default function ProfilePage() {
                     onClick={() => router.push('/admin')}
                     className={styles.actionButtonPrimary}
                   >
-                    📊 Ir al Panel de Administración
+                    Ir al panel de administración
                   </button>
                 </div>
               )}
@@ -311,7 +311,7 @@ export default function ProfilePage() {
                           {product.images?.[0] ? (
                             <img src={product.images[0]} alt={product.title} />
                           ) : (
-                            <div className={styles.imagePlaceholder}>📦</div>
+                            <div className={styles.imagePlaceholder}>Sin imagen</div>
                           )}
                         </div>
                         <div className={styles.productContent}>
@@ -344,7 +344,7 @@ export default function ProfilePage() {
                   onClick={() => router.push('/blog')}
                   className={styles.actionButtonSecondary}
                 >
-                  📚 Leer Blog
+                  Leer el blog
                 </button>
               </div>
             </div>

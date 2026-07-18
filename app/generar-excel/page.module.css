@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--color-background) 0%, var(--color-background-secondary) 100%);
+  background: var(--color-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,10 +13,11 @@
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-family: var(--font-family-display);
+  font-size: 2.25rem;
+  font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--color-foreground);
+  color: var(--color-text);
 }
 
 .description {
@@ -27,16 +28,16 @@
 }
 
 .card {
-  background: var(--color-background);
-  border: 2px solid var(--color-border);
-  border-radius: 0.75rem;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 2rem;
   transition: all 0.3s ease;
 }
 
 .card:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--color-primary-very-light);
 }
 
 .formGroup {
@@ -47,7 +48,7 @@
   display: block;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: var(--color-foreground);
+  color: var(--color-text);
   font-size: 0.95rem;
 }
 
@@ -65,7 +66,7 @@
 .textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--color-primary-very-light);
 }
 
 .button {
@@ -83,7 +84,6 @@
 
 .button:hover:not(:disabled) {
   background: var(--color-primary-dark);
-  transform: translateY(-2px);
 }
 
 .button:disabled {
@@ -92,8 +92,8 @@
 }
 
 .error {
-  background: var(--color-error-light);
-  color: var(--color-error);
+  background: var(--color-danger-light);
+  color: var(--color-danger-dark);
   padding: 0.75rem;
   border-radius: 0.5rem;
   margin-bottom: 1rem;

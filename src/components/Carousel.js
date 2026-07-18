@@ -131,7 +131,7 @@ function ProductCard({ product }) {
           />
         ) : (
           <div className={styles.imagePlaceholder}>
-            <span>📦</span>
+            <span>Sin imagen</span>
           </div>
         )}
       </div>
@@ -145,7 +145,7 @@ function ProductCard({ product }) {
         
         {product.rating && (
           <div className={styles.rating}>
-            <span className={styles.stars}>⭐</span>
+            <span className={styles.stars}>★</span>
             <span className={styles.ratingValue}>{product.rating}/5</span>
           </div>
         )}
@@ -192,7 +192,7 @@ function BlogCard({ blog }) {
           />
         ) : (
           <div className={styles.imagePlaceholder}>
-            <span>📝</span>
+            <span>Sin imagen</span>
           </div>
         )}
       </div>
@@ -214,7 +214,7 @@ function BlogCard({ blog }) {
         <div className={styles.blogFooter}>
           <span className={styles.date}>{formatDate(blog.created_at)}</span>
           {blog.views_count > 0 && (
-            <span className={styles.views}>👁️ {blog.views_count}</span>
+            <span className={styles.views}>{blog.views_count} lecturas</span>
           )}
         </div>
       </div>

@@ -1,6 +1,6 @@
 import './globals.css';
 import '../styles/variables.css';
-import { Inter } from 'next/font/google';
+import { Inter, Fraunces } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
@@ -8,7 +8,13 @@ import CookieConsent from '@/components/CookieConsent';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { getSiteSettings } from '@/lib/supabase';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
+});
 
 // Generar metadata dinámica desde la base de datos
 export async function generateMetadata() {
@@ -80,7 +86,7 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://m.media-amazon.com" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${fraunces.variable}`}>
         <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         <AuthProvider>
           <Header />

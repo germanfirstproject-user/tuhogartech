@@ -90,15 +90,12 @@ export default async function HomePage() {
           {/* Features */}
           <div className={styles.featuresCompact}>
             <div className={styles.featureCompact}>
-              <span className={styles.featureIconCompact}>✓</span>
               <span className={styles.featureTextCompact}>Reseñas honestas e imparciales</span>
             </div>
             <div className={styles.featureCompact}>
-              <span className={styles.featureIconCompact}>📊</span>
               <span className={styles.featureTextCompact}>Comparativas detalladas</span>
             </div>
             <div className={styles.featureCompact}>
-              <span className={styles.featureIconCompact}>💰</span>
               <span className={styles.featureTextCompact}>Mejores ofertas actualizadas</span>
             </div>
           </div>
@@ -109,7 +106,7 @@ export default async function HomePage() {
       {featuredProducts.length > 0 && (
         <section className={styles.carouselSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>✨ Productos Destacados</h2>
+            <h2 className={styles.sectionTitle}>Productos destacados</h2>
             <p className={styles.sectionSubtitle}>Nuestra selección especial para ti</p>
           </div>
           <Carousel items={featuredProducts} type="product" />
@@ -119,7 +116,7 @@ export default async function HomePage() {
       {/* Productos Mejor Valorados */}
       <section className={styles.carouselSection}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>⭐ Productos Mejor Valorados</h2>
+          <h2 className={styles.sectionTitle}>Los mejor valorados</h2>
           <p className={styles.sectionSubtitle}>Los productos con las mejores calificaciones de nuestros usuarios</p>
         </div>
         {topRatedProducts.length > 0 ? (
@@ -132,7 +129,7 @@ export default async function HomePage() {
       {/* Blogs Recientes */}
       <section className={styles.carouselSection}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>📚 Artículos Recientes</h2>
+          <h2 className={styles.sectionTitle}>Guías y análisis recientes</h2>
           <p className={styles.sectionSubtitle}>Las últimas guías y análisis de productos</p>
         </div>
         {recentBlogs.length > 0 ? (

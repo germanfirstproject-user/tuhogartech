@@ -5,25 +5,27 @@
 }
 
 .content {
-  background: var(--card-bg);
-  border-radius: 12px;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 2.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-family: var(--font-family-display);
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: var(--color-text);
   margin-bottom: 0.5rem;
+  letter-spacing: -0.015em;
 }
 
 .lastUpdated {
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .section {
@@ -31,14 +33,15 @@
 }
 
 .section h2 {
+  font-family: var(--font-family-display);
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text);
   margin-bottom: 1rem;
 }
 
 .section p {
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.7;
   margin-bottom: 1rem;
 }
@@ -46,7 +49,7 @@
 .section ul {
   list-style: disc;
   padding-left: 2rem;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.7;
 }
 

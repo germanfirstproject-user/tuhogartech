@@ -1,11 +1,11 @@
-/* Hero Carousel Styles */
+/* Hero Carousel */
 
 .carousel {
   position: relative;
   width: 100%;
-  height: 600px;
+  height: 560px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(29, 78, 216) 100%);
+  background: var(--color-dark);
 }
 
 .carouselContainer {
@@ -22,7 +22,7 @@
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.8s ease-in-out;
+  transition: opacity 0.7s ease-in-out;
   pointer-events: none;
 }
 
@@ -31,7 +31,7 @@
   pointer-events: auto;
 }
 
-/* Hero Slide (Slide 1 with content) */
+/* Slide 1 con contenido */
 .heroSlide {
   position: relative;
   width: 100%;
@@ -59,48 +59,45 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(37, 99, 235, 0.85) 0%,
-    rgba(29, 78, 216, 0.85) 100%
-  );
-  opacity: 0.3;
+  background: rgba(21, 20, 17, 0.45);
   z-index: 1;
 }
 
 .heroContainer {
   position: relative;
   z-index: 2;
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 0 var(--space-6);
   text-align: center;
 }
 
 .heroTitle {
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  font-weight: var(--font-weight-extrabold);
-  color: white;
+  font-family: var(--font-family-display);
+  font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+  font-weight: 600;
+  color: #ffffff;
   margin: 0 0 var(--space-6) 0;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
 }
 
 .heroHighlight {
-  color: rgb(191, 219, 254);
-  font-weight: var(--font-weight-extrabold);
+  color: #f2d9a7;
+  font-style: italic;
+  font-weight: 600;
 }
 
 .heroSubtitle {
-  font-size: clamp(1.125rem, 2vw, 1.5rem);
-  color: rgba(255, 255, 255, 0.95);
+  font-size: clamp(1.0625rem, 1.8vw, 1.3125rem);
+  color: rgba(255, 255, 255, 0.92);
   margin: 0 0 var(--space-10) 0;
   line-height: var(--line-height-relaxed);
-  max-width: 700px;
+  max-width: 640px;
   margin-left: auto;
   margin-right: auto;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
 }
 
 .heroCTA {
@@ -111,45 +108,43 @@
 }
 
 .heroButton {
-  padding: 1rem 2.5rem;
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
+  padding: 0.875rem 2rem;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   cursor: pointer;
-  border: 2px solid transparent;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  border: 1px solid transparent;
 }
 
 .heroButtonPrimary {
-  background: white;
-  color: rgb(37, 99, 235);
-  border-color: white;
+  background: #ffffff;
+  color: var(--color-dark);
+  border-color: #ffffff;
 }
 
 .heroButtonPrimary:hover {
-  background: rgb(243, 244, 246);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px -4px rgba(255, 255, 255, 0.4);
+  background: var(--color-light-secondary);
+  border-color: var(--color-light-secondary);
+  color: var(--color-dark);
+  text-decoration: none;
 }
 
 .heroButtonSecondary {
-  background: rgb(17, 24, 39);
-  backdrop-filter: blur(8px);
-  color: white;
-  border: 2px solid rgb(17, 24, 39);
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.65);
 }
 
 .heroButtonSecondary:hover {
-  background: rgb(31, 41, 55);
-  border-color: rgb(31, 41, 55);
-  color: white;
-  font-weight: 700;
-  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #ffffff;
+  color: #ffffff;
+  text-decoration: none;
 }
 
-/* Image Slides (Slides 2-4) */
+/* Slides de solo imagen (2-4) */
 .imageSlide {
   width: 100%;
   height: 100%;
@@ -169,10 +164,10 @@
   object-position: center;
 }
 
-/* Dots Navigation */
+/* Navegación por puntos */
 .dots {
   position: absolute;
-  bottom: var(--space-8);
+  bottom: var(--space-6);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -180,6 +175,28 @@
   z-index: 10;
 }
 
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, width 0.2s ease;
+  padding: 0;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.dotActive {
+  background: #ffffff;
+  width: 26px;
+  border-radius: 5px;
+}
+
+/* Flechas */
 .navButtons {
   position: absolute;
   inset: 0;
@@ -193,29 +210,24 @@
 
 .navButton {
   pointer-events: auto;
-  width: 48px;
-  height: 48px;
-  border-radius: 999px;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  background: rgba(0, 0, 0, 0.25);
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(21, 20, 17, 0.35);
+  color: #ffffff;
+  font-size: 1.375rem;
+  font-weight: 400;
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  backdrop-filter: blur(4px);
 }
 
 .navButton:hover {
-  background: rgba(0, 0, 0, 0.4);
-  transform: translateY(-1px);
-}
-
-.navButton:active {
-  transform: translateY(0);
+  background: rgba(21, 20, 17, 0.6);
+  border-color: rgba(255, 255, 255, 0.7);
 }
 
 .navButtonPrev {
@@ -226,44 +238,13 @@
   margin-left: auto;
 }
 
-.dot {
-  width: 12px;
-  height: 12px;
-
-  .navButtons {
-    padding: 0 var(--space-3);
-  }
-
-  .navButton {
-    width: 42px;
-    height: 42px;
-    font-size: 1.25rem;
-  }
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-  border: 2px solid white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0;
-}
-
-.dot:hover {
-  background: rgba(255, 255, 255, 0.8);
-  transform: scale(1.2);
-}
-
-.dotActive {
-  background: white;
-  width: 32px;
-  border-radius: 6px;
-}
-
-/* Fallback Hero (no images) */
+/* Hero de respaldo (sin imágenes) */
 .hero {
   position: relative;
   width: 100%;
-  min-height: 600px;
-  background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(29, 78, 216) 100%);
+  min-height: 480px;
+  background: var(--color-background);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -271,28 +252,58 @@
   padding: var(--space-16) var(--space-4);
 }
 
+.hero .heroTitle {
+  color: var(--color-text);
+  text-shadow: none;
+}
+
+.hero .heroHighlight {
+  color: var(--color-primary);
+}
+
+.hero .heroSubtitle {
+  color: var(--color-text-secondary);
+  text-shadow: none;
+}
+
+.hero .heroButtonPrimary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.hero .heroButtonPrimary:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: #ffffff;
+}
+
+.hero .heroButtonSecondary {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border-dark);
+}
+
+.hero .heroButtonSecondary:hover {
+  background: var(--color-light-secondary);
+  border-color: var(--color-text-secondary);
+  color: var(--color-text);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .carousel,
   .hero {
-    height: 500px;
-    min-height: 500px;
-  }
-
-  .heroTitle {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-  }
-
-  .heroSubtitle {
-    font-size: var(--font-size-lg);
+    height: 480px;
+    min-height: 440px;
   }
 }
 
 @media (max-width: 768px) {
   .carousel,
   .hero {
-    height: 450px;
-    min-height: 450px;
+    height: 440px;
+    min-height: 400px;
   }
 
   .heroContainer {
@@ -300,12 +311,12 @@
   }
 
   .heroTitle {
-    font-size: var(--font-size-3xl);
+    font-size: 2rem;
     margin-bottom: var(--space-4);
   }
 
   .heroSubtitle {
-    font-size: var(--font-size-base);
+    font-size: 1rem;
     margin-bottom: var(--space-8);
   }
 
@@ -316,8 +327,8 @@
   }
 
   .heroButton {
-    padding: 0.875rem 2rem;
-    font-size: var(--font-size-base);
+    padding: 0.8rem 1.75rem;
+    font-size: 0.9375rem;
     width: 100%;
     text-align: center;
   }
@@ -326,13 +337,14 @@
     bottom: var(--space-4);
   }
 
-  .dot {
-    width: 10px;
-    height: 10px;
+  .navButtons {
+    padding: 0 var(--space-3);
   }
 
-  .dotActive {
-    width: 24px;
+  .navButton {
+    width: 38px;
+    height: 38px;
+    font-size: 1.125rem;
   }
 }
 
@@ -340,14 +352,14 @@
   .carousel,
   .hero {
     height: 400px;
-    min-height: 400px;
+    min-height: 360px;
   }
 
   .heroTitle {
-    font-size: var(--font-size-2xl);
+    font-size: 1.75rem;
   }
 
   .heroSubtitle {
-    font-size: var(--font-size-sm);
+    font-size: 0.9375rem;
   }
 }

@@ -1,53 +1,36 @@
-﻿.adminLink {
+.adminLink {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  width: 56px;
-  height: 56px;
-  background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+  width: 52px;
+  height: 52px;
+  background: var(--color-text);
+  border: 1px solid var(--color-dark-secondary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-text-light);
   text-decoration: none;
-  font-size: 1.5rem;
-  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
-  transition: all 0.3s ease;
+  font-size: 1.25rem;
+  box-shadow: var(--shadow-lg);
+  transition: background-color 0.15s ease, transform 0.15s ease;
   z-index: 1000;
 }
+
 .adminLink:hover {
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 20px 35px -5px rgba(99, 102, 241, 0.6);
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: var(--color-text-light);
 }
-.adminLink::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #06b6d4, #ec4899);
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.adminLink:hover::before {
-  opacity: 1;
-  animation: rotate 2s linear infinite;
-}
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+
 @media (max-width: 768px) {
   .adminLink {
     bottom: 1.5rem;
     right: 1.5rem;
-    width: 48px;
-    height: 48px;
-    font-size: 1.25rem;
+    width: 46px;
+    height: 46px;
+    font-size: 1.125rem;
   }
 }

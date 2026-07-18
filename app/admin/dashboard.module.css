@@ -95,7 +95,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -167,7 +167,7 @@
 }
 
 .actionCard {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary);
   color: white;
   padding: 1.5rem;
   border-radius: 12px;
@@ -183,19 +183,19 @@
 
 .actionCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 20px rgba(29, 28, 24, 0.1);
 }
 
 .actionCard:nth-child(2) {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: var(--color-danger);
 }
 
 .actionCard:nth-child(3) {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: var(--color-primary-light);
 }
 
 .actionCard:nth-child(4) {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  background: var(--color-success);
 }
 
 .actionIcon {

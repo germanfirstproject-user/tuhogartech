@@ -1,5 +1,5 @@
 ﻿.skeleton {
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: 0.5rem;
@@ -13,11 +13,10 @@
   }
 }
 .card {
-  background: white;
-  border-radius: 1rem;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(99, 102, 241, 0.1);
+  border: 1px solid var(--color-border);
 }
 .image {
   width: 100%;
@@ -91,7 +90,7 @@
 
 .shortLine {
   height: 16px;
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-sm);
@@ -119,7 +118,7 @@
 
 .imageLarge {
   width: 100%;
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   aspect-ratio: 1/1;
@@ -134,7 +133,7 @@
 
 .thumbnail {
   aspect-ratio: 1/1;
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-md);
@@ -143,7 +142,7 @@
 .badge {
   height: 28px;
   border-radius: var(--radius-full);
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
 }
@@ -151,7 +150,7 @@
 .titleLarge {
   width: 90%;
   height: 36px;
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-md);
@@ -160,7 +159,7 @@
 .titleLine {
   width: 60%;
   height: 28px;
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-md);
@@ -170,7 +169,7 @@
   width: 100%;
   height: 20px;
   margin-bottom: var(--space-3);
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-sm);
@@ -180,7 +179,7 @@
   width: 150px;
   height: 24px;
   margin-bottom: var(--space-6);
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-sm);
@@ -198,7 +197,7 @@
   width: 100px;
   height: 18px;
   margin-bottom: var(--space-2);
-  background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+  background: linear-gradient(90deg, #e5e2d8 25%, #d6d1c4 50%, #e5e2d8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-sm);
@@ -208,7 +207,7 @@
   width: 140px;
   height: 40px;
   margin-bottom: var(--space-4);
-  background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+  background: linear-gradient(90deg, #e5e2d8 25%, #d6d1c4 50%, #e5e2d8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-sm);
@@ -217,7 +216,7 @@
 .stockBadge {
   width: 120px;
   height: 28px;
-  background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+  background: linear-gradient(90deg, #e5e2d8 25%, #d6d1c4 50%, #e5e2d8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-full);
@@ -231,7 +230,7 @@
 
 .buttonBox {
   height: 52px;
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-md);
@@ -240,7 +239,7 @@
 .buttonSmall {
   width: 52px;
   height: 52px;
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-md);
@@ -266,7 +265,7 @@
   width: 100%;
   height: 22px;
   margin-bottom: var(--space-3);
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #f1efe8 25%, #e5e2d8 50%, #f1efe8 75%);
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-sm);

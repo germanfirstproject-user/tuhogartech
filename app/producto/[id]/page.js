@@ -194,7 +194,7 @@ export default async function ProductDetailPage({ params }) {
                   className={styles.mainImageImg}
                 />
               ) : (
-                <div className={styles.mainImagePlaceholder}>📦</div>
+                <div className={styles.mainImagePlaceholder}>Sin imagen</div>
               )}
             </div>
 
@@ -239,7 +239,7 @@ export default async function ProductDetailPage({ params }) {
                     {Array(5)
                       .fill(0)
                       .map((_, i) => (
-                        <span key={i} style={{ color: i < Math.round(product.rating) ? '#fbbf24' : '#d1d5db' }}>
+                        <span key={i} style={{ color: i < Math.round(product.rating) ? 'var(--color-star)' : 'var(--color-border-dark)' }}>
                           ★
                         </span>
                       ))}
@@ -376,9 +376,9 @@ export default async function ProductDetailPage({ params }) {
           <section style={{ 
             marginBottom: 'var(--space-12)',
             padding: 'var(--space-8)',
-            background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
+            background: 'var(--color-background-secondary)',
             borderRadius: 'var(--radius-lg)',
-            border: '1px solid #e5e7eb'
+            border: '1px solid var(--color-border)'
           }}>
             <h2 style={{ 
               fontSize: 'var(--font-size-2xl)', 
@@ -395,7 +395,7 @@ export default async function ProductDetailPage({ params }) {
                 background: 'var(--color-primary)',
                 borderRadius: '2px'
               }}></span>
-              Productos Relacionados de {product.category}
+              Más en {product.category}
             </h2>
             <p style={{
               fontSize: 'var(--font-size-sm)',
@@ -414,9 +414,9 @@ export default async function ProductDetailPage({ params }) {
           <section style={{ 
             marginBottom: 'var(--space-12)',
             padding: 'var(--space-8)',
-            background: 'linear-gradient(135deg, #faf5ff 0%, #ffffff 100%)',
+            background: 'var(--color-background-secondary)',
             borderRadius: 'var(--radius-lg)',
-            border: '1px solid #e9d5ff'
+            border: '1px solid var(--color-border)'
           }}>
             <h2 style={{ 
               fontSize: 'var(--font-size-2xl)', 
@@ -430,7 +430,7 @@ export default async function ProductDetailPage({ params }) {
               <span style={{
                 width: '4px',
                 height: '2rem',
-                background: '#8b5cf6',
+                background: 'var(--color-primary)',
                 borderRadius: '2px'
               }}></span>
               Artículos Relacionados
@@ -460,9 +460,9 @@ export default async function ProductDetailPage({ params }) {
           <section style={{ 
             marginBottom: 'var(--space-12)',
             padding: 'var(--space-8)',
-            background: 'linear-gradient(135deg, #fef3c7 0%, #ffffff 100%)',
+            background: 'var(--color-background-secondary)',
             borderRadius: 'var(--radius-lg)',
-            border: '1px solid #fde68a'
+            border: '1px solid var(--color-border)'
           }}>
             <h2 style={{ 
               fontSize: 'var(--font-size-2xl)', 
@@ -476,10 +476,10 @@ export default async function ProductDetailPage({ params }) {
               <span style={{
                 width: '4px',
                 height: '2rem',
-                background: '#f59e0b',
+                background: 'var(--color-primary)',
                 borderRadius: '2px'
               }}></span>
-              ⭐ Productos Destacados
+              Productos destacados
             </h2>
             <p style={{
               fontSize: 'var(--font-size-sm)',

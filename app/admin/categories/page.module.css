@@ -15,12 +15,12 @@
 .title {
   font-size: 2rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0;
 }
 
 .addButton {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -64,13 +64,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .formHeader h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #1f2937;
+  color: var(--color-text);
 }
 
 .closeButton {
@@ -78,11 +78,11 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .closeButton:hover {
-  color: #1f2937;
+  color: var(--color-text);
 }
 
 .form {
@@ -95,10 +95,10 @@
 
 .formSection h3 {
   font-size: 1.25rem;
-  color: #374151;
+  color: var(--color-text-secondary);
   margin: 0 0 1rem 0;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .formGroup {
@@ -108,7 +108,7 @@
 .formGroup label {
   display: block;
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-secondary);
   margin-bottom: 0.5rem;
 }
 
@@ -117,7 +117,7 @@
 .formGroup select {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   font-size: 1rem;
 }
@@ -126,13 +126,13 @@
 .formGroup textarea:focus,
 .formGroup select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-primary);
 }
 
 .formGroup small {
   display: block;
   margin-top: 0.25rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
 }
 
@@ -147,26 +147,26 @@
   justify-content: flex-end;
   gap: 1rem;
   padding-top: 1rem;
-  border-top: 2px solid #e5e7eb;
+  border-top: 2px solid var(--color-border);
 }
 
 .cancelButton {
   padding: 0.75rem 1.5rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--color-border);
   background: white;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .cancelButton:hover {
-  background: #f3f4f6;
+  background: var(--color-light-secondary);
 }
 
 .submitButton {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -211,20 +211,20 @@
 .productTitle {
   font-size: 1.125rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0 0 0.5rem 0;
 }
 
 .productCategory {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 0 0.5rem 0;
 }
 
 .productPrice {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #667eea;
+  color: var(--color-primary);
   margin: 0 0 1rem 0;
 }
 
@@ -245,12 +245,12 @@
 }
 
 .editButton {
-  background: #667eea;
+  background: var(--color-primary);
   color: white;
 }
 
 .deleteButton {
-  background: #ef4444;
+  background: var(--color-danger);
   color: white;
 }
 
@@ -262,7 +262,7 @@
 .empty {
   text-align: center;
   padding: 3rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 /* Category-specific styles */
@@ -274,7 +274,7 @@
 
 .categoryCard {
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s;
@@ -289,7 +289,7 @@
   width: 100%;
   height: 180px;
   overflow: hidden;
-  background: #f3f4f6;
+  background: var(--color-light-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -319,13 +319,13 @@
 .categoryName {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0;
 }
 
 .categoryDescription {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 0 1rem 0;
   line-height: 1.5;
   display: -webkit-box;
@@ -340,24 +340,24 @@
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .categorySlug {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   font-family: monospace;
 }
 
 .statusActive {
   font-size: 0.75rem;
-  color: #10b981;
+  color: var(--color-success);
   font-weight: 600;
 }
 
 .statusInactive {
   font-size: 0.75rem;
-  color: #ef4444;
+  color: var(--color-danger);
   font-weight: 600;
 }
 

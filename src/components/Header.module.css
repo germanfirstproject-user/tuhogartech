@@ -1,119 +1,102 @@
-﻿/* ===================================
-   HEADER BASE STYLES
+/* ===================================
+   HEADER
    =================================== */
 .header {
-  background: rgb(255, 255, 255);
-  border-bottom: 2px solid rgb(229, 231, 235);
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s ease;
-}
-
-.header:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
 .container {
   width: 100%;
   max-width: 1450px;
   margin: 0 auto;
-  padding: 0 .5rem;
+  padding: 0 1.5rem;
   display: flex;
   align-items: center;
   gap: 2rem;
-  height: 70px;
+  height: 68px;
   justify-content: space-between;
 }
 
 /* ===================================
-   LOGO STYLES
+   LOGO
    =================================== */
 .logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: rgb(17, 24, 39);
+  font-family: var(--font-family-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text);
   text-decoration: none;
-  letter-spacing: -0.5px;
-  transition: all 0.3s ease;
+  letter-spacing: -0.01em;
   flex-shrink: 0;
+  transition: color 0.15s ease;
 }
 
 .logoNavGroup {
   display: flex;
   align-items: center;
-  gap: 2rem; /* Ajusta el espacio entre el logo y los links */
+  gap: 2.25rem;
 }
 
 .logo:hover {
-  color: rgb(59, 130, 246);
-  font-size: 1.6rem;
-}
-
-.logo::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: rgb(59, 130, 246);
-  transition: width 0.3s ease;
-}
-.logo:hover::after {
-  width: 100%;
+  color: var(--color-primary);
+  text-decoration: none;
 }
 
 /* ===================================
-   SEARCH CONTAINER
+   SEARCH
    =================================== */
 .searchContainer {
   flex: 1;
-  max-width: 500px;
+  max-width: 460px;
   display: flex;
 }
 
 /* ===================================
-   DESKTOP NAVIGATION
+   NAVEGACIÓN DESKTOP
    =================================== */
 .desktopNav {
   display: flex;
-  gap: 2.5rem;
+  gap: 1.75rem;
   align-items: center;
 }
 
 .navLink {
-  color: rgb(55, 65, 81);
+  color: var(--color-text-secondary);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.9375rem;
   position: relative;
   padding: 0.5rem 0;
-  transition: color 0.2s ease;
+  transition: color 0.15s ease;
 }
 
 .navLink::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: 4px;
   left: 0;
-  width: 0;
-  height: 2px;
-  background: rgb(59, 130, 246);
-  transition: width 0.3s ease;
+  width: 100%;
+  height: 1px;
+  background: var(--color-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
 }
 
 .navLink:hover {
-  color: rgb(59, 130, 246);
+  color: var(--color-text);
 }
 
 .navLink:hover::after {
-  width: 100%;
+  transform: scaleX(1);
 }
 
 /* ===================================
-   AUTH SECTION (Desktop)
+   AUTH (Desktop)
    =================================== */
 .authSection {
   display: flex;
@@ -122,69 +105,71 @@
 }
 
 .loginButton {
-  background: rgb(17, 24, 39);
-  color: white;
-  padding: 0.625rem 1.5rem;
-  border-radius: 8px;
+  background: var(--color-text);
+  color: var(--color-text-light);
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-md);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.9375rem;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease;
   border: none;
   cursor: pointer;
 }
 
 .loginButton:hover {
-  background: rgb(31, 41, 55);
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: var(--color-primary-dark);
+  color: var(--color-text-light);
+  text-decoration: none;
 }
 
 /* ===================================
-   USER MENU (Desktop)
+   MENÚ DE USUARIO
    =================================== */
 .userMenu {
   position: relative;
 }
 
 .userButton {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: rgb(243, 244, 246);
-  border: 2px solid rgb(107, 114, 128);
+  background: var(--color-primary-very-light);
+  border: 1px solid var(--color-border-dark);
+  color: var(--color-primary-dark);
   cursor: pointer;
-  font-size: 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-transform: uppercase;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  padding: 0;
 }
 
 .userButton:hover {
-  background: rgb(229, 231, 235);
-  border-color: rgb(17, 24, 39);
-  transform: scale(1.05);
+  background: var(--color-primary-very-light);
+  border-color: var(--color-primary);
 }
 
 .dropdown {
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 0;
-  background: white;
-  border: 2px solid rgb(229, 231, 235);
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  min-width: 200px;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 210px;
   overflow: hidden;
-  animation: slideDown 0.2s ease;
+  animation: slideDown 0.15s ease;
 }
 
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
@@ -194,50 +179,49 @@
 
 .dropdownHeader {
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid rgb(229, 231, 235);
-  font-size: 0.875rem;
-  color: rgb(55, 65, 81);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
   font-weight: 500;
   word-break: break-word;
 }
 
 .dropdownItem {
   display: block;
-  padding: 0.75rem 1rem;
-  color: rgb(55, 65, 81);
+  padding: 0.7rem 1rem;
+  color: var(--color-text);
   text-decoration: none;
   font-size: 0.9375rem;
-  transition: background 0.2s ease;
+  transition: background 0.15s ease;
 }
 
 .dropdownItem:hover {
-  background: rgb(239, 246, 255);
-  color: rgb(37, 99, 235);
-  font-weight: 600;
+  background: var(--color-light-secondary);
+  color: var(--color-primary-dark);
+  text-decoration: none;
 }
 
 .dropdownItemLogout {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.7rem 1rem;
   background: none;
   border: none;
-  border-top: 1px solid rgb(229, 231, 235);
-  color: rgb(239, 68, 68);
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  color: var(--color-danger);
   font-size: 0.9375rem;
   font-weight: 500;
   text-align: left;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.15s ease;
 }
 
 .dropdownItemLogout:hover {
-  background: rgb(254, 242, 242);
-  color: rgb(220, 38, 38);
-  font-weight: 600;
+  background: var(--color-danger-light);
 }
 
 /* ===================================
-   MOBILE MENU BUTTON
+   BOTÓN MENÚ MÓVIL
    =================================== */
 .mobileMenuButton {
   display: none;
@@ -245,117 +229,111 @@
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: rgb(55, 65, 81);
-  font-size: 1.75rem;
+  color: var(--color-text);
+  font-size: 1.5rem;
   line-height: 1;
-  transition: color 0.2s ease;
+  transition: color 0.15s ease;
 }
 
 .mobileMenuButton:hover {
-  color: rgb(59, 130, 246);
+  color: var(--color-primary);
 }
 
 /* ===================================
-   MOBILE MENU
+   MENÚ MÓVIL
    =================================== */
 .mobileMenu {
   position: fixed;
-  top: 70px;
+  top: 68px;
   left: 0;
   right: 0;
-  background: white;
-  border-bottom: 2px solid rgb(229, 231, 235);
-  padding: 1rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  animation: slideDown 0.3s ease;
-  max-height: calc(100vh - 70px);
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem;
+  box-shadow: var(--shadow-lg);
+  animation: slideDown 0.2s ease;
+  max-height: calc(100vh - 68px);
   overflow-y: auto;
 }
 
 .mobileLink {
   display: block;
-  padding: 1rem;
-  color: rgb(55, 65, 81);
+  padding: 0.875rem 1rem;
+  color: var(--color-text);
   text-decoration: none;
   font-size: 1rem;
   font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  margin-bottom: 0.25rem;
+  border-radius: var(--radius-md);
+  transition: background 0.15s ease;
+  margin-bottom: 0.125rem;
 }
 
-.mobileLink:hover {
-  background: rgb(239, 246, 255);
-  color: rgb(37, 99, 235);
-  font-weight: 600;
-}
-
+.mobileLink:hover,
 .mobileLink:active {
-  background: rgb(219, 234, 254);
-  color: rgb(37, 99, 235);
+  background: var(--color-light-secondary);
+  color: var(--color-primary-dark);
+  text-decoration: none;
 }
 
 .mobileLinkProfile {
   display: block;
-  padding: 1rem;
-  color: rgb(55, 65, 81);
+  padding: 0.875rem 1rem;
+  color: var(--color-text);
   text-decoration: none;
   font-size: 1rem;
   font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  margin-bottom: 0.25rem;
-  background: rgba(219, 234, 254, 0.3);
+  border-radius: var(--radius-md);
+  transition: background 0.15s ease;
+  margin-bottom: 0.125rem;
+  background: var(--color-primary-very-light);
 }
 
 .mobileLinkProfile:hover {
-  background: rgb(219, 234, 254);
-  color: rgb(37, 99, 235);
-  font-weight: 600;
+  background: var(--color-primary-very-light);
+  color: var(--color-primary-dark);
+  text-decoration: none;
 }
 
 .mobileLinkLogout {
   display: block;
   width: 100%;
-  padding: 1rem;
-  background: rgba(254, 226, 226, 0.3);
+  padding: 0.875rem 1rem;
+  background: none;
   border: none;
-  color: rgb(55, 65, 81);
+  color: var(--color-danger);
   text-decoration: none;
   font-size: 1rem;
   font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  margin-top: 0.5rem;
+  border-radius: var(--radius-md);
+  transition: background 0.15s ease;
+  margin-top: 0.375rem;
   cursor: pointer;
   text-align: left;
 }
 
 .mobileLinkLogout:hover {
-  background: rgb(254, 226, 226);
-  color: rgb(239, 68, 68);
-  font-weight: 600;
+  background: var(--color-danger-light);
 }
 
 /* ===================================
-   TABLET BREAKPOINT (768px - 1024px)
+   TABLET (768px - 1024px)
    =================================== */
 @media (max-width: 1024px) {
   .container {
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
   }
-  
+
   .desktopNav {
-    gap: 2rem;
+    gap: 1.5rem;
   }
-  
+
   .navLink {
     font-size: 0.875rem;
   }
 }
 
 /* ===================================
-   MOBILE BREAKPOINT (max-width: 768px)
+   MÓVIL (max-width: 768px)
    =================================== */
 @media (max-width: 768px) {
   .container {
@@ -364,37 +342,37 @@
     gap: 0.75rem;
     justify-content: space-between;
   }
-  
+
   .logoNavGroup {
     order: 0;
     flex: 0 0 auto;
     justify-content: flex-start;
   }
-  
+
   .logo {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
   }
-  
+
   .searchContainer {
     order: 1;
     flex: 0 0 auto;
     max-width: 160px;
     margin-left: auto;
   }
-  
+
   .mobileMenuButton {
     display: block;
     order: 2;
   }
-  
+
   .desktopNav {
     display: none;
   }
-  
+
   .authSection {
     display: none;
   }
-  
+
   .mobileMenu {
     top: 60px;
     max-height: calc(100vh - 60px);
@@ -402,19 +380,19 @@
 }
 
 /* ===================================
-   SMALL MOBILE (max-width: 480px)
+   MÓVIL PEQUEÑO (max-width: 480px)
    =================================== */
 @media (max-width: 480px) {
   .container {
     padding: 0 0.75rem;
   }
-  
+
   .logo {
-    font-size: 1.125rem;
+    font-size: 1.1rem;
   }
-  
+
   .mobileLink {
-    padding: 0.875rem;
+    padding: 0.8rem 0.875rem;
     font-size: 0.9375rem;
   }
 }

@@ -22,41 +22,42 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar personalizado */
+/* Scrollbar discreto */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(249, 250, 251);
+  background: var(--color-light-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);
+  background: var(--color-border-dark);
   border-radius: 5px;
+  border: 2px solid var(--color-light-secondary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(29, 78, 216) 100%);
+  background: var(--color-text-muted);
 }
 
 /* Selección de texto */
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
-  color: rgb(17, 24, 39);
+  background: rgba(22, 99, 85, 0.18);
+  color: var(--color-text);
 }
 
 ::-moz-selection {
-  background: rgba(59, 130, 246, 0.3);
-  color: rgb(17, 24, 39);
+  background: rgba(22, 99, 85, 0.18);
+  color: var(--color-text);
 }
 
 /* Links globales */
 a {
   color: var(--color-primary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 0.15s ease;
 }
 
 a:hover {
@@ -64,10 +65,17 @@ a:hover {
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4 {
   margin: 0;
-  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-tight);
+}
+
+h5, h6 {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-snug);
 }
 
 /* Botones */

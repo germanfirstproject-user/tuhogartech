@@ -11,20 +11,20 @@
 .title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0 0 0.5rem 0;
 }
 
 .subtitle {
   font-size: 1.125rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .loading {
   text-align: center;
   padding: 3rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   font-size: 1.125rem;
 }
 
@@ -36,15 +36,15 @@
 }
 
 .message.success {
-  background: #d1fae5;
-  color: #065f46;
-  border: 1px solid #10b981;
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+  border: 1px solid var(--color-success);
 }
 
 .message.error {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #ef4444;
+  background: var(--color-danger-light);
+  color: var(--color-danger-dark);
+  border: 1px solid var(--color-danger);
 }
 
 .section {
@@ -58,7 +58,7 @@
 .sectionTitle {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0 0 1.5rem 0;
 }
 
@@ -70,8 +70,8 @@
 
 .featuredCard {
   position: relative;
-  background: #f9fafb;
-  border: 2px solid #e5e7eb;
+  background: var(--color-light);
+  border: 2px solid var(--color-border);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -83,7 +83,7 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: #8b5cf6;
+  background: var(--color-primary);
   color: white;
   width: 40px;
   height: 40px;
@@ -123,7 +123,7 @@
 .productTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text);
   margin: 0 0 0.5rem 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -134,14 +134,14 @@
 
 .productBrand {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 0 0.5rem 0;
 }
 
 .productPrice {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #8b5cf6;
+  color: var(--color-primary);
   margin: 0;
 }
 
@@ -153,13 +153,13 @@
 
 .productRating {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .removeButton {
   width: 100%;
   padding: 0.75rem;
-  background: #ef4444;
+  background: var(--color-danger);
   color: white;
   border: none;
   border-radius: 8px;
@@ -169,7 +169,7 @@
 }
 
 .removeButton:hover {
-  background: #dc2626;
+  background: var(--color-danger);
   transform: translateY(-2px);
 }
 
@@ -181,15 +181,15 @@
   width: 100%;
   padding: 0.875rem 1.25rem;
   font-size: 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   transition: all 0.3s;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-very-light);
 }
 
 .productsGrid {
@@ -200,7 +200,7 @@
 
 .productCard {
   background: white;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--color-border);
   border-radius: 12px;
   padding: 1rem;
   display: flex;
@@ -210,14 +210,14 @@
 }
 
 .productCard:hover {
-  border-color: #8b5cf6;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(29, 28, 24, 0.08);
 }
 
 .addButton {
   width: 100%;
   padding: 0.75rem;
-  background: #8b5cf6;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -227,19 +227,19 @@
 }
 
 .addButton:hover:not(:disabled) {
-  background: #7c3aed;
+  background: var(--color-primary-dark);
   transform: translateY(-2px);
 }
 
 .addButton:disabled {
-  background: #d1d5db;
+  background: var(--color-border-dark);
   cursor: not-allowed;
 }
 
 .emptyState {
   text-align: center;
   padding: 3rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   font-size: 1rem;
 }
 

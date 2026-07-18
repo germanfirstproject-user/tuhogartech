@@ -47,7 +47,7 @@ export default function ProductsGrid({ products }) {
                 {/* Rating */}
                 {product.rating && (
                   <div className={styles.ratingContainer}>
-                    <span className={styles.ratingValue}>⭐</span>
+                    <span className={styles.ratingStar}>★</span>
                     <span className={styles.ratingScore}>{product.rating}/5</span>
                     {product.reviews_count != null && product.reviews_count > 0 && (
                       <span className={styles.ratingCount}>

@@ -9,14 +9,14 @@ export default function Loading() {
           <div style={{ 
             height: '40px', 
             width: '300px', 
-            background: '#e0e0e0', 
+            background: 'var(--color-light-tertiary)', 
             borderRadius: '8px',
             marginBottom: '1rem'
           }} />
           <div style={{ 
             height: '20px', 
             width: '400px', 
-            background: '#e0e0e0', 
+            background: 'var(--color-light-tertiary)', 
             borderRadius: '4px' 
           }} />
         </div>

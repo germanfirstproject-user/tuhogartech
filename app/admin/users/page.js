@@ -263,9 +263,9 @@ WHERE id = 1;`}</pre>
                   <td>{formatDate(user.last_sign_in_at)}</td>
                   <td>
                     {user.email_confirmed_at ? (
-                      <span className={styles.statusConfirmed}>✅ Confirmado</span>
+                      <span className={styles.statusConfirmed}>Confirmado</span>
                     ) : (
-                      <span className={styles.statusUnconfirmed}>⏳ Pendiente</span>
+                      <span className={styles.statusUnconfirmed}>Pendiente</span>
                     )}
                   </td>
                 </tr>

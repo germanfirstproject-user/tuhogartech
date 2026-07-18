@@ -722,7 +722,7 @@ export default function ProductsAdminPage() {
                 </p>
               )}
               {product.rating && (
-                <p className={styles.productRating}>⭐ {product.rating}/5 {product.reviews_count != null && product.reviews_count > 0 && `(${product.reviews_count} reseñas)`}
+                <p className={styles.productRating}>★ {product.rating}/5 {product.reviews_count != null && product.reviews_count > 0 && `(${product.reviews_count} reseñas)`}
                 </p>
               )}
               <div className={styles.productActions}>

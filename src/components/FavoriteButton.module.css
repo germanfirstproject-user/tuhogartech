@@ -1,24 +1,49 @@
-.button {
-  position: relative;
-  background: transparent;
-  border: none;
+/* Variante completa (ficha de producto): botón con icono + texto */
+.favoriteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  padding: 0.5rem;
-  transition: transform 0.15s ease;
+  padding: 0.875rem 1.25rem;
+  flex-shrink: 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
-.button:hover {
-  transform: scale(1.08);
+.favoriteButton:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.favoriteButton.active {
+  border-color: var(--color-danger);
+  background: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+.favoriteButton:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 
 .icon {
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   color: var(--color-danger);
   transition: color 0.15s ease;
   line-height: 1;
 }
 
-.button.active .icon {
+.text {
+  line-height: 1;
+}
+
+.favoriteButton.active .icon {
   animation: heartBeat 0.4s ease;
 }
 

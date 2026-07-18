@@ -202,7 +202,9 @@ export default function HeroCarousel({ heroImages = {} }) {
             onClick={() => { prevSlide(); restartAutoplay(); }}
             aria-label="Anterior"
           >
-            ‹
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
           </button>
           <button
             type="button"
@@ -210,7 +212,9 @@ export default function HeroCarousel({ heroImages = {} }) {
             onClick={() => { nextSlide(); restartAutoplay(); }}
             aria-label="Siguiente"
           >
-            ›
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
           </button>
         </div>
       )}

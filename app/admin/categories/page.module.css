@@ -399,3 +399,11 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ==== Clase usada por page.js que faltaba ==== */
+.categoryActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}

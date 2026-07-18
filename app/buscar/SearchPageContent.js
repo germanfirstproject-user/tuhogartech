@@ -96,11 +96,11 @@ export default function SearchPageContent() {
         <h1>Resultados para: "{query}"</h1>
         {hasResults && (
           <div className={styles.stats}>
-            {results.stats.totalProducts > 0 && (
-              <span>{results.stats.totalProducts} {results.stats.totalProducts === 1 ? 'producto' : 'productos'}</span>
+            {results.stats.productsCount > 0 && (
+              <span>{results.stats.productsCount} {results.stats.productsCount === 1 ? 'producto' : 'productos'}</span>
             )}
-            {results.stats.totalBlogs > 0 && (
-              <span>{results.stats.totalBlogs} {results.stats.totalBlogs === 1 ? 'artículo' : 'artículos'}</span>
+            {results.stats.blogsCount > 0 && (
+              <span>{results.stats.blogsCount} {results.stats.blogsCount === 1 ? 'artículo' : 'artículos'}</span>
             )}
           </div>
         )}
@@ -133,7 +133,7 @@ export default function SearchPageContent() {
             <section className={styles.section}>
               <div className={styles.sectionHeader}>
                 <h2 className={styles.sectionTitle}>
-                  Productos ({results.stats.totalProducts})
+                  Productos ({results.stats.productsCount})
                 </h2>
                 {totalProductPages > 1 && (
                   <div className={styles.pageInfo}>
@@ -173,7 +173,7 @@ export default function SearchPageContent() {
           {results.blogs?.length > 0 && (
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>
-                Artículos Relacionados ({results.stats.totalBlogs})
+                Artículos relacionados ({results.stats.blogsCount})
               </h2>
               <div className={styles.blogsList}>
                 {results.blogs.map((blog) => (

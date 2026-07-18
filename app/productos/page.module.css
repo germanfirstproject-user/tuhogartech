@@ -45,10 +45,9 @@
 .categoriesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: var(--space-8);
-  margin-bottom: var(--space-12);
-  position: relative;
-  z-index: 1;
+  gap: var(--space-6);
+  margin: 0 auto var(--space-12);
+  max-width: 1400px;
 }
 
 .categoryLink {

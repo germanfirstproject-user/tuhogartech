@@ -7,7 +7,7 @@
   flex-wrap: wrap;
 }
 
-.button {
+.pageButton {
   min-width: 38px;
   height: 38px;
   padding: 0 0.75rem;
@@ -24,20 +24,28 @@
   justify-content: center;
 }
 
-.button:hover {
+.pageButton:hover {
   border-color: var(--color-text-secondary);
   color: var(--color-text);
 }
 
-.button.active {
+.pageButton.active {
   background: var(--color-text);
   color: var(--color-text-light);
   border-color: var(--color-text);
 }
 
-.button:disabled {
+.pageButton:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.pageInfo {
+  width: 100%;
+  text-align: center;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
 }
 
 .ellipsis {
@@ -47,7 +55,7 @@
 }
 
 @media (max-width: 480px) {
-  .button {
+  .pageButton {
     min-width: 34px;
     height: 34px;
     font-size: 0.875rem;

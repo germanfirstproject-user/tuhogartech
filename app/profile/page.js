@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { getUserData, updateUserPreferences, getUserFavoriteProducts } from '@/lib/supabase';
+import { getUserData, updateUserPreferences, getUserFavoriteProducts, deleteOwnAccount } from '@/lib/supabase';
 import styles from './page.module.css';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, isLoggedIn, isAdmin, signOut } = useAuth();
+  const { user, isLoggedIn, isAdmin, signOut, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('info');
   const [userData, setUserData] = useState(null);
   const [preferences, setPreferences] = useState({
@@ -27,9 +27,12 @@ export default function ProfilePage() {
   });
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('success');
 
   useEffect(() => {
+    if (authLoading) return;
     if (!isLoggedIn) {
       router.push('/login');
     } else if (user) {
@@ -37,7 +40,7 @@ export default function ProfilePage() {
       loadUserStats();
       loadFavoriteProducts();
     }
-  }, [isLoggedIn, router, user]);
+  }, [authLoading, isLoggedIn, router, user]);
 
   const loadUserData = async () => {
     if (!user?.id) return;
@@ -107,19 +110,30 @@ export default function ProfilePage() {
     router.push('/');
   };
 
-  const handleChangePassword = () => {
-    // Aquí podrías implementar un modal o redirigir a una página de cambio de contraseña
-    alert('Funcionalidad de cambio de contraseña en desarrollo');
-  };
-
   // Detectar si el usuario inició sesión con Google (OAuth)
-  const isGoogleUser = user?.app_metadata?.provider === 'google' || 
+  const isGoogleUser = user?.app_metadata?.provider === 'google' ||
                        user?.identities?.some(identity => identity.provider === 'google');
 
-  const handleDeleteAccount = () => {
-    if (confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
-      // Implementar eliminación de cuenta
-      alert('Funcionalidad de eliminación de cuenta en desarrollo');
+  const handleDeleteAccount = async () => {
+    const confirmed = confirm(
+      '¿Seguro que quieres eliminar tu cuenta? Se borrarán tus favoritos, historial y preferencias. Esta acción no se puede deshacer.'
+    );
+    if (!confirmed) return;
+
+    const doubleCheck = prompt('Para confirmar, escribe ELIMINAR en mayúsculas:');
+    if (doubleCheck !== 'ELIMINAR') return;
+
+    setDeleting(true);
+    const result = await deleteOwnAccount();
+
+    if (result.success) {
+      await signOut();
+      router.push('/');
+    } else {
+      setDeleting(false);
+      setMessageType('error');
+      setMessage('No se pudo eliminar la cuenta: ' + result.error);
+      setTimeout(() => setMessage(''), 6000);
     }
   };
 
@@ -139,19 +153,21 @@ export default function ProfilePage() {
     const result = await updateUserPreferences(user.id, preferences);
 
     if (result.success) {
+      setMessageType('success');
       setMessage('Preferencias guardadas correctamente');
       setTimeout(() => setMessage(''), 3000);
     } else {
-      setMessage('❌ Error al guardar: ' + result.error);
+      setMessageType('error');
+      setMessage('Error al guardar: ' + result.error);
     }
 
     setSaving(false);
   };
 
-  if (!user) {
+  if (authLoading || !user) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>Cargando...</div>
+        <div className={styles.loading}>Cargando tu perfil...</div>
       </div>
     );
   }
@@ -169,7 +185,7 @@ export default function ProfilePage() {
               <h1 className={styles.userName}>{user.email}</h1>
               <p className={styles.userRole}>
                 {isAdmin ? (
-                  <span className={styles.adminBadge}>👑 Administrador</span>
+                  <span className={styles.adminBadge}>Administrador</span>
                 ) : (
                   <span className={styles.userBadge}>Usuario</span>
                 )}
@@ -187,7 +203,7 @@ export default function ProfilePage() {
             className={`${styles.tab} ${activeTab === 'info' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('info')}
           >
-            📋 Información
+            Información
           </button>
           <button 
             className={`${styles.tab} ${activeTab === 'stats' ? styles.activeTab : ''}`}
@@ -205,7 +221,7 @@ export default function ProfilePage() {
             className={`${styles.tab} ${activeTab === 'preferences' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('preferences')}
           >
-            ⚙️ Preferencias
+            Preferencias
           </button>
         </div>
 
@@ -299,7 +315,7 @@ export default function ProfilePage() {
               {/* Productos Guardados */}
               {favoriteProducts.length > 0 && (
                 <div className={styles.favoriteProductsSection}>
-                  <h3 className={styles.subsectionTitle}>💾 Tus Productos Guardados</h3>
+                  <h3 className={styles.subsectionTitle}>Tus productos guardados</h3>
                   <div className={styles.productsGrid}>
                     {favoriteProducts.slice(0, 6).map((product) => (
                       <Link 
@@ -338,7 +354,7 @@ export default function ProfilePage() {
                   onClick={() => router.push('/productos')}
                   className={styles.actionButtonSecondary}
                 >
-                  🛍️ Explorar Productos
+                  Explorar productos
                 </button>
                 <button
                   onClick={() => router.push('/blog')}
@@ -356,24 +372,6 @@ export default function ProfilePage() {
               <h2 className={styles.sectionTitle}>Seguridad de la cuenta</h2>
               
               <div className={styles.securitySection}>
-                {/* Solo mostrar cambio de contraseña para usuarios con email/password */}
-                {!isGoogleUser && (
-                  <div className={styles.securityItem}>
-                    <div className={styles.securityInfo}>
-                      <h3 className={styles.securityTitle}>Cambiar contraseña</h3>
-                      <p className={styles.securityDescription}>
-                        Actualiza tu contraseña regularmente para mantener tu cuenta segura
-                      </p>
-                    </div>
-                    <button 
-                      onClick={handleChangePassword}
-                      className={styles.actionButtonSecondary}
-                    >
-                      Cambiar contraseña
-                    </button>
-                  </div>
-                )}
-
                 {/* Información del método de autenticación */}
                 <div className={styles.securityItem}>
                   <div className={styles.securityInfo}>
@@ -381,12 +379,12 @@ export default function ProfilePage() {
                     <p className={styles.securityDescription}>
                       {isGoogleUser ? (
                         <>
-                          <span className={styles.badge}>✓ Google</span>
+                          <span className={styles.badge}>Google</span>
                           {' '}Tu cuenta está vinculada con Google
                         </>
                       ) : (
                         <>
-                          <span className={styles.badge}>✉️ Email</span>
+                          <span className={styles.badge}>Email</span>
                           {' '}Inicio de sesión con email y contraseña
                         </>
                       )}
@@ -395,20 +393,27 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+              {message && (
+                <div className={`${styles.message} ${messageType === 'error' ? styles.error : styles.success}`}>
+                  {message}
+                </div>
+              )}
+
               <div className={styles.dangerZone}>
                 <h3 className={styles.dangerTitle}>Zona de peligro</h3>
                 <div className={styles.securityItem}>
                   <div className={styles.securityInfo}>
                     <h3 className={styles.securityTitle}>Eliminar cuenta</h3>
                     <p className={styles.securityDescription}>
-                      Una vez eliminada, no podrás recuperar tu cuenta
+                      Se borran tu cuenta, favoritos, historial y preferencias de forma permanente
                     </p>
                   </div>
-                  <button 
+                  <button
                     onClick={handleDeleteAccount}
                     className={styles.dangerButton}
+                    disabled={deleting}
                   >
-                    Eliminar cuenta
+                    {deleting ? 'Eliminando…' : 'Eliminar cuenta'}
                   </button>
                 </div>
               </div>
@@ -421,15 +426,14 @@ export default function ProfilePage() {
               <h2 className={styles.sectionTitle}>Preferencias</h2>
               
               <div className={styles.devWarning}>
-                <span className={styles.warningIcon}>🚧</span>
                 <div className={styles.warningContent}>
-                  <strong>En desarrollo</strong>
-                  <p>Las preferencias se guardan correctamente, pero algunas funcionalidades aún no están implementadas.</p>
+                  <strong>Aviso</strong>
+                  <p>Tus preferencias se guardan en tu cuenta. El envío de correos (notificaciones, newsletter y alertas) todavía no está activo.</p>
                 </div>
               </div>
               
               {message && (
-                <div className={`${styles.message} ${message.includes('❌') ? styles.error : styles.success}`}>
+                <div className={`${styles.message} ${messageType === 'error' ? styles.error : styles.success}`}>
                   {message}
                 </div>
               )}
@@ -490,24 +494,6 @@ export default function ProfilePage() {
                   </label>
                 </div>
 
-                <div className={styles.divider} />
-
-                <div className={styles.preferenceItem}>
-                  <div className={styles.preferenceInfo}>
-                    <h3 className={styles.preferenceTitle}>Tema oscuro</h3>
-                    <p className={styles.preferenceDescription}>
-                      Activa el modo oscuro para reducir la fatiga visual
-                    </p>
-                  </div>
-                  <label className={styles.switch}>
-                    <input 
-                      type="checkbox" 
-                      checked={preferences.dark_mode}
-                      onChange={(e) => handlePreferenceChange('dark_mode', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </div>
               </div>
 
               <div className={styles.quickActions}>
@@ -516,7 +502,7 @@ export default function ProfilePage() {
                   onClick={handleSavePreferences}
                   disabled={saving}
                 >
-                  {saving ? '💾 Guardando...' : '💾 Guardar preferencias'}
+                  {saving ? 'Guardando…' : 'Guardar preferencias'}
                 </button>
               </div>
             </div>
@@ -535,7 +521,7 @@ export default function ProfilePage() {
             onClick={handleLogout}
             className={styles.logoutButton}
           >
-            🚪 Cerrar Sesión
+            Cerrar sesión
           </button>
         </div>
       </div>

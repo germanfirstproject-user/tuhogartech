@@ -7,11 +7,15 @@ import styles from './Carousel.module.css';
 export default function Carousel({ items, type = 'product' }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
+  const [viewportWidth, setViewportWidth] = useState(0);
   const trackRef = useRef(null);
 
-  // Detectar el tamaño de pantalla y ajustar itemsPerView
+  // Detectar el tamaño de pantalla y ajustar itemsPerView.
+  // viewportWidth fuerza el re-render para recalcular el desplazamiento
+  // del track cuando cambia el ancho de las tarjetas.
   useEffect(() => {
     const updateItemsPerView = () => {
+      setViewportWidth(window.innerWidth);
       if (window.innerWidth <= 480) {
         setItemsPerView(1);
       } else if (window.innerWidth <= 768) {
@@ -71,12 +75,14 @@ export default function Carousel({ items, type = 'product' }) {
   return (
     <div className={styles.carouselWrapper}>
       {currentIndex > 0 && (
-        <button 
-          onClick={handlePrev} 
+        <button
+          onClick={handlePrev}
           className={`${styles.navButton} ${styles.navButtonPrev}`}
           aria-label="Anterior"
         >
-          ‹
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
         </button>
       )}
 
@@ -99,12 +105,14 @@ export default function Carousel({ items, type = 'product' }) {
       </div>
 
       {currentIndex < maxIndex && (
-        <button 
-          onClick={handleNext} 
+        <button
+          onClick={handleNext}
           className={`${styles.navButton} ${styles.navButtonNext}`}
           aria-label="Siguiente"
         >
-          ›
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
         </button>
       )}
     </div>

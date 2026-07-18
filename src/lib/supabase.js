@@ -1509,6 +1509,23 @@ export async function addReadBlog(userId, blogId) {
   }
 }
 
+// Eliminar la propia cuenta (RPC delete_own_account, solo usuarios autenticados)
+export async function deleteOwnAccount() {
+  try {
+    const { error } = await supabase.rpc('delete_own_account');
+
+    if (error) {
+      console.error('Error deleting account:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
 // Actualizar preferencias del usuario
 export async function updateUserPreferences(userId, preferences) {
   try {

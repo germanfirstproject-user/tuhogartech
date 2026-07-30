@@ -8,10 +8,10 @@ import styles from './page.module.css';
 export const revalidate = 300;
 
 export const metadata = {
-  title: 'Productos - AffiliPro',
+  title: 'Productos - Tu Hogar Tech',
   description: 'Explora todas nuestras categorías de productos afiliados de Amazon',
   openGraph: {
-    title: 'Productos - AffiliPro',
+    title: 'Productos - Tu Hogar Tech',
     description: 'Explora todas nuestras categorías de productos afiliados de Amazon',
   },
 };

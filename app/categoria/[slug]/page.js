@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: category.seo_title || `${category.name} - AffiliPro`,
+    title: category.seo_title || `${category.name} - Tu Hogar Tech`,
     description: category.seo_description || category.description || `Explora productos de ${category.name}`,
     keywords: category.seo_keywords || category.name,
     openGraph: {

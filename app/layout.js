@@ -36,8 +36,8 @@ export async function generateMetadata() {
     openGraph: {
       type: 'website',
       locale: 'es_ES',
-      url: settings?.site_url || 'https://affilpro.com',
-      siteName: settings?.site_name || 'AffiliPro',
+      url: settings?.site_url || 'https://tuhogartech.com',
+      siteName: settings?.site_name || 'Tu Hogar Tech',
       title: settings?.home_og_title || settings?.home_title || defaultTitle,
       description: settings?.home_og_description || settings?.home_description || defaultDescription,
       images: settings?.home_og_image ? [
@@ -45,14 +45,14 @@ export async function generateMetadata() {
           url: settings.home_og_image,
           width: 1200,
           height: 630,
-          alt: settings?.site_name || 'AffiliPro',
+          alt: settings?.site_name || 'Tu Hogar Tech',
         },
       ] : [
         {
           url: '/og-image.png',
           width: 1200,
           height: 630,
-          alt: 'AffiliPro',
+          alt: 'Tu Hogar Tech',
         },
       ],
     },

@@ -1571,9 +1571,9 @@ export async function getSiteSettings() {
       return {
         success: true,
         data: {
-          home_title: 'AffiliPro - Los mejores productos',
+          home_title: 'Tu Hogar Tech - Los mejores productos',
           home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas',
-          site_name: 'AffiliPro',
+          site_name: 'Tu Hogar Tech',
           site_url: '',
           hero_image_1: '',
           hero_image_1_mobile: '',
@@ -1601,9 +1601,9 @@ export async function getSiteSettings() {
       success: false,
       error: err.message,
       data: {
-        home_title: 'AffiliPro - Los mejores productos',
+        home_title: 'Tu Hogar Tech - Los mejores productos',
         home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas',
-        site_name: 'AffiliPro',
+        site_name: 'Tu Hogar Tech',
           site_url: '',
           hero_image_1: '',
           hero_image_1_mobile: '',

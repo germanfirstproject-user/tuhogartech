@@ -181,7 +181,7 @@ export default function SettingsPage() {
               value={settings.site_name || ''}
               onChange={handleChange}
               className={styles.input}
-              placeholder="Ej: AffiliPro"
+              placeholder="Ej: Tu Hogar Tech"
             />
           </div>
 

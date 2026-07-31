@@ -64,7 +64,8 @@ export async function generateMetadata({ params }) {
       title: blog.og_title || title,
       description: blog.og_description || description,
       images: image ? [image] : [],
-      creator: blog.author_name ? `@${blog.author_name.replace(/\s+/g, '')}` : undefined,
+      // Sin `creator`: se construía un @usuario a partir del nombre del autor
+      // ("@GermánGarcía"), que no corresponde a ninguna cuenta real.
     },
     alternates: {
       canonical: `https://tuhogartech.com/blog/${blog.slug || params.id}`,

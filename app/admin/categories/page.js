@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase, getCategories, insertCategory, updateCategory, deleteCategory, uploadCategoryImage, deleteCategoryImage } from '@/lib/supabase';
+import { slugify } from '@/lib/slug';
 import styles from './page.module.css';
 
 export default function CategoriesAdminPage() {
@@ -62,7 +63,7 @@ export default function CategoriesAdminPage() {
 
     // Si hay una nueva imagen, subirla
     if (imageFile) {
-      const slug = formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-');
+      const slug = formData.slug.trim() || slugify(formData.name);
       const uploadResult = await uploadCategoryImage(imageFile, slug);
       
       if (uploadResult.success) {
@@ -81,7 +82,9 @@ export default function CategoriesAdminPage() {
 
     const categoryData = {
       name: formData.name,
-      slug: formData.slug || undefined, // Se genera automáticamente si está vacío
+      // La columna es NOT NULL y no tiene default: si el campo va vacío hay
+      // que generar el slug aquí o el alta falla.
+      slug: formData.slug.trim() || slugify(formData.name),
       description: formData.description || null,
       image_url: imageUrl || null,
       image_alt: formData.image_alt || null,

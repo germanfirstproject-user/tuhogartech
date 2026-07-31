@@ -3,9 +3,14 @@
 import { useEffect, useState } from 'react';
 import { supabase, getBlogs, insertBlog, updateBlog, deleteBlog, uploadBlogImage, deleteBlogImage } from '@/lib/supabase';
 import RichTextEditor from '@/components/RichTextEditor';
+import { slugify } from '@/lib/slug';
 import styles from './page.module.css';
 
 const BLOGS_PER_PAGE = 20;
+
+// Firma por defecto de los artículos. No se usa el correo de la cuenta porque
+// author_name es un dato público: aparece en la ficha y en los metadatos.
+const AUTOR_POR_DEFECTO = 'Germán García';
 
 export default function BlogsAdminPage() {
   const [blogs, setBlogs] = useState([]);
@@ -26,6 +31,7 @@ export default function BlogsAdminPage() {
     category: '',
     tags: '',
     status: 'draft',
+    author_name: AUTOR_POR_DEFECTO,
     seo_title: '',
     seo_description: '',
     seo_keywords: '',
@@ -40,7 +46,7 @@ export default function BlogsAdminPage() {
 
   const loadBlogs = async () => {
     setLoading(true);
-    const result = await getBlogs();
+    const result = await getBlogs({}, 0);
     if (result.success) {
       setBlogs(result.data);
     }
@@ -89,7 +95,7 @@ export default function BlogsAdminPage() {
       // Preparar datos del blog limpiando campos vacíos
       const blogData = {
         title: formData.title,
-        slug: formData.slug || formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        slug: formData.slug.trim() || slugify(formData.title),
         content: formData.content,
         excerpt: formData.excerpt || '',
         featured_image: featuredImageUrl || '',
@@ -105,7 +111,10 @@ export default function BlogsAdminPage() {
         og_image: formData.og_image || '',
         published_at: formData.status === 'published' ? (editingBlog?.published_at || new Date().toISOString()) : null,
         author_id: user?.id || null,
-        author_name: user?.email || null,
+        // La firma sale del formulario. Antes se guardaba el correo de la
+        // cuenta, que acababa publicado en la ficha, en el JSON-LD y en las
+        // Twitter Cards de todos los artículos.
+        author_name: formData.author_name.trim() || AUTOR_POR_DEFECTO,
       };
 
       let result;
@@ -147,6 +156,7 @@ export default function BlogsAdminPage() {
       category: blog.category || '',
       tags: Array.isArray(blog.tags) ? blog.tags.join(', ') : '',
       status: blog.status || 'draft',
+      author_name: blog.author_name || AUTOR_POR_DEFECTO,
       seo_title: blog.seo_title || '',
       seo_description: blog.seo_description || '',
       seo_keywords: blog.seo_keywords || '',
@@ -187,6 +197,7 @@ export default function BlogsAdminPage() {
       category: '',
       tags: '',
       status: 'draft',
+      author_name: AUTOR_POR_DEFECTO,
       seo_title: '',
       seo_description: '',
       seo_keywords: '',
@@ -306,6 +317,20 @@ export default function BlogsAdminPage() {
                       <option value="archived">Archivado</option>
                     </select>
                   </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Autor (firma pública)</label>
+                  <input
+                    type="text"
+                    value={formData.author_name}
+                    onChange={(e) => setFormData({...formData, author_name: e.target.value})}
+                    placeholder={AUTOR_POR_DEFECTO}
+                  />
+                  <small>
+                    Se publica en el artículo, en el listado y en los datos
+                    estructurados. No pongas aquí un correo electrónico.
+                  </small>
                 </div>
 
                 <div className={styles.formGroup}>

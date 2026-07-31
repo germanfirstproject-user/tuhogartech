@@ -1,10 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getProducts, insertProduct, updateProduct, deleteProduct, getProductSeo, upsertProductSeo, getCategories } from '@/lib/supabase';
+import { getProducts, insertProduct, updateProduct, deleteProduct, getProductSeo, upsertProductSeo, getCategories, getSiteSettings } from '@/lib/supabase';
 import styles from './page.module.css';
 
 const PRODUCTS_PER_PAGE = 30;
+
+// Google corta el título alrededor de los 60 caracteres.
+const LIMITE_TITULO_SERP = 60;
 
 export default function ProductsAdminPage() {
   const [products, setProducts] = useState([]);
@@ -15,6 +18,8 @@ export default function ProductsAdminPage() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingSeoProduct, setEditingSeoProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [siteName, setSiteName] = useState('Tu Hogar Tech');
   const [seoFormData, setSeoFormData] = useState({
     seo_title: '',
     seo_description: '',
@@ -54,6 +59,11 @@ export default function ProductsAdminPage() {
   useEffect(() => {
     loadProducts();
     loadCategories();
+    // El nombre del sitio se necesita para calcular el título real que verá
+    // Google: la plantilla del layout le añade " | <nombre del sitio>".
+    getSiteSettings().then((result) => {
+      if (result.success && result.data?.site_name) setSiteName(result.data.site_name);
+    });
   }, []);
 
   const loadProducts = async () => {
@@ -91,7 +101,8 @@ export default function ProductsAdminPage() {
       asin: formData.asin,
       title: formData.title,
       brand: formData.brand || null,
-      price: parseFloat(formData.price) || 0,
+      // Vacío significa "sin precio", no "cero": con 0 la ficha mostraría "0 €".
+      price: formData.price === '' || formData.price === null ? null : parseFloat(formData.price),
       currency: formData.currency || 'EUR',
       rating: formData.rating ? parseFloat(formData.rating) : null,
       reviews_count: formData.reviews_count ? parseInt(formData.reviews_count) : 0,
@@ -138,7 +149,7 @@ export default function ProductsAdminPage() {
       asin: product.asin || '',
       title: product.title || '',
       brand: product.brand || '',
-      price: product.price || '',
+      price: product.price == null ? '' : String(product.price),
       currency: product.currency || 'EUR',
       rating: product.rating || '',
       reviews_count: product.reviews_count || '',
@@ -264,11 +275,29 @@ export default function ProductsAdminPage() {
     return <div className={styles.container}><p>Cargando productos...</p></div>;
   }
 
+  // El layout envuelve el título en la plantilla "%s | <nombre del sitio>", así
+  // que el presupuesto real es menor que los 60 que cuenta Google.
+  const sufijoTitulo = ` | ${siteName}`;
+  const maxTituloSeo = Math.max(20, LIMITE_TITULO_SERP - sufijoTitulo.length);
+  const tituloCompleto = seoFormData.seo_title
+    ? `${seoFormData.seo_title}${sufijoTitulo}`
+    : '';
+
+  // Búsqueda: sin ella hay que pasar 10 páginas para llegar a un producto
+  const query = searchTerm.trim().toLowerCase();
+  const filteredProducts = query
+    ? products.filter((product) =>
+        [product.title, product.brand, product.category, product.asin, product.id]
+          .filter(Boolean)
+          .some((field) => String(field).toLowerCase().includes(query))
+      )
+    : products;
+
   // Paginación
-  const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
   const startIdx = (currentPage - 1) * PRODUCTS_PER_PAGE;
   const endIdx = startIdx + PRODUCTS_PER_PAGE;
-  const currentProducts = products.slice(startIdx, endIdx);
+  const currentProducts = filteredProducts.slice(startIdx, endIdx);
 
   const goToPage = (page) => {
     setCurrentPage(page);
@@ -280,7 +309,11 @@ export default function ProductsAdminPage() {
       <div className={styles.header}>
         <h1 className={styles.title}>Gestión de Productos</h1>
         <div className={styles.headerInfo}>
-          <span className={styles.totalCount}>{products.length} productos totales</span>
+          <span className={styles.totalCount}>
+            {query
+              ? `${filteredProducts.length} de ${products.length} productos`
+              : `${products.length} productos totales`}
+          </span>
           <button
             onClick={() => setShowForm(true)}
             className={styles.addButton}
@@ -288,6 +321,20 @@ export default function ProductsAdminPage() {
             ➕ Nuevo Producto
           </button>
         </div>
+      </div>
+
+      <div className={styles.searchBar}>
+        <input
+          type="search"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
+          placeholder="Buscar por título, marca, categoría, ASIN o ID…"
+          className={styles.searchInput}
+          aria-label="Buscar productos"
+        />
       </div>
 
       {showForm && (
@@ -404,14 +451,19 @@ export default function ProductsAdminPage() {
                 
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
-                    <label>Precio *</label>
+                    <label>Precio</label>
                     <input
                       type="number"
                       step="0.01"
+                      min="0"
                       value={formData.price}
                       onChange={(e) => setFormData({...formData, price: e.target.value})}
-                      required
+                      placeholder="Vacío = no mostrar precio"
                     />
+                    <small>
+                      Déjalo vacío y la ficha no muestra precio. Es lo recomendable:
+                      los precios de Amazon cambian y no se pueden reproducir.
+                    </small>
                   </div>
 
                   <div className={styles.formGroup}>
@@ -556,9 +608,12 @@ export default function ProductsAdminPage() {
                     type="text"
                     value={seoFormData.seo_title}
                     onChange={(e) => setSeoFormData({...seoFormData, seo_title: e.target.value})}
-                    maxLength={60}
+                    maxLength={maxTituloSeo}
                   />
-                  <small>{seoFormData.seo_title.length}/60 caracteres</small>
+                  <small className={tituloCompleto.length > LIMITE_TITULO_SERP ? styles.warn : undefined}>
+                    {seoFormData.seo_title.length}/{maxTituloSeo} caracteres.
+                    {' '}En Google se verá: «{tituloCompleto}» ({tituloCompleto.length}/{LIMITE_TITULO_SERP})
+                  </small>
                 </div>
 
                 <div className={styles.formGroup}>
@@ -744,6 +799,12 @@ export default function ProductsAdminPage() {
       {products.length === 0 && (
         <div className={styles.empty}>
           <p>No hay productos. ¡Crea el primero!</p>
+        </div>
+      )}
+
+      {products.length > 0 && filteredProducts.length === 0 && (
+        <div className={styles.empty}>
+          <p>Ningún producto coincide con «{searchTerm}».</p>
         </div>
       )}
 

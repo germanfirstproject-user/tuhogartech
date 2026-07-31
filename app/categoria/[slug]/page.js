@@ -32,9 +32,13 @@ export async function generateMetadata({ params }) {
     description: category.seo_description || category.description || `Explora productos de ${category.name}`,
     keywords: category.seo_keywords || category.name,
     openGraph: {
-      title: category.seo_title || category.name,
-      description: category.seo_description || category.description,
+      // El panel tiene campos OG propios para la categoría; antes se ignoraban
+      // y siempre se usaba el título SEO.
+      title: category.og_title || category.seo_title || category.name,
+      description:
+        category.og_description || category.seo_description || category.description,
       type: 'website',
+      ...(category.og_image ? { images: [category.og_image] } : {}),
     },
     alternates: {
       canonical: `https://tuhogartech.com/categoria/${params.slug}`,

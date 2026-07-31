@@ -772,7 +772,9 @@ export async function insertBlog(blogData) {
     const newBlog = {
       ...blogData,
       author_id: user?.id,
-      author_name: user?.email || 'Admin',
+      // El nombre de firma lo decide el formulario. Nunca el correo de la
+      // cuenta: se publica en la ficha, en el JSON-LD y en las Twitter Cards.
+      author_name: blogData.author_name || 'Redacción',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -1672,6 +1674,11 @@ export async function getSiteSettings() {
 // Actualizar la configuración del sitio
 export async function updateSiteSettings(settings) {
   try {
+    // El formulario devuelve la fila entera tal como se cargó, incluidas las
+    // columnas de sistema. Reenviarlas escribiría un updated_at caducado.
+    const { id: _id, created_at: _createdAt, updated_at: _updatedAt, ...campos } = settings;
+    const cambios = { ...campos, updated_at: new Date().toISOString() };
+
     // Primero verificamos si existe un registro
     const { data: existing } = await supabase
       .from('site_settings')
@@ -1683,7 +1690,7 @@ export async function updateSiteSettings(settings) {
       // Actualizar el registro existente
       const { data, error } = await supabase
         .from('site_settings')
-        .update(settings)
+        .update(cambios)
         .eq('id', existing.id)
         .select()
         .single();
@@ -1698,7 +1705,7 @@ export async function updateSiteSettings(settings) {
       // Crear nuevo registro
       const { data, error } = await supabase
         .from('site_settings')
-        .insert({ ...settings, is_default: true })
+        .insert({ ...campos, is_default: true })
         .select()
         .single();
 

@@ -1,7 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getProducts, getFeaturedProducts, addFeaturedProduct, removeFeaturedProduct } from '@/lib/supabase';
+import {
+  getProducts,
+  getFeaturedProducts,
+  addFeaturedProduct,
+  removeFeaturedProduct,
+  updateFeaturedProductsOrder,
+} from '@/lib/supabase';
 import styles from './page.module.css';
 
 export default function FeaturedProductsPage() {
@@ -48,13 +54,46 @@ export default function FeaturedProductsPage() {
 
   const handleRemoveFeatured = async (productId) => {
     const result = await removeFeaturedProduct(productId);
-    
+
     if (result.success) {
+      // Renumerar los que quedan: si no, el hueco que deja el eliminado hace
+      // que el siguiente que se añada choque de posición con otro.
+      const restantes = featuredProducts.filter((p) => p.id !== productId);
+      if (restantes.length > 0) {
+        await updateFeaturedProductsOrder(
+          restantes.map((product, i) => ({ product_id: product.id, display_order: i }))
+        );
+      }
+
       setMessage('✅ Producto eliminado de destacados');
       loadData();
       setTimeout(() => setMessage(''), 3000);
     } else {
       setMessage(`❌ Error: ${result.error}`);
+    }
+  };
+
+  // El orden importa: los dos primeros son los que salen en la portada.
+  const handleMove = async (index, direction) => {
+    const target = index + direction;
+    if (target < 0 || target >= featuredProducts.length) return;
+
+    const reordered = [...featuredProducts];
+    [reordered[index], reordered[target]] = [reordered[target], reordered[index]];
+
+    // Pintado optimista para que el movimiento se vea al instante
+    setFeaturedProducts(reordered);
+
+    const result = await updateFeaturedProductsOrder(
+      reordered.map((product, i) => ({ product_id: product.id, display_order: i }))
+    );
+
+    if (result.success) {
+      setMessage('✅ Orden actualizado');
+      setTimeout(() => setMessage(''), 3000);
+    } else {
+      setMessage(`❌ Error al reordenar: ${result.error}`);
+      loadData();
     }
   };
 
@@ -78,7 +117,10 @@ export default function FeaturedProductsPage() {
       <div className={styles.header}>
         <h1 className={styles.title}>⭐ Productos Destacados</h1>
         <p className={styles.subtitle}>
-          Gestiona los productos que aparecerán en el carrusel de la página de inicio (máximo 10)
+          Gestiona los productos que aparecerán en la página de inicio (máximo 10).
+          Los <strong>dos primeros</strong> son los que salen en la portada, encima
+          del todo; el resto van al carrusel de destacados. Usa las flechas para
+          cambiar el orden.
         </p>
       </div>
 
@@ -103,6 +145,30 @@ export default function FeaturedProductsPage() {
             {featuredProducts.map((product, index) => (
               <div key={product.id} className={styles.featuredCard}>
                 <div className={styles.featuredOrder}>#{index + 1}</div>
+                {index < 2 && <span className={styles.heroTag}>Portada</span>}
+
+                <div className={styles.moveButtons}>
+                  <button
+                    type="button"
+                    onClick={() => handleMove(index, -1)}
+                    disabled={index === 0}
+                    className={styles.moveButton}
+                    aria-label={`Subir ${product.title}`}
+                    title="Subir"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleMove(index, 1)}
+                    disabled={index === featuredProducts.length - 1}
+                    className={styles.moveButton}
+                    aria-label={`Bajar ${product.title}`}
+                    title="Bajar"
+                  >
+                    ↓
+                  </button>
+                </div>
                 <div className={styles.productImage}>
                   {product.images?.[0] ? (
                     <img src={product.images[0]} alt={product.title} />

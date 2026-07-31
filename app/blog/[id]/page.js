@@ -1,8 +1,12 @@
 import Link from 'next/link';
-import { getBlogs, getBlogBySlug, getBlogById } from '@/lib/supabase';
+import { getBlogs, getBlogBySlug, getBlogById, getProductById } from '@/lib/supabase';
 import { ArrowLeft } from 'lucide-react';
 import BlogReadTracker from '@/components/BlogReadTracker';
 import BlogContentRenderer from '@/components/BlogContentRenderer';
+import BlogProductCard from '@/components/BlogProductCard';
+import BlogProductSummary from '@/components/BlogProductSummary';
+import AmazonDisclaimer from '@/components/AmazonDisclaimer';
+import { extractProductIds, splitContentByProductCards } from '@/lib/blogProducts';
 import styles from './page.module.css';
 
 // Revalidar cada 10 minutos (600 segundos)
@@ -92,6 +96,25 @@ export default async function BlogPostPage({ params }) {
       </div>
     );
   }
+
+  // Productos citados en el artículo, para intercalar tarjetas y el
+  // recopilatorio final. Se piden en paralelo y se descartan los que ya no
+  // existan, de modo que un producto retirado no rompe el artículo.
+  const mentionedIds = extractProductIds(blog.content);
+  const fetched = await Promise.all(mentionedIds.map((id) => getProductById(id)));
+
+  const productsById = {};
+  for (const [i, res] of fetched.entries()) {
+    if (res?.success && res.data) productsById[mentionedIds[i]] = res.data;
+  }
+
+  const mentionedProducts = mentionedIds
+    .map((id) => productsById[id])
+    .filter(Boolean);
+
+  const contentSegments = splitContentByProductCards(blog.content).filter(
+    (segment) => segment.type !== 'product' || productsById[segment.id]
+  );
 
   // Schema.org - Article
   const articleSchema = {
@@ -215,12 +238,27 @@ export default async function BlogPostPage({ params }) {
           </div>
         )}
 
-        {/* Content - Ahora con soporte para etiquetas <style> */}
-        <BlogContentRenderer
-          content={blog.content}
-          blogId={blog.id}
-          className={styles.content}
-        />
+        {/* Contenido: el texto se trocea para intercalar tarjetas de producto
+            donde el artículo ya enlazaba a una ficha. Se renderiza en servidor,
+            así que las tarjetas están en el HTML inicial. */}
+        <div className={styles.content}>
+          {contentSegments.map((segment, i) =>
+            segment.type === 'product' ? (
+              <BlogProductCard key={`p-${segment.id}-${i}`} product={productsById[segment.id]} />
+            ) : (
+              <BlogContentRenderer
+                key={`h-${i}`}
+                content={segment.value}
+                blogId={`${blog.id}-${i}`}
+              />
+            )
+          )}
+        </div>
+
+        <BlogProductSummary products={mentionedProducts} />
+
+        {/* Obligatorio siempre que la página incluya enlaces de afiliado */}
+        {mentionedProducts.length > 0 && <AmazonDisclaimer />}
 
         {/* Tags */}
         {blog.tags && blog.tags.length > 0 && (

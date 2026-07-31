@@ -26,6 +26,27 @@
   font-size: 0.95rem;
 }
 
+.searchBar {
+  margin-bottom: 1.5rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
 .title {
   font-size: 2rem;
   font-weight: bold;
@@ -148,6 +169,12 @@
   margin-top: 0.25rem;
   color: var(--color-text-secondary);
   font-size: 0.875rem;
+}
+
+/* Aviso cuando el título completo se pasa de lo que muestra Google */
+.formGroup small.warn {
+  color: var(--color-danger, #a8433b);
+  font-weight: 500;
 }
 
 .formRow {

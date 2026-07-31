@@ -97,13 +97,20 @@ export async function getProductsByCategory(category, page = 1, pageSize = 12) {
   }
 }
 
+// Número mínimo de reseñas para que una nota se considere representativa.
+// Sin este filtro los primeros puestos se los llevaban productos con un 5,0 y
+// ninguna reseña, que es justo lo contrario de "mejor valorado". Con 100 hay
+// margen de sobra: la mayoría del catálogo lo supera.
+const MIN_RESENAS_FIABLES = 100;
+
 // Obtener productos mejor valorados
-export async function getTopRatedProducts(limit = 10) {
+export async function getTopRatedProducts(limit = 10, minReviews = MIN_RESENAS_FIABLES) {
   try {
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .not('rating', 'is', null)
+      .gte('reviews_count', minReviews)
       .order('rating', { ascending: false })
       .order('reviews_count', { ascending: false })
       .limit(limit);
@@ -111,6 +118,12 @@ export async function getTopRatedProducts(limit = 10) {
     if (error) {
       console.error('Error fetching top rated products:', error);
       return { success: false, error: error.message, data: [] };
+    }
+
+    // Red de seguridad: si el umbral dejase la lista vacía (catálogo nuevo o
+    // sin datos de reseñas), se repite sin él antes que no mostrar nada.
+    if ((!data || data.length === 0) && minReviews > 0) {
+      return getTopRatedProducts(limit, 0);
     }
 
     return { success: true, data: data || [] };
@@ -759,7 +772,9 @@ export async function insertBlog(blogData) {
     const newBlog = {
       ...blogData,
       author_id: user?.id,
-      author_name: user?.email || 'Admin',
+      // El nombre de firma lo decide el formulario. Nunca el correo de la
+      // cuenta: se publica en la ficha, en el JSON-LD y en las Twitter Cards.
+      author_name: blogData.author_name || 'Redacción',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -1659,6 +1674,11 @@ export async function getSiteSettings() {
 // Actualizar la configuración del sitio
 export async function updateSiteSettings(settings) {
   try {
+    // El formulario devuelve la fila entera tal como se cargó, incluidas las
+    // columnas de sistema. Reenviarlas escribiría un updated_at caducado.
+    const { id: _id, created_at: _createdAt, updated_at: _updatedAt, ...campos } = settings;
+    const cambios = { ...campos, updated_at: new Date().toISOString() };
+
     // Primero verificamos si existe un registro
     const { data: existing } = await supabase
       .from('site_settings')
@@ -1670,7 +1690,7 @@ export async function updateSiteSettings(settings) {
       // Actualizar el registro existente
       const { data, error } = await supabase
         .from('site_settings')
-        .update(settings)
+        .update(cambios)
         .eq('id', existing.id)
         .select()
         .single();
@@ -1685,7 +1705,7 @@ export async function updateSiteSettings(settings) {
       // Crear nuevo registro
       const { data, error } = await supabase
         .from('site_settings')
-        .insert({ ...settings, is_default: true })
+        .insert({ ...campos, is_default: true })
         .select()
         .single();
 

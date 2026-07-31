@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const title = blog.seo_title || `${blog.title} - AffiliPro`;
+  const title = blog.seo_title || `${blog.title} - Tu Hogar Tech`;
   const description = blog.seo_description || blog.excerpt || blog.title;
   const keywords = blog.seo_keywords || blog.tags?.join(', ') || blog.category;
   const image = blog.og_image || blog.featured_image;
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }) {
       publishedTime: blog.published_at,
       authors: blog.author_name ? [blog.author_name] : [],
       tags: blog.tags || [],
-      siteName: 'AffiliPro',
+      siteName: 'Tu Hogar Tech',
     },
     twitter: {
       card: 'summary_large_image',
@@ -107,11 +107,11 @@ export default async function BlogPostPage({ params }) {
       "name": blog.author_name
     } : {
       "@type": "Organization",
-      "name": "AffiliPro"
+      "name": "Tu Hogar Tech"
     },
     "publisher": {
       "@type": "Organization",
-      "name": "AffiliPro",
+      "name": "Tu Hogar Tech",
       "logo": {
         "@type": "ImageObject",
         "url": "https://tuhogartech.com/logo.png"

@@ -1,8 +1,9 @@
-import Link from 'next/link';
-import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getSiteStats } from '@/lib/supabase';
+import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getSiteStats, getCategoriesWithCounts } from '@/lib/supabase';
 import Carousel from '@/components/Carousel';
 import AdminLink from '@/components/AdminLink';
-import HeroCarousel from '@/components/HeroCarousel';
+import Hero from '@/components/Hero';
+import ContentCarousel from '@/components/ContentCarousel';
+import { buildContentSlides } from '@/lib/homeSlides';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 import styles from './page.module.css';
 
@@ -10,97 +11,38 @@ import styles from './page.module.css';
 export const revalidate = 300;
 
 export const metadata = {
-  title: 'Inicio - Los mejores productos',
-  description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra',
+  title: 'Análisis de tecnología para el hogar',
+  description:
+    'Fichas con especificaciones reales, ventajas concretas e inconvenientes honestos. Baterías, domótica, proyectores, NAS y streaming analizados sin cifras infladas.',
+  alternates: { canonical: 'https://tuhogartech.com' },
 };
 
 export default async function HomePage() {
   // Cargar todos los datos en paralelo en el servidor (MUCHO más rápido)
-  const [settingsResult, featuredResult, topRatedResult, blogsResult, statsResult] = await Promise.all([
+  const [settingsResult, featuredResult, topRatedResult, blogsResult, statsResult, categoriesResult] = await Promise.all([
     getSiteSettings(),
     getFeaturedProducts(),
     getTopRatedProducts(10),
     getRecentBlogs(10),
     getSiteStats(),
+    getCategoriesWithCounts(),
   ]);
-
-  const settings = settingsResult.success && settingsResult.data 
-    ? {
-        home_title: settingsResult.data.home_title || 'Encuentra los mejores productos',
-        home_description: settingsResult.data.home_description || 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra',
-        hero_image_1: settingsResult.data.hero_image_1,
-        hero_image_1_mobile: settingsResult.data.hero_image_1_mobile,
-        hero_image_2: settingsResult.data.hero_image_2,
-        hero_image_2_mobile: settingsResult.data.hero_image_2_mobile,
-        hero_image_2_link: settingsResult.data.hero_image_2_link,
-        hero_image_2_alt: settingsResult.data.hero_image_2_alt,
-        hero_image_3: settingsResult.data.hero_image_3,
-        hero_image_3_mobile: settingsResult.data.hero_image_3_mobile,
-        hero_image_3_link: settingsResult.data.hero_image_3_link,
-        hero_image_3_alt: settingsResult.data.hero_image_3_alt,
-        hero_image_4: settingsResult.data.hero_image_4,
-        hero_image_4_mobile: settingsResult.data.hero_image_4_mobile,
-        hero_image_4_link: settingsResult.data.hero_image_4_link,
-        hero_image_4_alt: settingsResult.data.hero_image_4_alt,
-      }
-    : {
-        home_title: 'Encuentra los mejores productos',
-        home_description: 'Reseñas honestas, comparativas detalladas y ofertas exclusivas para que tomes la mejor decisión de compra',
-        hero_image_1: '',
-        hero_image_1_mobile: '',
-        hero_image_2: '',
-        hero_image_2_mobile: '',
-        hero_image_2_link: '',
-        hero_image_2_alt: '',
-        hero_image_3: '',
-        hero_image_3_mobile: '',
-        hero_image_3_link: '',
-        hero_image_3_alt: '',
-        hero_image_4: '',
-        hero_image_4_mobile: '',
-        hero_image_4_link: '',
-        hero_image_4_alt: '',
-      };
 
   const featuredProducts = featuredResult.success ? featuredResult.data : [];
   const topRatedProducts = topRatedResult.success ? topRatedResult.data : [];
   const recentBlogs = blogsResult.success ? blogsResult.data : [];
   const stats = statsResult.success ? statsResult.data : { productsCount: 0, categoriesCount: 0 };
+  const categories = categoriesResult.success ? categoriesResult.data : [];
+
+  const settings = settingsResult.success ? settingsResult.data : null;
+
+  const contentSlides = buildContentSlides(categories, recentBlogs, settings);
 
   return (
     <main className={styles.main}>
-      {/* Hero Carousel Section */}
-      <HeroCarousel heroImages={settings} />
+      <Hero stats={stats} categories={categories} />
 
-      {/* Combined Stats & Features Section */}
-      <section className={styles.valueSection}>
-        <div className={styles.valueContainer}>
-          {/* Stats */}
-          <div className={styles.statsRow}>
-            <div className={styles.statCompact}>
-              <span className={styles.statNumberCompact}>{stats.productsCount}+</span>
-              <span className={styles.statLabelCompact}>Productos</span>
-            </div>
-            <div className={styles.statCompact}>
-              <span className={styles.statNumberCompact}>{stats.categoriesCount}+</span>
-              <span className={styles.statLabelCompact}>Categorías</span>
-            </div>
-          </div>
-          
-          {/* Features */}
-          <div className={styles.featuresCompact}>
-            <div className={styles.featureCompact}>
-              <span className={styles.featureTextCompact}>Reseñas honestas e imparciales</span>
-            </div>
-            <div className={styles.featureCompact}>
-              <span className={styles.featureTextCompact}>Comparativas detalladas</span>
-            </div>
-            <div className={styles.featureCompact}>
-              <span className={styles.featureTextCompact}>Mejores ofertas actualizadas</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ContentCarousel slides={contentSlides} />
 
       {/* Productos Destacados por el Admin */}
       {featuredProducts.length > 0 && (

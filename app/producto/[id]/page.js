@@ -36,12 +36,12 @@ export async function generateMetadata({ params }) {
   const seo = seoResult.success ? seoResult.data : null;
 
   return {
-    title: seo?.seo_title || `${product.title} - AffiliPro`,
+    title: seo?.seo_title || `${product.title} - Tu Hogar Tech`,
     description: seo?.seo_description || product.description || `${product.title} por ${product.brand || 'N/A'}${product.price != null ? `. Precio: ${product.price}€` : ''}${product.rating ? `. Valoración: ${product.rating}/5` : ''}.`,
     keywords: seo?.seo_keywords || `${product.title}, ${product.brand}, ${product.category}`,
     robots: seo?.meta_robots || 'index, follow',
     openGraph: {
-      title: seo?.og_title || `${product.title} | AffiliPro`,
+      title: seo?.og_title || `${product.title} | Tu Hogar Tech`,
       description: seo?.og_description || product.description || `${product.title} - ${product.brand || 'N/A'}`,
       images: seo?.og_image ? [{ url: seo.og_image }] : product.images?.[0] ? [{ url: product.images[0] }] : [],
       type: 'website',
@@ -111,7 +111,7 @@ export default async function ProductDetailPage({ params }) {
         : "https://schema.org/OutOfStock",
       "seller": {
         "@type": "Organization",
-        "name": "AffiliPro"
+        "name": "Tu Hogar Tech"
       }
     } : undefined,
     "aggregateRating": product.rating ? {
@@ -497,7 +497,7 @@ export default async function ProductDetailPage({ params }) {
         <AmazonDisclaimer />
 
         {/* CTA Final */}
-        <ProductCTA product={product} styles={styles} />
+        <ProductCTA product={product} />
       </div>
     </main>
     </>

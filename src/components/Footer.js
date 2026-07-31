@@ -7,7 +7,7 @@ import styles from "./Footer.module.css";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [siteName, setSiteName] = useState('AffiliPro');
+  const [siteName, setSiteName] = useState('Tu Hogar Tech');
 
   useEffect(() => {
     loadSiteSettings();
@@ -16,7 +16,7 @@ export default function Footer() {
   const loadSiteSettings = async () => {
     const result = await getSiteSettings();
     if (result.success && result.data) {
-      setSiteName(result.data.site_name || 'AffiliPro');
+      setSiteName(result.data.site_name || 'Tu Hogar Tech');
     }
   };
 

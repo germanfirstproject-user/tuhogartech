@@ -1,0 +1,88 @@
+/* ============ Bloque de compra en Amazon ============ */
+.cta {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.75rem, 4vw, 2.5rem);
+  margin-bottom: var(--space-12);
+  text-align: center;
+}
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-label, 0.08em);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: clamp(1.25rem, 2.4vw, 1.625rem);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-text);
+  /* El margen inferior vive aquí y no en el bloque de precio: solo 3 de 285
+     productos tienen precio, así que antes el botón quedaba pegado al título. */
+  margin: 0 auto 1.75rem;
+  max-width: 34rem;
+}
+
+.price {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: -1rem 0 1.75rem;
+}
+
+.priceValue {
+  font-family: var(--font-family-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-price);
+  margin-left: 0.375rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  min-width: min(20rem, 100%);
+  padding: 0.9375rem 2rem;
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.button:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.button svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.note {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 1.25rem auto 0;
+  max-width: 30rem;
+}
+
+@media (max-width: 520px) {
+  .button {
+    width: 100%;
+  }
+}

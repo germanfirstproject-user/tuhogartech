@@ -38,19 +38,38 @@ export default async function HomePage() {
 
   const contentSlides = buildContentSlides(categories, recentBlogs, settings);
 
-  // Gancho visual de la portada: el primer producto destacado si el admin ha
-  // configurado alguno y, si no, el mejor valorado, para que nunca quede vacío.
-  const heroProduct = featuredProducts[0] || topRatedProducts[0] || null;
-  const heroProductLabel = featuredProducts[0] ? 'Destacado' : 'Mejor valorado';
+  // Gancho visual de la portada: dos productos. Primero los que el admin haya
+  // destacado y, si no llegan a dos, se completa con los mejor valorados, de
+  // modo que la portada nunca quede coja.
+  const featuredIds = new Set(featuredProducts.map((p) => p.id));
+  const heroCandidates = [...featuredProducts, ...topRatedProducts];
+  const heroPicks = [];
+  const pickedIds = new Set();
+  const pickedCategories = new Set();
+
+  // Dos pasadas: la primera evita que los dos huecos caigan en la misma
+  // categoría (dos power banks juntos venden peor que dos cosas distintas);
+  // la segunda rellena sin esa restricción por si el catálogo no da para más.
+  for (const evitarRepetirCategoria of [true, false]) {
+    for (const product of heroCandidates) {
+      if (heroPicks.length === 2) break;
+      if (!product || pickedIds.has(product.id)) continue;
+      if (evitarRepetirCategoria && pickedCategories.has(product.category)) continue;
+
+      pickedIds.add(product.id);
+      pickedCategories.add(product.category);
+      heroPicks.push({
+        product,
+        // Si viene de una selección manual se dice; si no, la etiqueta informa
+        // de la categoría, más útil que repetir "Mejor valorado" dos veces.
+        label: featuredIds.has(product.id) ? 'Destacado' : product.category || 'Mejor valorado',
+      });
+    }
+  }
 
   return (
     <main className={styles.main}>
-      <Hero
-        stats={stats}
-        categories={categories}
-        product={heroProduct}
-        productLabel={heroProductLabel}
-      />
+      <Hero stats={stats} categories={categories} picks={heroPicks} />
 
       <ContentCarousel slides={contentSlides} />
 

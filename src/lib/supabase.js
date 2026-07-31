@@ -97,13 +97,20 @@ export async function getProductsByCategory(category, page = 1, pageSize = 12) {
   }
 }
 
+// Número mínimo de reseñas para que una nota se considere representativa.
+// Sin este filtro los primeros puestos se los llevaban productos con un 5,0 y
+// ninguna reseña, que es justo lo contrario de "mejor valorado". Con 100 hay
+// margen de sobra: la mayoría del catálogo lo supera.
+const MIN_RESENAS_FIABLES = 100;
+
 // Obtener productos mejor valorados
-export async function getTopRatedProducts(limit = 10) {
+export async function getTopRatedProducts(limit = 10, minReviews = MIN_RESENAS_FIABLES) {
   try {
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .not('rating', 'is', null)
+      .gte('reviews_count', minReviews)
       .order('rating', { ascending: false })
       .order('reviews_count', { ascending: false })
       .limit(limit);
@@ -111,6 +118,12 @@ export async function getTopRatedProducts(limit = 10) {
     if (error) {
       console.error('Error fetching top rated products:', error);
       return { success: false, error: error.message, data: [] };
+    }
+
+    // Red de seguridad: si el umbral dejase la lista vacía (catálogo nuevo o
+    // sin datos de reseñas), se repite sin él antes que no mostrar nada.
+    if ((!data || data.length === 0) && minReviews > 0) {
+      return getTopRatedProducts(limit, 0);
     }
 
     return { success: true, data: data || [] };

@@ -1,24 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  
-  <circle cx="50" cy="50" r="48" fill="url(#grad)"/>
-  
-  <path d="M 50 25 L 70 40 L 70 70 L 30 70 L 30 40 Z" fill="white" opacity="0.9"/>
-  
-  <path d="M 25 42 L 50 22 L 75 42 L 70 42 L 50 27 L 30 42 Z" fill="white"/>
-  
-  <rect x="37" y="47" width="10" height="10" fill="#2563eb" rx="1"/>
-  
-  <rect x="53" y="47" width="10" height="10" fill="#2563eb" rx="1"/>
-  
-  <rect x="43" y="60" width="14" height="10" fill="#2563eb" rx="1"/>
-  
-  <circle cx="50" cy="35" r="3" fill="#fbbf24" opacity="0.8"/>
-  <line x1="50" y1="35" x2="60" y2="35" stroke="#fbbf24" stroke-width="1.5" opacity="0.6"/>
-  <circle cx="60" cy="35" r="2" fill="#fbbf24" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Tu Hogar Tech">
+  <title>Tu Hogar Tech</title>
+
+  <!-- Fondo: cuadrado redondeado en el verde de la marca -->
+  <rect width="100" height="100" rx="22" fill="#166355"/>
+
+  <!-- Chimenea. Se dibuja antes que la casa para que el tejado la recorte -->
+  <path d="M63 20h9a2 2 0 0 1 2 2v22H61V22a2 2 0 0 1 2-2z" fill="#faf9f6"/>
+
+  <!-- Tejado con alero volado: da lectura de casa incluso a 16 px -->
+  <path d="M50 13.5a3 3 0 0 1 1.9.7l36 30.2A2.2 2.2 0 0 1 86.5 48h-73a2.2 2.2 0 0 1-1.4-3.6l36-30.2a3 3 0 0 1 1.9-.7z" fill="#faf9f6"/>
+
+  <!-- Cuerpo de la casa -->
+  <path d="M24 50h52v28a5 5 0 0 1-5 5H29a5 5 0 0 1-5-5V50z" fill="#faf9f6"/>
+
+  <!-- Línea de alero: separa tejado y muro, solo perceptible en tamaño grande -->
+  <rect x="24" y="50" width="52" height="1.6" fill="#166355" opacity="0.14"/>
+
+  <!-- Rayo: la electricidad de los productos -->
+  <path d="M53.6 52 38.4 71.2h12.2L48.9 82.6 64.6 64.2H52.4L53.6 52z" fill="#d9a13b"/>
 </svg>

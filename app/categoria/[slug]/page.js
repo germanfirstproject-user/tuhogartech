@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getCategoryBySlug, getCategories, getProductsByCategory } from '@/lib/supabase';
 import ProductsGrid from '@/components/ProductsGrid';
 import styles from '../page.module.css';
+import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 
 // Revalidar cada 5 minutos (300 segundos)
 export const revalidate = 300;
@@ -80,6 +81,8 @@ export default async function CategoryPage({ params }) {
           <Link href="/productos" className={styles.button}>Ver todos los productos</Link>
         </div>
       )}
+
+      {products.length > 0 && <AmazonDisclaimer />}
     </main>
   );
 }

@@ -90,6 +90,15 @@ export default async function ProductDetailPage({ params }) {
   const categorySlug = categoryData?.slug || categoryToSlug(product.category);
 
   // Schema.org - Product
+  //
+  // Sin aggregateRating ni offers a propósito:
+  //  - Las valoraciones son de Amazon, no reseñas recogidas en esta web.
+  //    Marcarlas como calificación propia incumple las directrices de Google
+  //    para fragmentos de reseña y expone a una acción manual por marcado
+  //    estructurado con spam. Las estrellas se siguen mostrando en pantalla,
+  //    atribuidas a Amazon, pero no se declaran al buscador.
+  //  - No vendemos el producto: el vendedor es Amazon. Declarar una oferta
+  //    propia con su precio sería inexacto.
   const productSchema = {
     "@context": "https://schema.org/",
     "@type": "Product",
@@ -100,25 +109,7 @@ export default async function ProductDetailPage({ params }) {
       "@type": "Brand",
       "name": product.brand
     } : undefined,
-    "sku": product.asin || product.id,
-    "offers": product.price != null ? {
-      "@type": "Offer",
-      "url": `https://tuhogartech.com/producto/${params.id}`,
-      "priceCurrency": product.currency || "EUR",
-      "price": product.price,
-      "availability": product.stock === 'in_stock' 
-        ? "https://schema.org/InStock" 
-        : "https://schema.org/OutOfStock",
-      "seller": {
-        "@type": "Organization",
-        "name": "Tu Hogar Tech"
-      }
-    } : undefined,
-    "aggregateRating": product.rating ? {
-      "@type": "AggregateRating",
-      "ratingValue": product.rating,
-      "reviewCount": product.reviews_count || 1
-    } : undefined
+    "sku": product.asin || product.id
   };
 
   // Schema.org - BreadcrumbList
@@ -248,7 +239,7 @@ export default async function ProductDetailPage({ params }) {
                     <span className={styles.ratingScore}>{product.rating}/5</span>
                     {product.reviews_count != null && product.reviews_count > 0 && (
                       <span className={styles.ratingCount}>
-                        ({product.reviews_count.toLocaleString('es-ES')} reseñas)
+                        ({product.reviews_count.toLocaleString('es-ES')} reseñas en Amazon)
                       </span>
                     )}
                   </div>

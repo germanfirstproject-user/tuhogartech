@@ -10,13 +10,15 @@ export default function PrivacidadPage() {
     <div className={styles.container}>
       <div className={styles.content}>
         <h1 className={styles.title}>Política de Privacidad</h1>
-        <p className={styles.lastUpdated}>Última actualización: 27 de noviembre de 2025</p>
+        <p className={styles.lastUpdated}>Última actualización: 31 de julio de 2026</p>
 
         <section className={styles.section}>
           <h2>1. Responsable del Tratamiento de Datos</h2>
           <p>
-            El responsable del tratamiento de los datos personales recogidos en este sitio web es Germán García,
-            con domicilio en Guadalajara, España, y correo electrónico de contacto: contacto@tuhogartech.com.
+            El responsable del tratamiento de los datos personales recogidos en este sitio web es
+            Germán García, con NIF 51758865 y domicilio en Calle Julián Besteiro 11, Guadalajara,
+            España, y correo electrónico de contacto: contacto@tuhogartech.com. Puedes consultar
+            los datos identificativos completos en el <a href="/aviso-legal">Aviso legal</a>.
           </p>
         </section>
 
@@ -56,7 +58,8 @@ export default function PrivacidadPage() {
           <ul>
             <li><strong>Supabase (PostgreSQL):</strong> Nuestro proveedor de base de datos y autenticación, ubicado en la UE</li>
             <li><strong>Google OAuth:</strong> Solo si eliges iniciar sesión con Google (reciben confirmación de autenticación)</li>
-            <li><strong>Netlify/Vercel:</strong> Nuestro proveedor de hosting y CDN</li>
+            <li><strong>Netlify:</strong> Nuestro proveedor de alojamiento y red de distribución de contenidos</li>
+            <li><strong>Google Analytics:</strong> Solo si aceptas las cookies de analítica (ver apartados 5 y 10)</li>
           </ul>
           <p>
             <strong>No vendemos ni alquilamos</strong> tus datos personales a terceros. Solo compartimos información con proveedores
@@ -68,35 +71,93 @@ export default function PrivacidadPage() {
           <h2>5. Cookies y Tecnologías de Seguimiento</h2>
           <p>Utilizamos las siguientes cookies y tecnologías de seguimiento:</p>
           
-          <h3 className={styles.subsectionTitle}>5.1. Cookies Propias</h3>
-          <ul>
-            <li><strong>Cookies técnicas (necesarias):</strong> Para mantener tu sesión iniciada y funcionamiento del sitio</li>
-            <li><strong>Cookies de preferencias:</strong> Para recordar tu configuración (tema, idioma, consentimiento de cookies)</li>
-          </ul>
-
-          <h3 className={styles.subsectionTitle}>5.2. Cookies de Terceros</h3>
-          <ul>
-            <li>
-              <strong>Google Analytics:</strong> Utilizamos Google Analytics para analizar el uso del sitio web. 
-              Esta herramienta utiliza cookies que recopilan información de forma anónima, incluyendo el número de visitantes, 
-              las páginas visitadas y el origen del tráfico. Puedes desactivar Google Analytics instalando el 
-              <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer"> complemento de inhabilitación</a>.
-            </li>
-            <li>
-              <strong>Amazon Associates:</strong> Como participante del Programa de Afiliados de Amazon, cuando haces clic en 
-              enlaces de productos de Amazon, pueden establecerse cookies de seguimiento de afiliados. Estas cookies ayudan a 
-              rastrear las compras realizadas a través de nuestros enlaces. Amazon gestiona estas cookies bajo su propia 
-              <a href="https://www.amazon.es/gp/help/customer/display.html?nodeId=201909010" target="_blank" rel="noopener noreferrer"> política de privacidad</a>.
-            </li>
-          </ul>
-
-          <h3 className={styles.subsectionTitle}>5.3. Control de Cookies</h3>
+          <h3 className={styles.subsectionTitle}>5.1. Cookies necesarias</h3>
           <p>
-            Puedes aceptar o rechazar las cookies mediante el banner de cookies que aparece al visitar nuestro sitio por primera vez.
-            Puedes cambiar tus preferencias en cualquier momento eliminando las cookies desde la configuración de tu navegador.
+            Se instalan siempre porque sin ellas el sitio no puede funcionar. No requieren
+            consentimiento conforme al artículo 22.2 de la LSSI.
+          </p>
+          <table className={styles.cookieTable}>
+            <thead>
+              <tr><th>Nombre</th><th>Titular</th><th>Finalidad</th><th>Duración</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>cookieConsent</td>
+                <td>Tu Hogar Tech</td>
+                <td>Guardar tu decisión sobre las cookies para no volver a preguntarte</td>
+                <td>Almacenamiento local, hasta que lo borres</td>
+              </tr>
+              <tr>
+                <td>sb-access-token, sb-refresh-token</td>
+                <td>Supabase</td>
+                <td>Mantener tu sesión iniciada si te has registrado</td>
+                <td>Sesión / hasta 7 días</td>
+              </tr>
+              <tr>
+                <td>user</td>
+                <td>Tu Hogar Tech</td>
+                <td>Recordar tus datos de sesión en el navegador</td>
+                <td>Almacenamiento local, hasta cerrar sesión</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 className={styles.subsectionTitle}>5.2. Cookies de analítica (requieren tu consentimiento)</h3>
+          <p>
+            Solo se instalan si las aceptas expresamente. Si las rechazas, el script de
+            Google Analytics no llega a cargarse y no se envía ningún dato. Si retiras el
+            consentimiento más adelante, se detiene la recogida y se eliminan las cookies
+            que hubieran quedado.
+          </p>
+          <table className={styles.cookieTable}>
+            <thead>
+              <tr><th>Nombre</th><th>Titular</th><th>Finalidad</th><th>Duración</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>_ga</td>
+                <td>Google Ireland Ltd.</td>
+                <td>Distinguir usuarios para elaborar estadísticas de uso</td>
+                <td>2 años</td>
+              </tr>
+              <tr>
+                <td>_ga_&lt;ID&gt;</td>
+                <td>Google Ireland Ltd.</td>
+                <td>Mantener el estado de la sesión en Google Analytics 4</td>
+                <td>2 años</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            <strong>Importante:</strong> aunque Google Analytics agrega los datos con fines
+            estadísticos, la información que trata (identificadores de cookie y dirección IP)
+            constituye <strong>dato personal</strong> conforme al RGPD, por lo que no puede
+            considerarse anónima. Tenemos activada la anonimización de IP y desactivada
+            cualquier finalidad publicitaria o de personalización. El tratamiento implica una
+            transferencia internacional a Estados Unidos, descrita en el apartado 10.
+          </p>
+
+          <h3 className={styles.subsectionTitle}>5.3. Cookies de afiliación de terceros</h3>
+          <p>
+            Cuando haces clic en un enlace a Amazon y sales de este sitio, Amazon puede
+            instalar sus propias cookies en su dominio para atribuir la posible compra. Ese
+            tratamiento se produce ya en Amazon, bajo su{' '}
+            <a href="https://www.amazon.es/gp/help/customer/display.html?nodeId=201909010" target="_blank" rel="noopener noreferrer">política de privacidad</a>,
+            y queda fuera de nuestro control. Desde este sitio no se instala ninguna cookie
+            de Amazon mientras navegas por él.
+          </p>
+
+          <h3 className={styles.subsectionTitle}>5.4. Cómo aceptar, rechazar o cambiar de opinión</h3>
+          <p>
+            La primera vez que visitas el sitio aparece un aviso donde puedes aceptar,
+            rechazar o configurar las cookies por categoría. Rechazar es tan sencillo como
+            aceptar y no limita ninguna función del sitio.
           </p>
           <p>
-            <strong>Nota:</strong> Rechazar las cookies técnicas puede afectar la funcionalidad del sitio, como mantener la sesión iniciada.
+            Puedes revisar o retirar tu consentimiento cuando quieras desde el enlace{' '}
+            <strong>«Gestionar cookies»</strong> disponible en el pie de página de todas las
+            páginas. También puedes eliminar las cookies ya instaladas desde la configuración
+            de tu navegador.
           </p>
 
           <h3 className={styles.subsectionTitle}>5.4. Configuración del Navegador</h3>
@@ -167,8 +228,38 @@ export default function PrivacidadPage() {
         <section className={styles.section}>
           <h2>10. Transferencias Internacionales de Datos</h2>
           <p>
-            Todos nuestros proveedores de servicios están ubicados en la Unión Europea o cumplen con mecanismos de transferencia
-            adecuados aprobados por la Comisión Europea (cláusulas contractuales tipo).
+            La mayoría de nuestros proveedores están ubicados en la Unión Europea. Existe, no
+            obstante, una transferencia internacional que conviene que conozcas:
+          </p>
+          <ul>
+            <li>
+              <strong>Google Analytics (Google Ireland Ltd.):</strong> aunque el responsable
+              contractual está en Irlanda, el tratamiento implica una{' '}
+              <strong>transferencia de datos a Estados Unidos</strong> a Google LLC. Dicha
+              transferencia se ampara en la decisión de adecuación del Marco de Privacidad de
+              Datos UE-EE.&nbsp;UU. (<em>EU-US Data Privacy Framework</em>), al que Google LLC
+              está adherida, y de forma complementaria en las cláusulas contractuales tipo
+              aprobadas por la Comisión Europea. Esta transferencia{' '}
+              <strong>solo se produce si aceptas las cookies de analítica</strong>; si las
+              rechazas, no se envía ningún dato a Google.
+            </li>
+            <li>
+              <strong>Supabase:</strong> base de datos y autenticación, con la instancia de
+              este proyecto alojada en la Unión Europea.
+            </li>
+            <li>
+              <strong>Netlify:</strong> alojamiento y red de distribución de contenidos. Como
+              proveedor estadounidense, cualquier transferencia queda amparada por cláusulas
+              contractuales tipo.
+            </li>
+            <li>
+              <strong>Amazon:</strong> si sigues un enlace de afiliado, el tratamiento
+              posterior lo realiza Amazon conforme a su propia política.
+            </li>
+          </ul>
+          <p>
+            Puedes solicitarnos información adicional sobre estas garantías escribiendo a
+            contacto@tuhogartech.com.
           </p>
         </section>
 

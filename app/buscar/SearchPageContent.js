@@ -6,6 +6,7 @@ import ProductsGrid from '@/components/ProductsGrid';
 import BlogCard from '@/components/BlogCard';
 import { searchUnified } from '@/lib/supabase';
 import styles from './page.module.css';
+import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 
 const PRODUCTS_PER_PAGE = 6;
 
@@ -182,6 +183,7 @@ export default function SearchPageContent() {
               </div>
             </section>
           )}
+          {results.products?.length > 0 && <AmazonDisclaimer />}
         </>
       )}
     </div>

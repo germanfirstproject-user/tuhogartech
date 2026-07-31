@@ -72,6 +72,23 @@
   text-decoration: none;
 }
 
+/* Botón que abre el panel de cookies: debe verse igual que el resto de
+   enlaces legales para que retirar el consentimiento sea igual de accesible. */
+.linkButton {
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  color: #b5b1a4;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.linkButton:hover {
+  color: #ffffff;
+}
+
 .divider {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   margin: 2rem 0 0;

@@ -32,21 +32,8 @@
   border: 1px solid var(--color-border);
 }
 
-.content {
-  display: flex;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-}
 
-.icon {
-  font-size: 2rem;
-  line-height: 1;
-  flex-shrink: 0;
-}
 
-.text {
-  flex: 1;
-}
 
 .title {
   font-size: var(--font-size-lg);
@@ -144,13 +131,7 @@
     padding: var(--space-5);
   }
 
-  .content {
-    gap: var(--space-3);
-  }
 
-  .icon {
-    font-size: 1.5rem;
-  }
 
   .title {
     font-size: var(--font-size-base);
@@ -182,17 +163,99 @@
     padding: var(--space-4);
   }
 
-  .content {
-    flex-direction: column;
-    gap: var(--space-2);
-    text-align: center;
-  }
 
-  .icon {
-    font-size: 2.5rem;
-  }
 
   .description {
     font-size: var(--font-size-xs);
+  }
+}
+
+/* ---- Opciones granulares ---- */
+.options {
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  margin: 0 0 var(--space-4);
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 0;
+}
+
+.option + .option {
+  border-top: 1px solid var(--color-border);
+}
+
+label.option {
+  cursor: pointer;
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+}
+
+.optionName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.optionDesc {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.always {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 0.125rem;
+}
+
+.checkbox {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* Botón terciario: mismo peso visual que Rechazar, para no dirigir la elección */
+.settingsButton {
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+}
+
+.settingsButton:hover {
+  color: var(--color-dark);
+  border-color: var(--color-border-dark);
+}
+
+.title {
+  font-family: var(--font-family-display);
+}
+
+@media (max-width: 768px) {
+  .settingsButton {
+    width: 100%;
+    padding: var(--space-3);
   }
 }

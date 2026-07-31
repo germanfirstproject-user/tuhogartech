@@ -1,65 +1,124 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import {
+  getConsent,
+  setConsent,
+  OPEN_PREFERENCES_EVENT,
+} from '@/lib/cookieConsent';
 import styles from './CookieConsent.module.css';
 
 export default function CookieConsent() {
-  const [showBanner, setShowBanner] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [showPanel, setShowPanel] = useState(false);
+  const [analytics, setAnalytics] = useState(false);
 
+  // Primera visita: preguntar. Si ya decidió, no molestar.
   useEffect(() => {
-    // Comprobar si el usuario ya ha dado su consentimiento
-    const consent = localStorage.getItem('cookieConsent');
-    if (!consent) {
-      // Mostrar el banner después de un pequeño delay para mejor UX
-      setTimeout(() => setShowBanner(true), 1000);
+    if (getConsent() === null) {
+      const t = setTimeout(() => setVisible(true), 800);
+      return () => clearTimeout(t);
     }
+    return undefined;
   }, []);
 
-  const acceptCookies = () => {
-    localStorage.setItem('cookieConsent', 'accepted');
-    localStorage.setItem('cookieConsentDate', new Date().toISOString());
-    setShowBanner(false);
-  };
+  // El enlace del pie abre el panel para revisar o retirar el consentimiento.
+  useEffect(() => {
+    const open = () => {
+      setAnalytics(getConsent()?.analytics === true);
+      setShowPanel(true);
+      setVisible(true);
+    };
+    window.addEventListener(OPEN_PREFERENCES_EVENT, open);
+    return () => window.removeEventListener(OPEN_PREFERENCES_EVENT, open);
+  }, []);
 
-  const rejectCookies = () => {
-    localStorage.setItem('cookieConsent', 'rejected');
-    localStorage.setItem('cookieConsentDate', new Date().toISOString());
-    setShowBanner(false);
-  };
+  const save = useCallback((value) => {
+    setConsent({ analytics: value });
+    setShowPanel(false);
+    setVisible(false);
+  }, []);
 
-  if (!showBanner) return null;
+  if (!visible) return null;
 
   return (
-    <div className={styles.overlay}>
+    <div className={styles.overlay} role="dialog" aria-modal="false"
+         aria-labelledby="cookie-title" aria-describedby="cookie-desc">
       <div className={styles.banner}>
-        <div className={styles.content}>
-          <div className={styles.icon}>🍪</div>
-          <div className={styles.text}>
-            <h3 className={styles.title}>Uso de Cookies</h3>
-            <p className={styles.description}>
-              Utilizamos cookies propias y de terceros (Google Analytics, Amazon Associates) para mejorar 
-              tu experiencia de navegación, analizar el tráfico del sitio y mostrar contenido personalizado. 
-              Al hacer clic en "Aceptar", consientes el uso de todas las cookies.
-            </p>
-            <p className={styles.links}>
-              <Link href="/privacidad" className={styles.link}>
-                Política de Privacidad
-              </Link>
-              {' · '}
-              <Link href="/terminos" className={styles.link}>
-                Términos y Condiciones
-              </Link>
-            </p>
+        <h2 id="cookie-title" className={styles.title}>Cookies</h2>
+
+        <p id="cookie-desc" className={styles.description}>
+          Usamos cookies necesarias para que la web funcione y, solo si lo
+          autorizas, cookies de analítica de Google Analytics para saber qué
+          contenidos se leen. Puedes rechazarlas sin perder ninguna función y
+          cambiar de opinión cuando quieras.
+        </p>
+
+        {showPanel && (
+          <div className={styles.options}>
+            <div className={styles.option}>
+              <div className={styles.optionText}>
+                <span className={styles.optionName}>Necesarias</span>
+                <span className={styles.optionDesc}>
+                  Sesión, seguridad y tu propia elección sobre cookies. Sin
+                  ellas la web no funciona.
+                </span>
+              </div>
+              <span className={styles.always}>Siempre activas</span>
+            </div>
+
+            <label className={styles.option}>
+              <div className={styles.optionText}>
+                <span className={styles.optionName}>Analítica</span>
+                <span className={styles.optionDesc}>
+                  Google Analytics (Google Ireland Ltd., con transferencia a
+                  EE.&nbsp;UU.). Mide páginas vistas y origen del tráfico.
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                className={styles.checkbox}
+                checked={analytics}
+                onChange={(e) => setAnalytics(e.target.checked)}
+              />
+            </label>
           </div>
-        </div>
+        )}
+
+        <p className={styles.links}>
+          <Link href="/privacidad" className={styles.link}>Política de privacidad</Link>
+          {' · '}
+          <Link href="/aviso-legal" className={styles.link}>Aviso legal</Link>
+        </p>
+
         <div className={styles.actions}>
-          <button onClick={rejectCookies} className={styles.rejectButton}>
-            Rechazar
-          </button>
-          <button onClick={acceptCookies} className={styles.acceptButton}>
-            Aceptar todas
-          </button>
+          {showPanel ? (
+            <>
+              <button type="button" className={styles.rejectButton} onClick={() => save(false)}>
+                Rechazar todas
+              </button>
+              <button type="button" className={styles.acceptButton} onClick={() => save(analytics)}>
+                Guardar preferencias
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className={styles.settingsButton}
+                onClick={() => setShowPanel(true)}
+              >
+                Configurar
+              </button>
+              <button type="button" className={styles.rejectButton} onClick={() => save(false)}>
+                Rechazar
+              </button>
+              <button type="button" className={styles.acceptButton} onClick={() => save(true)}>
+                Aceptar
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

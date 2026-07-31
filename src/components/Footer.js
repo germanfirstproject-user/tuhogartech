@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { getSiteSettings } from "@/lib/supabase";
+import { openCookiePreferences } from "@/lib/cookieConsent";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
@@ -55,6 +56,11 @@ export default function Footer() {
             <h4 className={styles.sectionSubtitle}>Legal</h4>
             <ul className={styles.linkList}>
               <li>
+                <Link href="/aviso-legal" className={styles.link}>
+                  Aviso legal
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacidad" className={styles.link}>
                   Política de Privacidad
                 </Link>
@@ -63,6 +69,16 @@ export default function Footer() {
                 <Link href="/terminos" className={styles.link}>
                   Términos y Condiciones
                 </Link>
+              </li>
+              <li>
+                {/* Retirar el consentimiento debe ser tan fácil como darlo */}
+                <button
+                  type="button"
+                  className={styles.linkButton}
+                  onClick={openCookiePreferences}
+                >
+                  Gestionar cookies
+                </button>
               </li>
             </ul>
           </div>
@@ -77,7 +93,8 @@ export default function Footer() {
             &copy; {currentYear} {siteName}. Todos los derechos reservados.
           </p>
           <p className={styles.affiliate}>
-            {siteName} es un participante en el Programa de Asociados de Amazon Services LLC.
+            {siteName} participa en el Programa de Afiliados de Amazon EU y obtiene
+            ingresos por las compras que cumplen los requisitos aplicables.
           </p>
         </div>
       </div>

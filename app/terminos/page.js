@@ -28,7 +28,8 @@ export default function TerminosPage() {
           <h2>2. Identificación y Datos de Contacto</h2>
           <p>
             <strong>Titular:</strong> Germán García<br />
-            <strong>Domicilio:</strong> Guadalajara, España<br />
+            <strong>NIF:</strong> 51758865<br />
+            <strong>Domicilio:</strong> Calle Julián Besteiro 11, Guadalajara, España<br />
             <strong>Email de contacto:</strong> contacto@tuhogartech.com
           </p>
         </section>

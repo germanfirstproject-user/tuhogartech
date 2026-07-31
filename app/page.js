@@ -38,9 +38,19 @@ export default async function HomePage() {
 
   const contentSlides = buildContentSlides(categories, recentBlogs, settings);
 
+  // Gancho visual de la portada: el primer producto destacado si el admin ha
+  // configurado alguno y, si no, el mejor valorado, para que nunca quede vacío.
+  const heroProduct = featuredProducts[0] || topRatedProducts[0] || null;
+  const heroProductLabel = featuredProducts[0] ? 'Destacado' : 'Mejor valorado';
+
   return (
     <main className={styles.main}>
-      <Hero stats={stats} categories={categories} />
+      <Hero
+        stats={stats}
+        categories={categories}
+        product={heroProduct}
+        productLabel={heroProductLabel}
+      />
 
       <ContentCarousel slides={contentSlides} />
 

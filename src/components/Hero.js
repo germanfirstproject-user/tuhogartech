@@ -9,7 +9,7 @@ import styles from './Hero.module.css';
  * jerarquía tipográfica sobre el papel de la marca y un índice con las
  * categorías reales, que además es contenido navegable.
  */
-export default function Hero({ stats, categories = [] }) {
+export default function Hero({ stats, categories = [], product = null, productLabel = 'Destacado' }) {
   const topCategories = categories.slice(0, 6);
 
   return (
@@ -47,7 +47,52 @@ export default function Hero({ stats, categories = [] }) {
           )}
         </div>
 
-        {topCategories.length > 0 && (
+        <div className={styles.aside}>
+          {product && (
+            <Link href={`/producto/${product.id}`} className={styles.card}>
+              <div className={styles.cardMedia}>
+                {product.images?.[0] && (
+                  <img
+                    src={product.images[0]}
+                    alt={product.title}
+                    className={styles.cardImage}
+                    /* Es lo primero que se ve: se carga con prioridad */
+                    fetchPriority="high"
+                  />
+                )}
+                <span className={styles.cardBadge}>{productLabel}</span>
+              </div>
+
+              <div className={styles.cardBody}>
+                {product.brand && <p className={styles.cardBrand}>{product.brand}</p>}
+                <p className={styles.cardTitle}>{product.title}</p>
+
+                {product.rating && (
+                  <p className={styles.cardRating}>
+                    <span className={styles.cardStars} aria-hidden="true">
+                      {'★'.repeat(Math.round(product.rating))}
+                      <span className={styles.cardStarsOff}>
+                        {'★'.repeat(5 - Math.round(product.rating))}
+                      </span>
+                    </span>
+                    <span className={styles.cardScore}>{product.rating}</span>
+                    <span className={styles.cardSource}>en Amazon</span>
+                  </p>
+                )}
+
+                <span className={styles.cardCta}>
+                  Ver análisis
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                       strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
+              </div>
+            </Link>
+          )}
+
+          {topCategories.length > 0 && (
           <nav className={styles.index} aria-label="Categorías principales">
             <p className={styles.indexLabel}>Explorar por categoría</p>
             <ul className={styles.indexList}>
@@ -64,7 +109,8 @@ export default function Hero({ stats, categories = [] }) {
               Ver todas las categorías
             </Link>
           </nav>
-        )}
+          )}
+        </div>
       </div>
     </section>
   );

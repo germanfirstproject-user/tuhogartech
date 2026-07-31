@@ -917,6 +917,38 @@ export async function deleteProductSeo(productId) {
  * CATEGORIES FUNCTIONS
  */
 
+// Categorías con el número de productos de cada una, de mayor a menor.
+// Se usa en la portada para construir el índice y el carrusel de contenidos.
+export async function getCategoriesWithCounts() {
+  try {
+    const [catsResult, productsResult] = await Promise.all([
+      supabase.from('categories').select('name, slug'),
+      supabase.from('products').select('category'),
+    ]);
+
+    if (catsResult.error) {
+      console.error('Error fetching categories:', catsResult.error);
+      return { success: false, error: catsResult.error.message, data: [] };
+    }
+
+    const counts = new Map();
+    for (const row of productsResult.data || []) {
+      if (!row.category) continue;
+      counts.set(row.category, (counts.get(row.category) || 0) + 1);
+    }
+
+    const data = (catsResult.data || [])
+      .map((cat) => ({ name: cat.name, slug: cat.slug, count: counts.get(cat.name) || 0 }))
+      .filter((cat) => cat.count > 0)
+      .sort((a, b) => b.count - a.count);
+
+    return { success: true, data, error: null };
+  } catch (err) {
+    console.error('Error getting categories with counts:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
 // Obtener todas las categorías
 export async function getCategories() {
   try {

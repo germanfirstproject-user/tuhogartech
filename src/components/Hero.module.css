@@ -1,0 +1,208 @@
+/* ============ Portada editorial ============ */
+.hero {
+  background: var(--color-background);
+  border-bottom: 1px solid var(--color-border);
+  padding: clamp(3rem, 7vw, 5.5rem) 1.5rem clamp(2.75rem, 5vw, 4rem);
+}
+
+.inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: start;
+}
+
+/* ---- Columna de texto ---- */
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-label, 0.08em);
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin: 0 0 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-dark);
+  max-width: 5rem;
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: clamp(2.25rem, 5.2vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin: 0 0 1.5rem;
+}
+
+.titleAccent {
+  color: var(--color-primary);
+}
+
+.subtitle {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+  max-width: 34rem;
+  margin: 0 0 2rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.buttonPrimary,
+.buttonGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8125rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.buttonPrimary {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  border: 1px solid var(--color-primary);
+}
+
+.buttonPrimary:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: var(--color-text-light);
+  text-decoration: none;
+}
+
+.buttonGhost {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border-dark);
+}
+
+.buttonGhost:hover {
+  border-color: var(--color-text);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.meta {
+  margin: 1.75rem 0 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.meta strong {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Índice de categorías ---- */
+.index {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.indexLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-label, 0.08em);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0 0 0.25rem;
+}
+
+.indexList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.indexItem {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.indexItem:hover {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.indexName {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.indexCount {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.indexItem:hover .indexCount {
+  color: var(--color-primary);
+}
+
+.indexAll {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.indexAll:hover {
+  text-decoration: underline;
+}
+
+/* ---- Adaptación ---- */
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .subtitle {
+    max-width: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buttonPrimary,
+  .buttonGhost {
+    width: 100%;
+  }
+}

@@ -497,7 +497,7 @@ export default async function ProductDetailPage({ params }) {
         <AmazonDisclaimer />
 
         {/* CTA Final */}
-        <ProductCTA product={product} styles={styles} />
+        <ProductCTA product={product} />
       </div>
     </main>
     </>

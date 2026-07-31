@@ -811,3 +811,88 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ============ Utilidades para el HTML de los artículos ============
+   Se usan selectores de atributo y no clases porque el contenido llega como
+   HTML plano desde la base de datos y no puede referenciar los nombres que
+   genera CSS Modules. */
+
+/* Tablas anchas (comparativas): scroll propio en lugar de romper la página */
+.content [data-scroll] {
+  overflow-x: auto;
+  margin: var(--space-6) 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.content [data-scroll] table {
+  margin: 0;
+  min-width: 34rem;
+}
+
+.content table th {
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+}
+
+.content table td {
+  font-size: 0.9375rem;
+  vertical-align: top;
+}
+
+/* Fila de la tabla que marca al ganador de una comparativa */
+.content table tr[data-pick] td {
+  background: var(--color-primary-very-light);
+}
+
+/* Aviso o nota al margen dentro del artículo */
+.content [data-note] {
+  background: var(--color-background-tertiary);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  margin: var(--space-6) 0;
+  font-size: 0.9375rem;
+}
+
+.content [data-note] p:last-child {
+  margin-bottom: 0;
+}
+
+.content [data-note] strong {
+  color: var(--color-primary-dark);
+}
+
+/* Veredicto por producto: ficha compacta al cierre de cada bloque */
+.content [data-verdict] {
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-6) 0 var(--space-8);
+  padding-top: var(--space-4);
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+
+.content [data-verdict] strong {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+@media (max-width: 640px) {
+  .content [data-scroll] table {
+    min-width: 30rem;
+  }
+}
+
+/* Entradilla del artículo */
+.content [data-lede] {
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}

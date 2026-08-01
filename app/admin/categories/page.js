@@ -17,6 +17,7 @@ export default function CategoriesAdminPage() {
     description: '',
     image_url: '',
     image_alt: '',
+    amazon_link: '',
     icon: '',
     seo_title: '',
     seo_description: '',
@@ -88,6 +89,7 @@ export default function CategoriesAdminPage() {
       description: formData.description || null,
       image_url: imageUrl || null,
       image_alt: formData.image_alt || null,
+      amazon_link: formData.amazon_link.trim() || null,
       icon: formData.icon || null,
       seo_title: formData.seo_title || null,
       seo_description: formData.seo_description || null,
@@ -128,6 +130,7 @@ export default function CategoriesAdminPage() {
       description: category.description || '',
       image_url: category.image_url || '',
       image_alt: category.image_alt || '',
+      amazon_link: category.amazon_link || '',
       icon: category.icon || '',
       seo_title: category.seo_title || '',
       seo_description: category.seo_description || '',
@@ -166,6 +169,7 @@ export default function CategoriesAdminPage() {
       description: '',
       image_url: '',
       image_alt: '',
+      amazon_link: '',
       icon: '',
       seo_title: '',
       seo_description: '',
@@ -262,6 +266,21 @@ export default function CategoriesAdminPage() {
                       onChange={(e) => setFormData({...formData, display_order: e.target.value})}
                     />
                   </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Enlace de Amazon a la categoría</label>
+                  <input
+                    type="url"
+                    value={formData.amazon_link}
+                    onChange={(e) => setFormData({...formData, amazon_link: e.target.value})}
+                    placeholder="https://www.amazon.es/…?tag=tuhogartech22-21"
+                  />
+                  <small>
+                    Aparece como llamada a la acción encima del listado de la categoría.
+                    Déjalo vacío y no se muestra nada. Asegúrate de que lleva tu
+                    etiqueta de afiliado o el clic no generará comisión.
+                  </small>
                 </div>
 
                 <div className={styles.formGroup}>

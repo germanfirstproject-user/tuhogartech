@@ -1,0 +1,91 @@
+/* ============ Salida a Amazon desde una categoría ============ */
+.cta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto var(--space-8);
+  padding: 1.25rem 1.5rem;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  /* Filete del color de la categoría: la ata visualmente al listado */
+  border-left: 3px solid var(--c);
+  border-radius: var(--radius-lg);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--c) 10%, transparent);
+  color: var(--c);
+}
+
+.marca svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.titulo {
+  font-family: var(--font-family-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.25rem;
+}
+
+.nota {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  padding: 0.75rem 1.375rem;
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.boton:hover,
+.boton:focus-visible {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  /* Sin esto, el `a:hover` de globals.css deja el texto del color del fondo */
+  color: var(--color-text-light);
+  text-decoration: none;
+}
+
+.boton svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+  .cta {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.875rem 1rem;
+  }
+
+  /* El botón pasa a ocupar toda la fila de abajo */
+  .boton {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}

@@ -25,7 +25,11 @@ export default function AffiliateLink({
   style,
 }) {
   const registrar = () => {
-    if (!productId) return;
+    // Hay enlaces que no son de un producto concreto, como el que lleva a la
+    // sección equivalente en Amazon desde una categoría. Se miden igual, con
+    // `link_position` para distinguirlos.
+    if (!productId && !position) return;
+
     trackAffiliateClick({
       productId,
       productName,

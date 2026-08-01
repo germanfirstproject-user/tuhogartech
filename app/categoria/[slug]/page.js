@@ -3,6 +3,7 @@ import { getCategoryBySlug, getCategories, getProductsByCategory } from '@/lib/s
 import ProductsGrid from '@/components/ProductsGrid';
 import styles from '../page.module.css';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
+import CategoryAmazonCTA from '@/components/CategoryAmazonCTA';
 
 // Revalidar cada 5 minutos (300 segundos)
 export const revalidate = 300;
@@ -74,6 +75,10 @@ export default async function CategoryPage({ params }) {
           <p className={styles.categoryDescription}>{category.description}</p>
         )}
       </div>
+
+      {/* Antes del listado: quien busca una categoría entera suele querer ver
+          el surtido, no una ficha concreta. */}
+      <CategoryAmazonCTA category={category} />
 
       {products.length > 0 ? (
         <div className={styles.productsSection}>

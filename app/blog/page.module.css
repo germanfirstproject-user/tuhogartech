@@ -193,6 +193,10 @@
 
 .button:hover {
   background-color: var(--color-primary-dark);
+  /* El `a:hover` de globals.css pinta el texto de --color-primary-dark, que
+     es el fondo que se pone aquí: sin esta línea la etiqueta se vuelve
+     ilegible al pasar el ratón. */
+  color: var(--color-text-light);
 }
 
 /* Responsive */

@@ -23,11 +23,13 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: var(--color-background-secondary);
-  border: 1px solid var(--color-border-dark);
+  /* El borde claro daba 1,56:1 contra el papel de la página y el botón se
+     perdía: se veía la flecha suelta, no un control. */
+  border: 1px solid var(--color-text-secondary);
   color: var(--color-text);
   padding: 0;
   cursor: pointer;
@@ -36,12 +38,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 8px rgba(29, 28, 24, 0.13);
 }
 
 .navButton svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   display: block;
 }
 
@@ -262,8 +264,8 @@
   }
 
   .navButton {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
 
   .navButton svg {
@@ -302,8 +304,8 @@
   }
 
   .navButton {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
   }
 
   .navButtonPrev {

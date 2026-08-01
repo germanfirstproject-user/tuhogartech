@@ -392,6 +392,11 @@ export async function updateProduct(id, updates) {
 
     if (error) {
       console.error('Error updating product:', error);
+      // PGRST116 = la consulta no devolvió ninguna fila. Con RLS activo suele
+      // significar sesión caducada, no que el producto no exista.
+      if (error.code === 'PGRST116') {
+        return { success: false, error: { message: await explicarCeroFilas('El producto') } };
+      }
       return { success: false, error };
     }
 
@@ -405,14 +410,21 @@ export async function updateProduct(id, updates) {
 // Eliminar producto
 export async function deleteProduct(id) {
   try {
-    const { error } = await supabase
+    // Igual que en los artículos: sin `.select()` un borrado bloqueado por
+    // RLS se anunciaba como correcto.
+    const { data, error } = await supabase
       .from('products')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .select('id');
 
     if (error) {
       console.error('Error deleting product:', error);
       return { success: false, error };
+    }
+
+    if (!data || data.length === 0) {
+      return { success: false, error: { message: await explicarCeroFilas('El producto') } };
     }
 
     return { success: true };
@@ -801,6 +813,27 @@ export async function insertBlog(blogData) {
   }
 }
 
+/**
+ * Explica por qué una escritura no ha afectado a ninguna fila.
+ *
+ * Con RLS activo, una sesión caducada no produce un error: la política
+ * simplemente no encuentra la fila y la operación devuelve cero resultados.
+ * Sin esta comprobación el mensaje culpaba al identificador y mandaba a
+ * revisar donde no era.
+ */
+async function explicarCeroFilas(queEs = 'El registro') {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return 'Tu sesión ha caducado. Vuelve a iniciar sesión y repite el cambio.';
+    }
+  } catch {
+    // Si ni siquiera se puede consultar la sesión, se cae al mensaje genérico.
+  }
+
+  return `${queEs} no se ha podido guardar. Puede que no exista o que tu cuenta no tenga permisos para modificarlo.`;
+}
+
 // Actualizar blog
 export async function updateBlog(id, blogData) {
   try {
@@ -823,10 +856,11 @@ export async function updateBlog(id, blogData) {
 
     console.log('Resultado de actualización:', data);
 
-    // Verificar que se actualizó correctamente
+    // Cero filas no significa que el ID sea incorrecto. Lo habitual es que la
+    // sesión haya caducado: sin token, las políticas RLS descartan la fila y
+    // Postgres no devuelve nada. Se distingue antes de culpar al ID.
     if (!data || data.length === 0) {
-      console.error('No se encontró el blog con id:', id);
-      return { success: false, error: 'Blog no encontrado o no se pudo actualizar. Verifica que el ID sea correcto.' };
+      return { success: false, error: await explicarCeroFilas('El artículo') };
     }
 
     console.log('Blog actualizado exitosamente:', data[0]);
@@ -840,14 +874,22 @@ export async function updateBlog(id, blogData) {
 // Eliminar blog
 export async function deleteBlog(id) {
   try {
-    const { error } = await supabase
+    // Con `.select()` se sabe si de verdad se ha borrado algo: sin él, una
+    // sesión caducada devolvía éxito y el panel anunciaba un borrado que
+    // nunca ocurrió.
+    const { data, error } = await supabase
       .from('blogs')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .select('id');
 
     if (error) {
       console.error('Error deleting blog:', error);
       return { success: false, error: error.message };
+    }
+
+    if (!data || data.length === 0) {
+      return { success: false, error: await explicarCeroFilas('El artículo') };
     }
 
     return { success: true };

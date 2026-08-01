@@ -62,9 +62,14 @@
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.button:hover {
+.button:hover,
+.button:focus-visible {
   background: var(--color-primary-dark);
   border-color: var(--color-primary-dark);
+  /* Imprescindible: el `a:hover` de globals.css tiñe el texto de
+     --color-primary-dark, que es justo el fondo que se acaba de poner, y la
+     etiqueta desaparecía. */
+  color: var(--color-text-light);
 }
 
 .button svg {

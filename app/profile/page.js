@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import ProductVisual from '@/components/ProductVisual';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserData, updateUserPreferences, getUserFavoriteProducts, deleteOwnAccount } from '@/lib/supabase';
 import styles from './page.module.css';
@@ -324,11 +325,7 @@ export default function ProfilePage() {
                         className={styles.productCard}
                       >
                         <div className={styles.productImage}>
-                          {product.images?.[0] ? (
-                            <img src={product.images[0]} alt={product.title} />
-                          ) : (
-                            <div className={styles.imagePlaceholder}>Sin imagen</div>
-                          )}
+                          <ProductVisual product={product} mostrarMarca={false} />
                         </div>
                         <div className={styles.productContent}>
                           <h4 className={styles.productTitle}>{product.title}</h4>

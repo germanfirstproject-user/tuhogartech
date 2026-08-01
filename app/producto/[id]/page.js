@@ -5,6 +5,7 @@ import { ArrowLeft, Package, Star, Users } from 'lucide-react';
 import ProductVisitTracker from '@/components/ProductVisitTracker';
 import ProductActions from './ProductActions';
 import ProductCTA from './ProductCTA';
+import ProductVisual from '@/components/ProductVisual';
 import Carousel from '@/components/Carousel';
 import BlogCard from '@/components/BlogCard';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
@@ -43,14 +44,15 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: seo?.og_title || `${product.title} | Tu Hogar Tech`,
       description: seo?.og_description || product.description || `${product.title} - ${product.brand || 'N/A'}`,
-      images: seo?.og_image ? [{ url: seo.og_image }] : product.images?.[0] ? [{ url: product.images[0] }] : [],
+      // Imagen propia: las de Amazon no se pueden republicar en metadatos.
+      images: [{ url: 'https://tuhogartech.com/og-image.png', width: 1200, height: 630 }],
       type: 'website',
     },
     twitter: {
       card: seo?.twitter_card || 'summary_large_image',
       title: seo?.twitter_title || seo?.og_title || product.title,
       description: seo?.twitter_description || seo?.og_description || product.description,
-      images: seo?.twitter_image ? [seo.twitter_image] : seo?.og_image ? [seo.og_image] : product.images?.[0] ? [product.images[0]] : [],
+      images: ['https://tuhogartech.com/og-image.png'],
     },
     alternates: {
       canonical: seo?.canonical_url || `https://tuhogartech.com/producto/${params.id}`,
@@ -103,7 +105,6 @@ export default async function ProductDetailPage({ params }) {
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": product.title,
-    "image": product.images || [],
     "description": product.description || product.title,
     "brand": product.brand ? {
       "@type": "Brand",
@@ -175,34 +176,14 @@ export default async function ProductDetailPage({ params }) {
 
         {/* Contenido Principal */}
         <div className={styles.content}>
-          {/* Image Gallery */}
+          {/* Identidad visual: color e icono de la categoría. No se usan las
+              fotos de Amazon, que su programa de afiliados no autoriza a
+              mostrar fuera de sus propias herramientas. */}
           <div className={styles.imageSection}>
             <div className={styles.mainImage}>
-              {product.images?.[0] ? (
-                <img
-                  src={product.images[0]}
-                  alt={product.title}
-                  className={styles.mainImageImg}
-                />
-              ) : (
-                <div className={styles.mainImagePlaceholder}>Sin imagen</div>
-              )}
+              <ProductVisual product={product} />
             </div>
 
-            {/* Galería de imágenes */}
-            {product.images && product.images.length > 1 && (
-              <div className={styles.thumbnails}>
-                {product.images.slice(1).map((img, idx) => (
-                  <div key={idx} className={styles.thumbnail}>
-                    <img
-                      src={img}
-                      alt={`${product.title} ${idx + 2}`}
-                      className={styles.thumbnailImg}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Información del Producto */}

@@ -80,10 +80,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <head>
-        {/* Preconnect para recursos externos críticos */}
-        <link rel="preconnect" href="https://m.media-amazon.com" />
-        <link rel="preconnect" href="https://images-na.ssl-images-amazon.com" />
-        <link rel="dns-prefetch" href="https://m.media-amazon.com" />
+        {/* Ya no se abre conexión con los servidores de imágenes de Amazon:
+            la web no carga ninguna. */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
       </head>
       <body className={`${inter.variable} ${fraunces.variable}`}>

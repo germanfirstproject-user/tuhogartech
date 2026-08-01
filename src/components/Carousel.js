@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import ProductVisual from './ProductVisual';
 import { setNavSource } from '@/lib/navSource';
 import { trackModuleClick } from '@/lib/analytics';
 import styles from './Carousel.module.css';
@@ -148,20 +149,7 @@ function ProductCard({ product, moduleName, posicion }) {
       onClick={registrar}
     >
       <div className={styles.imageContainer}>
-        {product.images?.[0] ? (
-          <img
-            src={product.images[0]}
-            alt={product.title}
-            className={styles.image}
-            width={250}
-            height={250}
-            loading="lazy"
-          />
-        ) : (
-          <div className={styles.imagePlaceholder}>
-            <span>Sin imagen</span>
-          </div>
-        )}
+        <ProductVisual product={product} />
       </div>
       
       <div className={styles.cardContent}>

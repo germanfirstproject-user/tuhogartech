@@ -8,6 +8,7 @@ import {
   removeFeaturedProduct,
   updateFeaturedProductsOrder,
 } from '@/lib/supabase';
+import ProductVisual from '@/components/ProductVisual';
 import styles from './page.module.css';
 
 export default function FeaturedProductsPage() {
@@ -170,11 +171,7 @@ export default function FeaturedProductsPage() {
                   </button>
                 </div>
                 <div className={styles.productImage}>
-                  {product.images?.[0] ? (
-                    <img src={product.images[0]} alt={product.title} />
-                  ) : (
-                    <div className={styles.placeholderImage}>📦</div>
-                  )}
+                  <ProductVisual product={product} mostrarMarca={false} />
                 </div>
                 <div className={styles.productInfo}>
                   <h3 className={styles.productTitle}>{product.title}</h3>
@@ -214,11 +211,7 @@ export default function FeaturedProductsPage() {
             {filteredProducts.slice(0, 20).map((product) => (
               <div key={product.id} className={styles.productCard}>
                 <div className={styles.productImage}>
-                  {product.images?.[0] ? (
-                    <img src={product.images[0]} alt={product.title} />
-                  ) : (
-                    <div className={styles.placeholderImage}>📦</div>
-                  )}
+                  <ProductVisual product={product} mostrarMarca={false} />
                 </div>
                 <div className={styles.productInfo}>
                   <h3 className={styles.productTitle}>{product.title}</h3>

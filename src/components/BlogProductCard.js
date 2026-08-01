@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import AffiliateLink from './AffiliateLink';
+import ProductVisual from './ProductVisual';
 import { trackBlogCardView } from '@/lib/analytics';
 import styles from './BlogProductCard.module.css';
 
@@ -63,13 +64,12 @@ export default function BlogProductCard({ product, blog, index, compact = false 
 
   if (!product) return null;
 
-  const image = product.images?.[0];
   const stars = product.rating ? Math.round(product.rating) : 0;
 
   return (
     <aside ref={referencia} className={`${styles.card} ${compact ? styles.cardCompact : ''}`}>
       <Link href={`/producto/${product.id}`} className={styles.media} aria-hidden="true" tabIndex={-1}>
-        {image && <img src={image} alt="" className={styles.image} loading="lazy" />}
+        <ProductVisual product={product} mostrarMarca={false} />
       </Link>
 
       <div className={styles.body}>

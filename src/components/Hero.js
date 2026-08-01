@@ -1,4 +1,5 @@
 import TrackedLink from './TrackedLink';
+import ProductVisual from './ProductVisual';
 import styles from './Hero.module.css';
 
 /**
@@ -150,16 +151,7 @@ function PickCard({ product, label, priority = false, posicion = 1 }) {
       className={styles.card}
     >
       <div className={styles.cardMedia}>
-        {product.images?.[0] && (
-          <img
-            src={product.images[0]}
-            alt={product.title}
-            className={styles.cardImage}
-            /* Es lo primero que se ve: la primera se carga con prioridad */
-            fetchPriority={priority ? 'high' : 'auto'}
-            loading={priority ? 'eager' : 'lazy'}
-          />
-        )}
+        <ProductVisual product={product} mostrarMarca={false} />
         {label && <span className={styles.cardBadge}>{label}</span>}
       </div>
 

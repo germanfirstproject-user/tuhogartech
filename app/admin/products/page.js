@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getProducts, insertProduct, updateProduct, deleteProduct, getProductSeo, upsertProductSeo, getCategories, getSiteSettings } from '@/lib/supabase';
+import ProductVisual from '@/components/ProductVisual';
 import styles from './page.module.css';
 
 const PRODUCTS_PER_PAGE = 30;
@@ -232,12 +233,13 @@ export default function ProductsAdminPage() {
         seo_keywords: '',
         og_title: product.title || '',
         og_description: product.description || '',
-        og_image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '',
+        // Imagen propia del sitio: las de Amazon no se pueden republicar.
+        og_image: 'https://tuhogartech.com/og-image.png',
         og_type: 'product',
         twitter_card: 'summary_large_image',
         twitter_title: product.title || '',
         twitter_description: product.description || '',
-        twitter_image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '',
+        twitter_image: 'https://tuhogartech.com/og-image.png',
         canonical_url: '',
         meta_robots: 'index, follow',
       });
@@ -764,9 +766,9 @@ export default function ProductsAdminPage() {
       <div className={styles.productsGrid}>
         {currentProducts.map((product) => (
           <div key={product.id} className={styles.productCard}>
-            {product.images && product.images.length > 0 && (
-              <img src={product.images[0]} alt={product.title} className={styles.productImage} />
-            )}
+            <div className={styles.productImage}>
+              <ProductVisual product={product} mostrarMarca={false} />
+            </div>
             <div className={styles.productInfo}>
               <h3 className={styles.productTitle}>{product.title}</h3>
               <p className={styles.productBrand}>{product.brand}</p>

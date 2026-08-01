@@ -41,7 +41,9 @@ async function CategoriesContent() {
           categories.map((category) => (
             <Link
               key={category.id}
-              href={`/productos/${category.slug}`}
+              /* Directo a la ruta canónica: /productos/{slug} solo redirige
+                 aquí, y hacer pasar por el salto gasta presupuesto de rastreo. */
+              href={`/categoria/${category.slug}`}
               className={styles.categoryLink}
               prefetch={true}
             >

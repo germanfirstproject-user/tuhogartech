@@ -14,6 +14,8 @@ export default function ProductActions({ product, styles }) {
             productId={product.id}
             productName={product.title}
             category={product.category}
+            brand={product.brand}
+            position="ficha_principal"
             style={{ textDecoration: 'none', flex: '1' }}
           >
             <button className={styles.primaryButton} style={{ width: '100%' }}>

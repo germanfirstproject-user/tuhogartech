@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { addVisitedProduct } from '@/lib/supabase';
 import { trackProductView } from '@/lib/analytics';
+import { consumeNavSource } from '@/lib/navSource';
 
 export default function ProductVisitTracker({ productId, product }) {
   const { user, isLoggedIn } = useAuth();
@@ -11,14 +12,18 @@ export default function ProductVisitTracker({ productId, product }) {
   useEffect(() => {
     const trackVisit = async () => {
       try {
-        // Trackear en Google Analytics si tenemos datos del producto
+        // Trackear en Google Analytics si tenemos datos del producto.
+        // El origen se consume aquí: dice desde qué módulo de la web se llegó.
         if (product) {
-          trackProductView({
-            id: product.id,
-            name: product.title,
-            category: product.category,
-            price: product.price
-          });
+          trackProductView(
+            {
+              id: product.id,
+              name: product.title,
+              category: product.category,
+              brand: product.brand,
+            },
+            consumeNavSource()
+          );
         }
 
         // Registrar la visita en BD si hay usuario

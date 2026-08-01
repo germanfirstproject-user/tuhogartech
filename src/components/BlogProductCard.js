@@ -1,5 +1,9 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import AffiliateLink from './AffiliateLink';
+import { trackBlogCardView } from '@/lib/analytics';
 import styles from './BlogProductCard.module.css';
 
 /**
@@ -9,15 +13,61 @@ import styles from './BlogProductCard.module.css';
  * contenía. La acción principal es el enlace a Amazon, que es donde se
  * convierte; la secundaria lleva al análisis propio, para quien todavía está
  * decidiendo. Ambas salidas conviven porque cubren dos momentos distintos.
+ *
+ * Registra su propia impresión al entrar en pantalla. El contexto del artículo
+ * viaja dentro del evento, así que cualquier artículo futuro que reutilice
+ * esta estructura queda medido sin tocar código.
  */
-export default function BlogProductCard({ product, compact = false }) {
+export default function BlogProductCard({ product, blog, index, compact = false }) {
+  const referencia = useRef(null);
+
+  const posicion = compact ? 'blog_cierre' : 'blog_articulo';
+  const productId = product?.id;
+  const blogId = blog?.id;
+
+  // Impresión: se cuenta cuando al menos la mitad de la tarjeta ha estado
+  // visible. Es la otra mitad del porcentaje de clics.
+  useEffect(() => {
+    const nodo = referencia.current;
+    if (!nodo || !productId) return;
+    if (typeof IntersectionObserver === 'undefined') return;
+
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        for (const entrada of entradas) {
+          if (!entrada.isIntersecting) continue;
+
+          const enviado = trackBlogCardView({
+            productId,
+            productName: product?.title,
+            category: product?.category,
+            brand: product?.brand,
+            linkPosition: posicion,
+            blogId,
+            blogSlug: blog?.slug,
+            cardIndex: index,
+          });
+
+          // Solo se deja de observar si el evento ha salido de verdad. Si
+          // todavía no hay consentimiento, se reintenta al volver a verse.
+          if (enviado) observador.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observador.observe(nodo);
+    return () => observador.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productId, blogId, posicion, index]);
+
   if (!product) return null;
 
   const image = product.images?.[0];
   const stars = product.rating ? Math.round(product.rating) : 0;
 
   return (
-    <aside className={`${styles.card} ${compact ? styles.cardCompact : ''}`}>
+    <aside ref={referencia} className={`${styles.card} ${compact ? styles.cardCompact : ''}`}>
       <Link href={`/producto/${product.id}`} className={styles.media} aria-hidden="true" tabIndex={-1}>
         {image && <img src={image} alt="" className={styles.image} loading="lazy" />}
       </Link>
@@ -53,6 +103,11 @@ export default function BlogProductCard({ product, compact = false }) {
               productId={product.id}
               productName={product.title}
               category={product.category}
+              brand={product.brand}
+              position={posicion}
+              blogId={blog?.id}
+              blogSlug={blog?.slug}
+              cardIndex={index}
               className={styles.buyButton}
             >
               Ver precio en Amazon

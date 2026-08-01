@@ -3,22 +3,39 @@
 import { trackAffiliateClick } from '@/lib/analytics';
 
 /**
- * Componente para enlaces de afiliados con tracking
+ * Enlace de afiliado con medición.
+ *
+ * Todos los botones que llevan a Amazon pasan por aquí, así que este es el
+ * único sitio donde se dispara `affiliate_click`. `position` identifica desde
+ * cuál de ellos se ha pulsado; sin ese dato los cuatro son indistinguibles en
+ * los informes.
  */
-export default function AffiliateLink({ 
-  href, 
-  productId, 
-  productName, 
+export default function AffiliateLink({
+  href,
+  productId,
+  productName,
   category,
-  children, 
+  brand,
+  position,
+  blogId,
+  blogSlug,
+  cardIndex,
+  children,
   className,
-  style 
+  style,
 }) {
-  const handleClick = () => {
-    // Trackear clic en enlace de afiliado
-    if (productId && productName) {
-      trackAffiliateClick(productId, productName, category || 'unknown');
-    }
+  const registrar = () => {
+    if (!productId) return;
+    trackAffiliateClick({
+      productId,
+      productName,
+      category: category || 'sin_categoria',
+      brand,
+      linkPosition: position || 'sin_definir',
+      blogId,
+      blogSlug,
+      cardIndex,
+    });
   };
 
   return (
@@ -26,7 +43,12 @@ export default function AffiliateLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer sponsored"
-      onClick={handleClick}
+      onClick={registrar}
+      /* El clic con la rueda del ratón dispara `auxclick`, no `click`: sin
+         esto, abrir el enlace en una pestaña nueva no se contaría. */
+      onAuxClick={(e) => {
+        if (e.button === 1) registrar();
+      }}
       className={className}
       style={style}
     >

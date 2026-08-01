@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { addReadBlog } from '@/lib/supabase';
 import { trackBlogRead } from '@/lib/analytics';
+import { consumeNavSource } from '@/lib/navSource';
 
 export default function BlogReadTracker({ blogId, blog }) {
   const { user, isLoggedIn } = useAuth();
@@ -13,7 +14,13 @@ export default function BlogReadTracker({ blogId, blog }) {
       try {
         // Trackear en Google Analytics si tenemos datos del blog
         if (blog) {
-          trackBlogRead(blog.id, blog.title, blog.category);
+          trackBlogRead({
+            blogId: blog.id,
+            blogSlug: blog.slug,
+            blogTitle: blog.title,
+            category: blog.category,
+            origen: consumeNavSource(),
+          });
         }
 
         // Registrar la lectura en BD si hay usuario

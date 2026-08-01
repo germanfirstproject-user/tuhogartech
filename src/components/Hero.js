@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import TrackedLink from './TrackedLink';
 import styles from './Hero.module.css';
 
 /**
@@ -36,12 +36,20 @@ export default function Hero({ stats, categories = [], picks = [] }) {
             </p>
 
             <div className={styles.actions}>
-              <Link href="/productos" className={styles.buttonPrimary}>
+              <TrackedLink
+                href="/productos"
+                modulo="home_portada_boton_catalogo"
+                className={styles.buttonPrimary}
+              >
                 Ver todos los productos
-              </Link>
-              <Link href="/blog" className={styles.buttonGhost}>
+              </TrackedLink>
+              <TrackedLink
+                href="/blog"
+                modulo="home_portada_boton_guias"
+                className={styles.buttonGhost}
+              >
                 Leer las guías
-              </Link>
+              </TrackedLink>
             </div>
 
             {stats?.productsCount > 0 && (
@@ -65,6 +73,7 @@ export default function Hero({ stats, categories = [], picks = [] }) {
                     product={product}
                     label={label}
                     priority={i === 0}
+                    posicion={i + 1}
                   />
                 ))}
               </div>
@@ -75,18 +84,29 @@ export default function Hero({ stats, categories = [], picks = [] }) {
             <nav className={styles.index} aria-label="Categorías principales">
               <p className={styles.blockLabel}>Explorar por categoría</p>
               <ul className={styles.indexList}>
-                {topCategories.map((cat) => (
+                {topCategories.map((cat, i) => (
                   <li key={cat.slug}>
-                    <Link href={`/categoria/${cat.slug}`} className={styles.indexItem}>
+                    <TrackedLink
+                      href={`/categoria/${cat.slug}`}
+                      modulo="home_portada_categorias"
+                      itemId={cat.slug}
+                      itemName={cat.name}
+                      posicion={i + 1}
+                      className={styles.indexItem}
+                    >
                       <span className={styles.indexName}>{cat.name}</span>
                       <span className={styles.indexCount}>{cat.count}</span>
-                    </Link>
+                    </TrackedLink>
                   </li>
                 ))}
               </ul>
-              <Link href="/productos" className={styles.indexAll}>
+              <TrackedLink
+                href="/productos"
+                modulo="home_portada_todas_categorias"
+                className={styles.indexAll}
+              >
                 Ver todas las categorías
-              </Link>
+              </TrackedLink>
             </nav>
           )}
         </div>
@@ -102,7 +122,7 @@ export default function Hero({ stats, categories = [], picks = [] }) {
  * la valoración, así que la nota va en grande y a la altura del titular, no
  * como un detalle al pie.
  */
-function PickCard({ product, label, priority = false }) {
+function PickCard({ product, label, priority = false, posicion = 1 }) {
   // Postgres devuelve `rating` como cadena ("4.7"), así que hay que convertirlo
   // antes de formatearlo o saldría con punto en vez de coma.
   const rating = Number(product.rating);
@@ -119,7 +139,16 @@ function PickCard({ product, label, priority = false }) {
   const hasReviews = Number.isFinite(reviews) && reviews > 0;
 
   return (
-    <Link href={`/producto/${product.id}`} className={styles.card}>
+    <TrackedLink
+      href={`/producto/${product.id}`}
+      /* Cada hueco de la portada se mide por separado: interesa saber si el
+         segundo destacado recibe algo o si toda la atención va al primero. */
+      modulo={`home_portada_destacado_${posicion}`}
+      itemId={product.id}
+      itemName={product.title}
+      posicion={posicion}
+      className={styles.card}
+    >
       <div className={styles.cardMedia}>
         {product.images?.[0] && (
           <img
@@ -164,6 +193,6 @@ function PickCard({ product, label, priority = false }) {
           </svg>
         </span>
       </div>
-    </Link>
+    </TrackedLink>
   );
 }

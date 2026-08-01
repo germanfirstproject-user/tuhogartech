@@ -2,9 +2,16 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { setNavSource } from '@/lib/navSource';
+import { trackModuleClick } from '@/lib/analytics';
 import styles from './Carousel.module.css';
 
-export default function Carousel({ items, type = 'product' }) {
+/**
+ * @param {string} moduleName - Identificador del módulo para la medición.
+ *   Se registra al pulsar una tarjeta y viaja hasta la página de destino, que
+ *   es lo que permite saber qué bloque de la home trae visitas.
+ */
+export default function Carousel({ items, type = 'product', moduleName }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
   const [viewportWidth, setViewportWidth] = useState(0);
@@ -119,13 +126,26 @@ export default function Carousel({ items, type = 'product' }) {
   );
 }
 
-function ProductCard({ product }) {
+function ProductCard({ product, moduleName, posicion }) {
+  const registrar = () => {
+    if (!moduleName) return;
+    setNavSource(moduleName, { pagina: 'inicio' });
+    trackModuleClick({
+      modulo: moduleName,
+      destino: 'producto',
+      itemId: product.id,
+      itemName: product.title,
+      posicion,
+    });
+  };
+
   return (
     <Link 
       href={`/producto/${product.id}`} 
       className={styles.card} 
       prefetch={false}
       scroll={true}
+      onClick={registrar}
     >
       <div className={styles.imageContainer}>
         {product.images?.[0] ? (
@@ -171,7 +191,7 @@ function ProductCard({ product }) {
   );
 }
 
-function BlogCard({ blog }) {
+function BlogCard({ blog, moduleName, posicion }) {
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -182,12 +202,25 @@ function BlogCard({ blog }) {
     });
   };
 
+  const registrar = () => {
+    if (!moduleName) return;
+    setNavSource(moduleName, { pagina: 'inicio' });
+    trackModuleClick({
+      modulo: moduleName,
+      destino: 'blog',
+      itemId: blog.id,
+      itemName: blog.title,
+      posicion,
+    });
+  };
+
   return (
     <Link 
       href={`/blog/${blog.slug || blog.id}`} 
       className={styles.card} 
       prefetch={false}
       scroll={true}
+      onClick={registrar}
     >
       <div className={styles.imageContainer}>
         {blog.featured_image ? (

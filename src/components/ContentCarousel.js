@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import Link from 'next/link';
+
+import TrackedLink from './TrackedLink';
 import styles from './ContentCarousel.module.css';
 
 const AUTOPLAY_MS = 6000;
@@ -52,23 +53,39 @@ export default function ContentCarousel({ slides = [] }) {
             aria-hidden={i !== current}
             inert={i !== current ? '' : undefined}
           >
-            <Link href={slide.href} className={styles.media} tabIndex={i === current ? 0 : -1}>
+            <TrackedLink
+              href={slide.href}
+              modulo="home_carrusel_contenidos"
+              itemId={slide.href}
+              itemName={slide.title}
+              posicion={i + 1}
+              className={styles.media}
+              tabIndex={i === current ? 0 : -1}
+            >
               {/* Decorativa: el mensaje está en el texto contiguo */}
               <img src={slide.image} alt="" className={styles.image} loading={i === 0 ? 'eager' : 'lazy'} />
-            </Link>
+            </TrackedLink>
 
             <div className={styles.body}>
               <p className={styles.kicker}>{slide.kicker}</p>
               <h2 className={styles.title}>{slide.title}</h2>
               <p className={styles.text}>{slide.text}</p>
-              <Link href={slide.href} className={styles.cta} tabIndex={i === current ? 0 : -1}>
+              <TrackedLink
+                href={slide.href}
+                modulo="home_carrusel_contenidos"
+                itemId={slide.href}
+                itemName={slide.title}
+                posicion={i + 1}
+                className={styles.cta}
+                tabIndex={i === current ? 0 : -1}
+              >
                 {slide.cta}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
-              </Link>
+              </TrackedLink>
             </div>
           </article>
         ))}

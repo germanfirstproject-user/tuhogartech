@@ -7,7 +7,7 @@ import styles from './BlogProductSummary.module.css';
  * Quien llega al final ya ha leído el argumento y es cuando más cerca está de
  * decidir; tener aquí los productos citados evita obligarle a subir a buscarlos.
  */
-export default function BlogProductSummary({ products = [] }) {
+export default function BlogProductSummary({ products = [], blog }) {
   if (products.length === 0) return null;
 
   return (
@@ -21,8 +21,14 @@ export default function BlogProductSummary({ products = [] }) {
       </p>
 
       <div className={styles.list}>
-        {products.map((product) => (
-          <BlogProductCard key={product.id} product={product} compact />
+        {products.map((product, i) => (
+          <BlogProductCard
+            key={product.id}
+            product={product}
+            blog={blog}
+            index={i + 1}
+            compact
+          />
         ))}
       </div>
     </section>

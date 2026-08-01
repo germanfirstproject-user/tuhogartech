@@ -245,7 +245,15 @@ export default async function BlogPostPage({ params }) {
         <div className={styles.content}>
           {contentSegments.map((segment, i) =>
             segment.type === 'product' ? (
-              <BlogProductCard key={`p-${segment.id}-${i}`} product={productsById[segment.id]} />
+              <BlogProductCard
+                key={`p-${segment.id}-${i}`}
+                product={productsById[segment.id]}
+                blog={blog}
+                /* Orden de aparición dentro del artículo: permite ver si la
+                   primera tarjeta se lleva todos los clics o si la gente
+                   llega hasta la última. */
+                index={mentionedIds.indexOf(segment.id) + 1}
+              />
             ) : (
               <BlogContentRenderer
                 key={`h-${i}`}
@@ -256,7 +264,7 @@ export default async function BlogPostPage({ params }) {
           )}
         </div>
 
-        <BlogProductSummary products={mentionedProducts} />
+        <BlogProductSummary products={mentionedProducts} blog={blog} />
 
         {/* Obligatorio siempre que la página incluya enlaces de afiliado */}
         {mentionedProducts.length > 0 && <AmazonDisclaimer />}

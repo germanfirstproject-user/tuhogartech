@@ -123,7 +123,7 @@ export default async function HomePage() {
               Otros productos que recomendamos ahora mismo
             </p>
           </div>
-          <Carousel items={restoDestacados} type="product" />
+          <Carousel items={restoDestacados} type="product" moduleName="home_mas_seleccion" />
         </section>
       )}
 
@@ -137,7 +137,7 @@ export default async function HomePage() {
           </p>
         </div>
         {topRatedProducts.length > 0 ? (
-          <Carousel items={topRatedProducts} type="product" />
+          <Carousel items={topRatedProducts} type="product" moduleName="home_mejor_valorados" />
         ) : (
           <div className={styles.emptyCarousel}>No hay productos disponibles</div>
         )}
@@ -150,7 +150,7 @@ export default async function HomePage() {
           <p className={styles.sectionSubtitle}>Las últimas guías y análisis de productos</p>
         </div>
         {recentBlogs.length > 0 ? (
-          <Carousel items={recentBlogs} type="blog" />
+          <Carousel items={recentBlogs} type="blog" moduleName="home_guias_recientes" />
         ) : (
           <div className={styles.emptyCarousel}>No hay artículos disponibles</div>
         )}

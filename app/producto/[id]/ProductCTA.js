@@ -24,6 +24,8 @@ export default function ProductCTA({ product }) {
         productId={product.id}
         productName={product.title}
         category={product.category}
+        brand={product.brand}
+        position="ficha_cierre"
         className={styles.button}
       >
         Ver precio en Amazon

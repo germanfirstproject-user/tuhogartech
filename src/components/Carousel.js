@@ -8,11 +8,14 @@ import { trackModuleClick } from '@/lib/analytics';
 import styles from './Carousel.module.css';
 
 /**
- * @param {string} moduleName - Identificador del módulo para la medición.
+ * @param {string} moduleName    - Identificador del módulo para la medición.
  *   Se registra al pulsar una tarjeta y viaja hasta la página de destino, que
  *   es lo que permite saber qué bloque de la home trae visitas.
+ * @param {string[]} idsDestacados - Productos marcados como destacados. Su
+ *   tarjeta lleva distintivo aparezca en el carrusel que aparezca.
  */
-export default function Carousel({ items, type = 'product', moduleName }) {
+export default function Carousel({ items, type = 'product', moduleName, idsDestacados = [] }) {
+  const destacados = new Set(idsDestacados);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
   const [viewportWidth, setViewportWidth] = useState(0);
@@ -104,9 +107,20 @@ export default function Carousel({ items, type = 'product', moduleName }) {
         >
           {items.map((item, index) => (
             type === 'product' ? (
-              <ProductCard key={item.id || index} product={item} />
+              <ProductCard
+                key={item.id || index}
+                product={item}
+                moduleName={moduleName}
+                posicion={index + 1}
+                destacado={destacados.has(item.id)}
+              />
             ) : (
-              <BlogCard key={item.id || index} blog={item} />
+              <BlogCard
+                key={item.id || index}
+                blog={item}
+                moduleName={moduleName}
+                posicion={index + 1}
+              />
             )
           ))}
         </div>
@@ -127,7 +141,7 @@ export default function Carousel({ items, type = 'product', moduleName }) {
   );
 }
 
-function ProductCard({ product, moduleName, posicion }) {
+function ProductCard({ product, moduleName, posicion, destacado = false }) {
   const registrar = () => {
     if (!moduleName) return;
     setNavSource(moduleName, { pagina: 'inicio' });
@@ -150,6 +164,7 @@ function ProductCard({ product, moduleName, posicion }) {
     >
       <div className={styles.imageContainer}>
         <ProductVisual product={product} />
+        {destacado && <span className={styles.badgeDestacado}>Destacado</span>}
       </div>
       
       <div className={styles.cardContent}>

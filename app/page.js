@@ -104,8 +104,9 @@ export default async function HomePage() {
     }
   }
 
-  const idsEnPortada = new Set(heroPicks.map(({ product }) => product.id));
-  const restoDestacados = featuredProducts.filter((p) => p && !idsEnPortada.has(p.id));
+  // La tarjeta de un destacado lleva distintivo salga en el carrusel que salga,
+  // también entre los mejor valorados.
+  const idsDestacados = featuredProducts.filter(Boolean).map((p) => p.id);
 
   return (
     <main className={styles.main}>
@@ -113,17 +114,23 @@ export default async function HomePage() {
 
       <ContentCarousel slides={contentSlides} />
 
-      {/* Resto de destacados: los dos primeros ya están en la portada y
-          repetirlos justo debajo no aporta nada. */}
-      {restoDestacados.length > 0 && (
+      {/* Productos destacados: la selección completa, incluidos los dos que
+          abren la portada. La sección tiene entidad propia y dejarlos fuera
+          la dejaba incompleta. */}
+      {featuredProducts.length > 0 && (
         <section className={styles.carouselSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Más de la selección</h2>
+            <h2 className={styles.sectionTitle}>Productos destacados</h2>
             <p className={styles.sectionSubtitle}>
-              Otros productos que recomendamos ahora mismo
+              Nuestra selección del catálogo, la que recomendamos ahora mismo
             </p>
           </div>
-          <Carousel items={restoDestacados} type="product" moduleName="home_mas_seleccion" />
+          <Carousel
+            items={featuredProducts}
+            type="product"
+            moduleName="home_destacados"
+            idsDestacados={idsDestacados}
+          />
         </section>
       )}
 
@@ -137,7 +144,12 @@ export default async function HomePage() {
           </p>
         </div>
         {topRatedProducts.length > 0 ? (
-          <Carousel items={topRatedProducts} type="product" moduleName="home_mejor_valorados" />
+          <Carousel
+            items={topRatedProducts}
+            type="product"
+            moduleName="home_mejor_valorados"
+            idsDestacados={idsDestacados}
+          />
         ) : (
           <div className={styles.emptyCarousel}>No hay productos disponibles</div>
         )}

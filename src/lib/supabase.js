@@ -979,7 +979,7 @@ export async function deleteProductSeo(productId) {
 export async function getCategoriesWithCounts() {
   try {
     const [catsResult, productsResult] = await Promise.all([
-      supabase.from('categories').select('name, slug'),
+      supabase.from('categories').select('name, slug, image_url, image_alt'),
       supabase.from('products').select('category'),
     ]);
 
@@ -995,7 +995,14 @@ export async function getCategoriesWithCounts() {
     }
 
     const data = (catsResult.data || [])
-      .map((cat) => ({ name: cat.name, slug: cat.slug, count: counts.get(cat.name) || 0 }))
+      .map((cat) => ({
+        name: cat.name,
+        slug: cat.slug,
+        // La imagen viaja hasta el carrusel de la portada
+        image_url: cat.image_url,
+        image_alt: cat.image_alt,
+        count: counts.get(cat.name) || 0,
+      }))
       .filter((cat) => cat.count > 0)
       .sort((a, b) => b.count - a.count);
 

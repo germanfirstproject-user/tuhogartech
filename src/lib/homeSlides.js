@@ -4,7 +4,8 @@
  * mantenerlas a mano cuando cambia el catálogo.
  */
 
-// Portadas propias por categoría. La clave es el slug de la tabla categories.
+// Portadas de reserva por categoría, para cuando una no tenga imagen propia
+// subida desde el panel. La clave es el slug de la tabla categories.
 const COVERS = {
   'bateras-y-energa': '/hero/hub-energia.webp',
   'smart-home': '/hero/hub-smart-home.webp',
@@ -65,7 +66,11 @@ export function buildContentSlides(categories = [], blogs = [], settings = null)
 
     slides.push({
       href: `/categoria/${slug}`,
-      image: COVERS[slug] || COVER_FALLBACK,
+      // Manda la imagen que tenga la categoría en su ficha: es la misma que ve
+      // quien llega, así que el carrusel no promete una cosa y enseña otra.
+      image: category.image_url || null,
+      respaldo: COVERS[slug] || COVER_FALLBACK,
+      imageAlt: category.image_alt || category.name,
       kicker: pitch.kicker,
       title: pitch.title,
       text: pitch.text,
@@ -80,7 +85,9 @@ export function buildContentSlides(categories = [], blogs = [], settings = null)
     latest
       ? {
           href: `/blog/${latest.slug || latest.id}`,
-          image: latest.featured_image || COVER_FALLBACK,
+          image: latest.featured_image || null,
+          respaldo: COVER_FALLBACK,
+          imageAlt: latest.featured_image_alt || latest.title,
           kicker: 'Guías y análisis',
           title: latest.title,
           text:
@@ -90,7 +97,9 @@ export function buildContentSlides(categories = [], blogs = [], settings = null)
         }
       : {
           href: '/blog',
-          image: COVER_FALLBACK,
+          image: null,
+          respaldo: COVER_FALLBACK,
+          imageAlt: 'Guías y comparativas de Tu Hogar Tech',
           kicker: 'Guías y análisis',
           title: 'Comparativas y guías de compra',
           text: 'Análisis escritos con criterio propio, sin repetir la ficha del fabricante ni inflar cifras.',
@@ -98,9 +107,14 @@ export function buildContentSlides(categories = [], blogs = [], settings = null)
         }
   );
 
-  // Las imágenes subidas al panel mandan sobre las portadas por defecto.
+  // Orden de preferencia de la imagen:
+  //   1. la de la propia categoría o entrada, que es la que verá quien pulse;
+  //   2. la que se haya subido al panel para esa posición del carrusel;
+  //   3. la portada de reserva que va en el repositorio.
+  // El panel manda sobre la reserva, pero no sobre la ficha: si no, el
+  // carrusel enseñaba una foto y la categoría de destino otra distinta.
   return slides.map((slide, i) => {
-    const custom = overrides[i];
-    return custom ? { ...slide, image: custom } : slide;
+    const { respaldo, ...resto } = slide;
+    return { ...resto, image: slide.image || overrides[i] || respaldo };
   });
 }

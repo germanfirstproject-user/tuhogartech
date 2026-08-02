@@ -155,27 +155,31 @@
 }
 
 .arrow {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--color-background-secondary);
-  border: 1px solid var(--color-border-dark);
-  border-radius: var(--radius-md);
-  color: var(--color-text-secondary);
+  /* Con el borde claro el boton daba 1,56:1 contra el papel: se veia la
+     flecha suelta, no un control. Mismo criterio que en el otro carrusel. */
+  border: 1px solid var(--color-text-secondary);
+  border-radius: 50%;
+  color: var(--color-text);
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  box-shadow: 0 2px 8px rgba(29, 28, 24, 0.13);
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
 .arrow svg {
-  width: 1rem;
-  height: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .arrow:hover {
   border-color: var(--color-text);
-  color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-background-secondary);
 }
 
 /* ---- Adaptación ---- */

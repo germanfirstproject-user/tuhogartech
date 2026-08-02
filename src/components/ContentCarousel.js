@@ -63,7 +63,7 @@ export default function ContentCarousel({ slides = [] }) {
               tabIndex={i === current ? 0 : -1}
             >
               {/* Decorativa: el mensaje está en el texto contiguo */}
-              <img src={slide.image} alt="" className={styles.image} loading={i === 0 ? 'eager' : 'lazy'} />
+              <img src={slide.image} alt={slide.imageAlt || ''} className={styles.image} loading={i === 0 ? "eager" : "lazy"} />
             </TrackedLink>
 
             <div className={styles.body}>

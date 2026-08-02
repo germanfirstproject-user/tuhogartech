@@ -5,7 +5,14 @@ import ProductVisual from './ProductVisual';
 import FavoriteButton from '@/components/FavoriteButton';
 import styles from './ProductsGrid.module.css';
 
-export default function ProductsGrid({ products }) {
+/**
+ * @param {string[]} idsDestacados - Productos marcados como destacados en el
+ *   panel. Su tarjeta lleva distintivo, igual que en los carruseles de la
+ *   portada, para que la selección se reconozca también dentro del listado.
+ */
+export default function ProductsGrid({ products, idsDestacados = [] }) {
+  const destacados = new Set(idsDestacados);
+
   return (
     <div className={styles.grid}>
       {products.map((product) => (
@@ -18,6 +25,9 @@ export default function ProductsGrid({ products }) {
               {/* Imagen */}
               <div className={styles.imageContainer}>
                 <ProductVisual product={product} />
+                {destacados.has(product.id) && (
+                  <span className={styles.badgeDestacado}>Destacado</span>
+                )}
               </div>
 
               {/* Contenido */}

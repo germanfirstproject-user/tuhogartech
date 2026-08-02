@@ -1,5 +1,10 @@
 import Link from 'next/link';
-import { getCategoryBySlug, getCategories, getProductsByCategory } from '@/lib/supabase';
+import {
+  getCategoryBySlug,
+  getCategories,
+  getProductsByCategory,
+  getFeaturedProductIds,
+} from '@/lib/supabase';
 import ProductsGrid from '@/components/ProductsGrid';
 import styles from '../page.module.css';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
@@ -64,8 +69,12 @@ export default async function CategoryPage({ params }) {
   }
 
   // Obtener productos de esta categoría
-  const productsResult = await getProductsByCategory(category.name, 1, 100);
+  const [productsResult, destacadosResult] = await Promise.all([
+    getProductsByCategory(category.name, 1, 100),
+    getFeaturedProductIds(),
+  ]);
   const products = productsResult.success ? productsResult.data : [];
+  const idsDestacados = destacadosResult.success ? destacadosResult.data : [];
 
   return (
     <main className={styles.categoryPage}>
@@ -82,7 +91,7 @@ export default async function CategoryPage({ params }) {
 
       {products.length > 0 ? (
         <div className={styles.productsSection}>
-          <ProductsGrid products={products} />
+          <ProductsGrid products={products} idsDestacados={idsDestacados} />
         </div>
       ) : (
         <div className={styles.emptyProducts}>

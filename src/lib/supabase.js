@@ -1775,6 +1775,31 @@ export async function updateSiteSettings(settings) {
 // Featured Products - Admin Selection
 // ==========================================
 
+/**
+ * Solo los identificadores de los productos destacados.
+ *
+ * Los listados ya traen sus productos: para marcar cuáles llevan distintivo
+ * basta con esta lista, sin volver a pedir la ficha completa de cada uno.
+ */
+export async function getFeaturedProductIds() {
+  try {
+    const { data, error } = await supabase
+      .from('featured_products')
+      .select('product_id')
+      .eq('is_active', true);
+
+    if (error) {
+      console.error('Error fetching featured product ids:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: (data || []).map((f) => f.product_id), error: null };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
 // Obtener productos destacados
 export async function getFeaturedProducts() {
   try {

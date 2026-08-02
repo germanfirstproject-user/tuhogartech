@@ -46,6 +46,23 @@
   justify-content: center;
 }
 
+/* Mismo distintivo que en los carruseles de la portada: quien reconoce la
+   selección ahí la reconoce aquí sin tener que aprenderse otra marca. */
+.badgeDestacado {
+  position: absolute;
+  top: 0.625rem;
+  left: 0.625rem;
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-label, 0.08em);
+  text-transform: uppercase;
+  padding: 0.3125rem 0.625rem;
+  border-radius: var(--radius-sm, 4px);
+  z-index: 2;
+}
+
 .productImage {
   max-width: 88%;
   max-height: 88%;

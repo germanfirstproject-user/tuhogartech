@@ -233,7 +233,9 @@ export default async function ProductDetailPage({ params }) {
               {product.price != null && (
                 <div className={styles.priceContainer}>
                   <p className={styles.priceLabel}>Precio:</p>
-                  <h2 className={styles.price}>{product.price}€</h2>
+                  {/* Un precio no encabeza ninguna sección: era un h2 y
+                      metía un nivel falso entre el h1 y las secciones. */}
+                  <p className={styles.price}>{product.price}€</p>
                 </div>
               )}
 

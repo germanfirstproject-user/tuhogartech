@@ -272,7 +272,9 @@ export default async function BlogPostPage({ params }) {
         {/* Tags */}
         {blog.tags && blog.tags.length > 0 && (
           <div className={styles.tagsSection}>
-            <h3 className={styles.tagsTitle}>Etiquetas:</h3>
+            {/* Sección del artículo, al mismo nivel que «Productos
+                mencionados»: como h3 colgaba de ella y no es hija suya. */}
+            <h2 className={styles.tagsTitle}>Etiquetas:</h2>
             <div className={styles.tags}>
               {blog.tags.map((tag, idx) => (
                 <span key={idx} className={styles.tag}>{tag}</span>

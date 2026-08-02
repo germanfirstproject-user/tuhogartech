@@ -214,6 +214,9 @@
   font-family: var(--font-family-display);
   font-size: var(--font-size-3xl);
   font-weight: 600;
+  /* Antes era un h2 y heredaba esta altura de línea de globals.css. Al pasar
+     a párrafo hay que fijarla o la caja crece. */
+  line-height: var(--line-height-tight);
   color: var(--color-text);
   margin: 0;
 }

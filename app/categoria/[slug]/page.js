@@ -91,6 +91,20 @@ export default async function CategoryPage({ params }) {
 
       {products.length > 0 ? (
         <div className={styles.productsSection}>
+          {/* El listado necesita su propio encabezado: sin él la página pasaba
+              del h1 de la categoría a los h3 de cada tarjeta, saltándose un
+              nivel, y no tenía ningún h2. */}
+          <div className={styles.listadoHeader}>
+            <h2 className={styles.listadoTitulo}>
+              Todos los productos de {category.name}
+            </h2>
+            <p className={styles.listadoNota}>
+              {products.length === 1
+                ? '1 producto analizado, con sus características y su valoración en Amazon'
+                : `${products.length} productos analizados, con sus características y su valoración en Amazon`}
+            </p>
+          </div>
+
           <ProductsGrid products={products} idsDestacados={idsDestacados} />
         </div>
       ) : (

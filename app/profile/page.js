@@ -400,7 +400,8 @@ export default function ProfilePage() {
                 <h3 className={styles.dangerTitle}>Zona de peligro</h3>
                 <div className={styles.securityItem}>
                   <div className={styles.securityInfo}>
-                    <h3 className={styles.securityTitle}>Eliminar cuenta</h3>
+                    {/* Va dentro de «Zona de peligro», que ya es un h3 */}
+                    <h4 className={styles.securityTitle}>Eliminar cuenta</h4>
                     <p className={styles.securityDescription}>
                       Se borran tu cuenta, favoritos, historial y preferencias de forma permanente
                     </p>

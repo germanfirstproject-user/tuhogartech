@@ -22,7 +22,9 @@ export default function CategoryAmazonCTA({ category }) {
       </span>
 
       <div className={styles.texto}>
-        <p className={styles.titulo}>¿Buscas más opciones de {category.name.toLowerCase()}?</p>
+        {/* Encabezado real, no un párrafo con aspecto de título: este bloque
+            es una sección propia dentro de la página de categoría. */}
+        <h2 className={styles.titulo}>¿Buscas más opciones de {category.name.toLowerCase()}?</h2>
         <p className={styles.nota}>
           Aquí abajo tienes nuestra selección analizada. Si prefieres ver el
           catálogo completo, el enlace lleva a la sección en Amazon.

@@ -53,6 +53,27 @@
   margin-top: 2rem;
 }
 
+/* Encabezado del listado. Existe por estructura, no por decoración: sin él la
+   página saltaba del h1 de la categoría a los h3 de cada tarjeta. */
+.listadoHeader {
+  margin-bottom: 1.75rem;
+}
+
+.listadoTitulo {
+  font-family: var(--font-family-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.375rem;
+  letter-spacing: -0.01em;
+}
+
+.listadoNota {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
 .emptyProducts {
   text-align: center;
   padding: 4rem 2rem;

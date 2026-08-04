@@ -63,21 +63,14 @@ export default function ProductsGrid({ products, idsDestacados = [] }) {
                   </p>
                 )}
 
-                {/* Footer */}
-                <div className={styles.footer}>
-                  {product.price != null && (
-                    <div className={styles.price}>{product.price}€</div>
-                  )}
-                </div>
               </div>
             </div>
           </Link>
-          
-          {/* Stock y Botón de favorito en la misma línea */}
+
+          {/* Ni precio ni disponibilidad: las políticas de afiliados de Amazon
+              exigen que esos datos vengan de su API y se refresquen cada 24 h.
+              Los ve el usuario al llegar a Amazon, que es donde son ciertos. */}
           <div className={styles.actionBar}>
-            <div className={product.stock === 'in_stock' ? styles.stockIn : styles.stockOut}>
-              {product.stock === 'in_stock' ? 'En stock' : 'Agotado'}
-            </div>
             <FavoriteButton productId={product.id} compact />
           </div>
         </div>

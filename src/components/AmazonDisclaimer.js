@@ -1,11 +1,14 @@
 import styles from './AmazonDisclaimer.module.css';
 
 export default function AmazonDisclaimer({ variant = 'full' }) {
+  // Ya no mostramos precios en ninguna parte, así que el aviso no puede
+  // hablar de «el precio incluido»: ahora explica por qué no está.
   if (variant === 'price') {
     return (
       <div className={styles.priceDisclaimer}>
         <p className={styles.priceText}>
-          ⓘ El precio incluido puede variar desde la fecha de publicación. Última actualización en Amazon.
+          ⓘ No mostramos precios ni disponibilidad porque cambian a diario. Los verás
+          actualizados en Amazon.
         </p>
       </div>
     );
@@ -22,7 +25,8 @@ export default function AmazonDisclaimer({ variant = 'full' }) {
             por publicidad, publicitando e incluyendo enlaces a Amazon.es y sitios afiliados.
           </p>
           <p className={styles.subtext}>
-            Los precios y disponibilidad de los productos pueden variar. Última actualización en la fecha indicada.
+            No publicamos precios ni disponibilidad: los fija Amazon y cambian a diario.
+            El precio válido es siempre el que aparece en Amazon al completar la compra.
           </p>
         </div>
       </div>

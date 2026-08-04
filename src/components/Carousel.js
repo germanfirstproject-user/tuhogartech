@@ -181,14 +181,9 @@ function ProductCard({ product, moduleName, posicion, destacado = false }) {
           </div>
         )}
         
-        <div className={styles.footer}>
-          {product.price != null && (
-            <span className={styles.price}>{product.price}€</span>
-          )}
-          {product.stock === 'in_stock' && (
-            <span className={styles.stock}>En stock</span>
-          )}
-        </div>
+        {/* Sin precio ni disponibilidad: son datos que solo Amazon puede dar
+            actualizados, y sus políticas de afiliados no permiten mostrarlos
+            desde una copia propia. */}
       </div>
     </Link>
   );

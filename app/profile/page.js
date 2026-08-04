@@ -329,9 +329,7 @@ export default function ProfilePage() {
                         </div>
                         <div className={styles.productContent}>
                           <h4 className={styles.productTitle}>{product.title}</h4>
-                          {product.price != null && (
-                            <p className={styles.productPrice}>{product.price}€</p>
-                          )}
+                          {/* Sin precio, por las políticas de afiliados */}
                         </div>
                       </Link>
                     ))}

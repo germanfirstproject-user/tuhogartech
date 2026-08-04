@@ -12,12 +12,8 @@ export default function ProductCTA({ product }) {
 
       <h2 className={styles.title}>{product.title}</h2>
 
-      {product.price != null && (
-        <p className={styles.price}>
-          Precio orientativo:
-          <span className={styles.priceValue}>{product.price}&nbsp;€</span>
-        </p>
-      )}
+      {/* Sin precio: el de Amazon cambia a diario y sus políticas no permiten
+          mostrar una copia propia. El usuario lo ve al llegar. */}
 
       <AffiliateLink
         href={product.affiliate_link}

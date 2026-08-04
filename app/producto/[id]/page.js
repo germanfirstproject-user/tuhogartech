@@ -38,7 +38,8 @@ export async function generateMetadata({ params }) {
 
   return {
     title: seo?.seo_title || `${product.title} - Tu Hogar Tech`,
-    description: seo?.seo_description || product.description || `${product.title} por ${product.brand || 'N/A'}${product.price != null ? `. Precio: ${product.price}€` : ''}${product.rating ? `. Valoración: ${product.rating}/5` : ''}.`,
+    // La metadescripción tampoco lleva precio: es lo primero que envejece
+    description: seo?.seo_description || product.description || `${product.title} por ${product.brand || 'N/A'}${product.rating ? `. Valoración: ${product.rating}/5` : ''}.`,
     keywords: seo?.seo_keywords || `${product.title}, ${product.brand}, ${product.category}`,
     robots: seo?.meta_robots || 'index, follow',
     openGraph: {
@@ -228,35 +229,13 @@ export default async function ProductDetailPage({ params }) {
               )}
             </div>
 
-            {/* Price Section */}
+            {/* Ni precio ni disponibilidad. Las políticas del programa de
+                afiliados de Amazon exigen que esos dos datos procedan de su
+                API y se refresquen o borren cada 24 horas; una copia guardada
+                aquí no cumple, y además envejece mal. El usuario los ve
+                actualizados al llegar a Amazon. */}
             <div className={styles.priceSection}>
-              {product.price != null && (
-                <div className={styles.priceContainer}>
-                  <p className={styles.priceLabel}>Precio:</p>
-                  {/* Un precio no encabeza ninguna sección: era un h2 y
-                      metía un nivel falso entre el h1 y las secciones. */}
-                  <p className={styles.price}>{product.price}€</p>
-                </div>
-              )}
-
-              <div className={styles.metaInfo}>
-                <span className={product.stock === 'in_stock' ? styles.stockIn : styles.stockOut} style={{
-                  padding: 'var(--space-2) var(--space-3)',
-                  borderRadius: 'var(--radius-md)',
-                  fontSize: 'var(--font-size-sm)',
-                  fontWeight: 'var(--font-weight-semibold)',
-                  display: 'inline-block'
-                }}>
-                  {product.stock === 'in_stock' ? '✓ En stock' : 'Agotado'}
-                </span>
-                {product.currency && (
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>
-                    Moneda: {product.currency}
-                  </span>
-                )}
-              </div>
-
-              {/* Botón de compra */}
+              {/* Salida a Amazon */}
               <ProductActions product={product} styles={styles} />
               
               {/* Amazon Price Disclaimer */}

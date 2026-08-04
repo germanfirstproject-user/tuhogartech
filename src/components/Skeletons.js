@@ -132,13 +132,9 @@ export function ProductDetailSkeleton() {
             {/* Rating */}
             <div className={styles.ratingBox} />
             
-            {/* Price Section */}
-            <div className={styles.priceSection}>
-              <div className={styles.priceLabel} />
-              <div className={styles.priceValue} />
-              <div className={styles.stockBadge} />
-            </div>
-            
+            {/* El esqueleto ya no reserva hueco para precio ni disponibilidad:
+                dibujaba una sombra de algo que después no aparece. */}
+
             {/* Action Buttons */}
             <div className={styles.actionButtons}>
               <div className={styles.buttonBox} style={{ flex: 1 }} />

@@ -786,7 +786,7 @@ export async function insertBlog(blogData) {
       author_id: user?.id,
       // El nombre de firma lo decide el formulario. Nunca el correo de la
       // cuenta: se publica en la ficha, en el JSON-LD y en las Twitter Cards.
-      author_name: blogData.author_name || 'Redacción',
+      author_name: blogData.author_name || 'Tu Hogar Tech',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };

@@ -48,14 +48,14 @@ export async function generateMetadata({ params }) {
     title: title,
     description: description,
     keywords: keywords,
-    authors: blog.author_name ? [{ name: blog.author_name }] : [],
+    authors: [{ name: 'Tu Hogar Tech' }],
     openGraph: {
       title: blog.og_title || title,
       description: blog.og_description || description,
       images: image ? [{ url: image, alt: blog.featured_image_alt || blog.title }] : [],
       type: 'article',
       publishedTime: blog.published_at,
-      authors: blog.author_name ? [blog.author_name] : [],
+      authors: ['Tu Hogar Tech'],
       tags: blog.tags || [],
       siteName: 'Tu Hogar Tech',
     },
@@ -126,12 +126,13 @@ export default async function BlogPostPage({ params }) {
     "image": blog.featured_image ? [blog.featured_image] : [],
     "datePublished": blog.published_at,
     "dateModified": blog.updated_at || blog.published_at,
-    "author": blog.author_name ? {
-      "@type": "Person",
-      "name": blog.author_name
-    } : {
+    // El autor es la publicación, no una persona. Declarar un Person con el
+    // nombre de la marca sería describir mal lo que hay, y el marcado no debe
+    // afirmar nada que la página no sostenga.
+    "author": {
       "@type": "Organization",
-      "name": "Tu Hogar Tech"
+      "name": "Tu Hogar Tech",
+      "url": "https://tuhogartech.com/como-analizamos"
     },
     "publisher": {
       "@type": "Organization",
@@ -210,9 +211,11 @@ export default async function BlogPostPage({ params }) {
           )}
 
           <div className={styles.meta}>
-            {blog.author_name && (
-              <span className={styles.author}>Por {blog.author_name}</span>
-            )}
+            {/* La firma lleva a la metodología: es lo que sostiene lo que
+                dice el artículo, y sustituye a una biografía de autor. */}
+            <Link href="/como-analizamos" className={styles.author}>
+              Tu Hogar Tech · Cómo analizamos
+            </Link>
             {blog.published_at && (
               <span className={styles.date}>
                 {new Date(blog.published_at).toLocaleDateString('es-ES', {

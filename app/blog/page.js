@@ -72,9 +72,7 @@ export default async function BlogListPage({ searchParams }) {
                         })}
                       </span>
                     )}
-                    {blog.author_name && (
-                      <span className={styles.blogAuthor}>Por {blog.author_name}</span>
-                    )}
+                    <span className={styles.blogAuthor}>Tu Hogar Tech</span>
                   </div>
                   {blog.tags && blog.tags.length > 0 && (
                     <div className={styles.blogTags}>

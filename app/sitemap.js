@@ -25,6 +25,9 @@ export default async function sitemap() {
     { url: BASE, lastModified: ahora, changeFrequency: 'daily', priority: 1 },
     { url: `${BASE}/productos`, lastModified: ahora, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/blog`, lastModified: ahora, changeFrequency: 'weekly', priority: 0.8 },
+    // Prioridad alta para una página fija: es la que respalda la firma de
+    // todos los artículos y a la que apunta el marcado de autoría.
+    { url: `${BASE}/como-analizamos`, lastModified: ahora, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE}/aviso-legal`, lastModified: ahora, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${BASE}/privacidad`, lastModified: ahora, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${BASE}/terminos`, lastModified: ahora, changeFrequency: 'yearly', priority: 0.2 },

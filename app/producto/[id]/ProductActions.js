@@ -19,7 +19,7 @@ export default function ProductActions({ product, styles }) {
             style={{ textDecoration: 'none', flex: '1' }}
           >
             <button className={styles.primaryButton} style={{ width: '100%' }}>
-              Ver en Amazon
+              Ver precio actual en Amazon
             </button>
           </AffiliateLink>
         )}

@@ -56,6 +56,11 @@ export default function Footer() {
             <h4 className={styles.sectionSubtitle}>Legal</h4>
             <ul className={styles.linkList}>
               <li>
+                <Link href="/como-analizamos" className={styles.link}>
+                  Cómo analizamos
+                </Link>
+              </li>
+              <li>
                 <Link href="/aviso-legal" className={styles.link}>
                   Aviso legal
                 </Link>

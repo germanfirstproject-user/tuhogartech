@@ -663,9 +663,16 @@ export async function getBlogs(filters = {}, page = 1, pageSize = 12) {
       query = query.eq('category', filters.category);
     }
 
+    // Los listados públicos se ordenan por fecha de publicación, que es la que
+    // se enseña; ordenar por creación colocaría un artículo escrito hace meses
+    // y publicado hoy por debajo de otros más antiguos. En el panel, en cambio,
+    // interesa el orden de creación: los borradores no tienen fecha de
+    // publicación y quedarían todos al final.
+    const campoOrden = filters.status === 'published' ? 'published_at' : 'created_at';
+
     // Si no se solicita paginación (page = 0), retornar todo
     if (page === 0) {
-      query = query.order('created_at', { ascending: false });
+      query = query.order(campoOrden, { ascending: false, nullsFirst: false });
       const { data, error } = await query;
 
       if (error) {
@@ -681,7 +688,7 @@ export async function getBlogs(filters = {}, page = 1, pageSize = 12) {
     const to = from + pageSize - 1;
 
     query = query
-      .order('created_at', { ascending: false })
+      .order(campoOrden, { ascending: false, nullsFirst: false })
       .range(from, to);
 
     const { data, error, count } = await query;

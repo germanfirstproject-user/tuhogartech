@@ -251,7 +251,11 @@ function BlogCard({ blog, moduleName, posicion }) {
         )}
         
         <div className={styles.blogFooter}>
-          <span className={styles.date}>{formatDate(blog.created_at)}</span>
+          {/* La fecha que se enseña es la de publicación, no la de creación:
+              un artículo puede haberse escrito semanas antes de publicarse. */}
+          {blog.published_at && (
+            <span className={styles.date}>{formatDate(blog.published_at)}</span>
+          )}
           {blog.views_count > 0 && (
             <span className={styles.views}>{blog.views_count} lecturas</span>
           )}

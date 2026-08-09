@@ -92,27 +92,22 @@ export default async function ProductDetailPage({ params }) {
   // Usar el slug real de la BD, o generarlo como fallback
   const categorySlug = categoryData?.slug || categoryToSlug(product.category);
 
-  // Schema.org - Product
+  // Aquí había un bloque Product y se ha retirado a conciencia.
   //
-  // Sin aggregateRating ni offers a propósito:
-  //  - Las valoraciones son de Amazon, no reseñas recogidas en esta web.
-  //    Marcarlas como calificación propia incumple las directrices de Google
-  //    para fragmentos de reseña y expone a una acción manual por marcado
-  //    estructurado con spam. Las estrellas se siguen mostrando en pantalla,
-  //    atribuidas a Amazon, pero no se declaran al buscador.
-  //  - No vendemos el producto: el vendedor es Amazon. Declarar una oferta
-  //    propia con su precio sería inexacto.
-  const productSchema = {
-    "@context": "https://schema.org/",
-    "@type": "Product",
-    "name": product.title,
-    "description": product.description || product.title,
-    "brand": product.brand ? {
-      "@type": "Brand",
-      "name": product.brand
-    } : undefined,
-    "sku": product.asin || product.id
-  };
+  // Google exige que un Product declare al menos uno de estos tres campos:
+  // offers, review o aggregateRating. Ninguno nos corresponde:
+  //  - aggregateRating: las valoraciones son de Amazon, no reseñas recogidas
+  //    en esta web. Declararlas como calificación propia incumple las
+  //    directrices y expone a una acción manual por marcado con spam. Las
+  //    estrellas se siguen enseñando en pantalla, atribuidas a Amazon, pero
+  //    no se declaran al buscador.
+  //  - offers: no vendemos nada. El vendedor es Amazon y el precio lo pone él.
+  //  - review: no publicamos reseñas con nota propia.
+  //
+  // Un Product sin ninguno de los tres no da fragmento enriquecido y sí genera
+  // un aviso permanente en Search Console y en las auditorías. Como no aporta
+  // nada y ensucia los informes, se emite solo la ruta de navegación, que sí
+  // es válida y sí se usa.
 
   // Schema.org - BreadcrumbList
   const breadcrumbSchema = {
@@ -149,10 +144,6 @@ export default async function ProductDetailPage({ params }) {
   return (
     <>
       {/* JSON-LD Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}

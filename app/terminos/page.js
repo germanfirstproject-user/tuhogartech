@@ -235,7 +235,13 @@ export default function TerminosPage() {
           </p>
           <p>
             Los consumidores y usuarios pueden acudir a la plataforma de resolución de litigios en línea de la
-            Comisión Europea: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr</a>
+            Comisión Europea:{' '}
+            {/* El texto del enlace describe el destino. Pegar la URL cruda deja
+                al rastreador sin señal de a dónde lleva, y al lector sin saberlo
+                hasta que la descifra. */}
+            <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">
+              plataforma europea de resolución de litigios en línea (ODR)
+            </a>
           </p>
         </section>
 

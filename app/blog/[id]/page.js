@@ -139,7 +139,7 @@ export default async function BlogPostPage({ params }) {
       "name": "Tu Hogar Tech",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://tuhogartech.com/logo.png"
+        "url": "https://tuhogartech.com/icon-512.png"
       }
     },
     "mainEntityOfPage": {

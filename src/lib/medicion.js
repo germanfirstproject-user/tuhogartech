@@ -22,6 +22,7 @@
  */
 
 import { CONSENT_VERSION, hasStatsConsent } from './cookieConsent';
+import { esTraficoPropio } from './traficoPropio';
 
 const CLAVE_SESION = 'tht_med_sid';
 const CLAVE_INICIO = 'tht_med_ini';
@@ -41,6 +42,10 @@ const MAX_COLA = 60;
 // ---------------------------------------------------------------- estado
 
 let activo = false;
+// Nada sale a la red hasta que se sabe si quien navega es el administrador.
+// Los eventos se quedan en la cola mientras tanto; si resulta ser él, se
+// descartan enteros en lugar de haberlos mandado ya.
+let envioAutorizado = false;
 let cola = [];
 let sesion = null;
 let pendienteScroll = false;
@@ -234,7 +239,7 @@ function recuperarPathAnterior() {
 // ------------------------------------------------------- envío
 
 function enviar({ conBeacon = false } = {}) {
-  if (!cola.length || !sesion) return;
+  if (!envioAutorizado || !cola.length || !sesion) return;
 
   const lote = cola.splice(0, cola.length);
   const cuerpo = JSON.stringify({
@@ -327,7 +332,15 @@ export function cerrarPagina() {
 export function abrirPagina(path) {
   if (!activo) return;
 
+  // Se cierra siempre la anterior, también al entrar en una ruta excluida: si
+  // alguien pasa de un artículo al panel, el tiempo que pasó en el artículo es
+  // real y debe registrarse.
   cerrarPagina();
+
+  if (esTraficoPropio(path)) {
+    pagina = null;
+    return;
+  }
 
   const abierta = {
     path,
@@ -610,6 +623,23 @@ export function arrancar() {
   // en que la visita se interrumpe.
 }
 
+/**
+ * Da permiso para que la cola salga a la red.
+ *
+ * Se llama en cuanto se confirma que quien navega no es el administrador.
+ * Hasta entonces la medición funciona con normalidad pero no manda nada, de
+ * modo que un visitante normal no pierde ni el primer segundo de su visita y
+ * el administrador no llega a generar ni una fila.
+ */
+export function autorizarEnvio() {
+  if (envioAutorizado) return;
+  // No se comprueba que la medición esté ya en marcha: quién navega suele
+  // saberse antes de que la persona acepte las cookies, y exigir que lo
+  // estuviera dejaba el permiso sin conceder para siempre.
+  envioAutorizado = true;
+  enviar();
+}
+
 /** Detiene la medición y borra el rastro. Se usa al retirar el consentimiento. */
 export function parar({ olvidar = true } = {}) {
   if (!activo) return;
@@ -626,6 +656,11 @@ export function parar({ olvidar = true } = {}) {
 
   cola = [];
   pendienteScroll = false;
+  // envioAutorizado no se toca: es una propiedad de quién navega, no del
+  // estado de la medición. Pararla por falta de consentimiento y volver a
+  // arrancarla al aceptar no cambia que ya se sabía que no era el
+  // administrador. Y si lo es, esTraficoPropio() impide que se encole nada,
+  // así que el permiso queda sin efecto de todos modos.
   pagina = null;
   pathAnterior = null;
 

@@ -86,8 +86,10 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://www.googletagmanager.com" />
       </head>
       <body className={`${inter.variable} ${fraunces.variable}`}>
-        <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         <AuthProvider>
+          {/* Dentro del proveedor de sesión: necesita saber si quien navega es
+              el administrador para no medirse a sí mismo. */}
+          <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
           <Header />
           {children}
           <Footer />

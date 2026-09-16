@@ -1,10 +1,18 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { CONSENT_EVENT, hasStatsConsent } from '@/lib/cookieConsent';
-import { abrirPagina, arrancar, cerrarPagina, confirmarVista, parar } from '@/lib/medicion';
+import {
+  abrirPagina,
+  arrancar,
+  autorizarEnvio,
+  cerrarPagina,
+  confirmarVista,
+  parar,
+} from '@/lib/medicion';
+import { esTraficoPropio, marcarSesionDeAdmin } from '@/lib/traficoPropio';
 
 /**
  * Monta la medición propia y le va contando los cambios de ruta.
@@ -23,11 +31,36 @@ export default function Medicion() {
 function MedicionInterna() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { isAdmin, loading } = useAuth();
+
+  /**
+   * Quién navega. Mientras la sesión se está comprobando, la medición sigue
+   * funcionando pero retiene lo que acumula.
+   *
+   * Se hace así y no esperando a medir porque la comprobación puede tardar
+   * unas décimas: si durante ese rato no se midiera nada, una visita que entra
+   * y se va enseguida —que es justo la que más interesa detectar— se perdería
+   * entera.
+   */
+  useEffect(() => {
+    if (loading) return;
+
+    marcarSesionDeAdmin(isAdmin);
+
+    if (isAdmin) {
+      // Se descarta todo lo acumulado. No se ha mandado nada todavía, así que
+      // no queda ni rastro de la navegación del administrador.
+      parar();
+      return;
+    }
+
+    autorizarEnvio();
+  }, [isAdmin, loading]);
 
   // Arranque y reacción al consentimiento. Si se retira, se para y se borra.
   useEffect(() => {
     const sincronizar = () => {
-      if (hasStatsConsent()) {
+      if (hasStatsConsent() && !esTraficoPropio(window.location.pathname)) {
         arrancar();
         // Al aceptar desde el banner ya estamos dentro de una página: hay que
         // abrirla a mano porque el efecto de ruta no se va a volver a ejecutar.
@@ -46,6 +79,14 @@ function MedicionInterna() {
   useEffect(() => {
     if (!hasStatsConsent()) return undefined;
 
+    // Las rutas del panel no se miden. abrirPagina también lo comprueba, pero
+    // así se evita incluso arrancar la medición si la visita empieza ahí.
+    if (esTraficoPropio(pathname)) {
+      cerrarPagina();
+      return undefined;
+    }
+
+    arrancar();
     abrirPagina(pathname);
 
     // Un respiro antes de mandar la vista: los medidores de cada plantilla

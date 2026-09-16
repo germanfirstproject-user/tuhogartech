@@ -32,6 +32,15 @@ const TIPOS = new Set([
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Rutas que no se guardan nunca. El navegador ya no las manda, pero esto lo
+// garantiza aunque un despliegue quede a medias o alguien construya la
+// petición a mano: los informes no pueden ensuciarse con el panel.
+const RUTAS_PROPIAS = ['/admin', '/generar-excel'];
+
+const esRutaPropia = (path) =>
+  typeof path === 'string' &&
+  RUTAS_PROPIAS.some((r) => path === r || path.startsWith(`${r}/`));
+
 /** Respuesta mínima: al cliente no le sirve de nada el detalle, y sendBeacon lo ignora. */
 const ok = (guardados = 0) =>
   new Response(JSON.stringify({ ok: true, guardados }), {
@@ -60,11 +69,23 @@ export async function POST(request) {
 
     const eventos = Array.isArray(cuerpo?.eventos)
       ? cuerpo.eventos
-          .filter((e) => e && TIPOS.has(e.tipo) && typeof e.path === 'string' && e.path.startsWith('/'))
+          .filter(
+            (e) =>
+              e &&
+              TIPOS.has(e.tipo) &&
+              typeof e.path === 'string' &&
+              e.path.startsWith('/') &&
+              !esRutaPropia(e.path)
+          )
           .slice(0, MAX_EVENTOS)
       : [];
 
     if (!eventos.length) return ok();
+
+    // Una sesión que empieza en el panel tampoco se da de alta con esa
+    // entrada: se deja en blanco para no falsear el informe de páginas de
+    // entrada.
+    if (esRutaPropia(sesion.entry_path)) sesion.entry_path = undefined;
 
     const supabase = createClient(url, key, {
       auth: { persistSession: false, autoRefreshToken: false },

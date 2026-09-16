@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Script from 'next/script';
+import { useAuth } from '@/contexts/AuthContext';
 import { CONSENT_EVENT, hasAnalyticsConsent } from '@/lib/cookieConsent';
+import { esTraficoPropio, marcarSesionDeAdmin } from '@/lib/traficoPropio';
 
 /**
  * Google Analytics condicionado al consentimiento.
@@ -11,14 +14,30 @@ import { CONSENT_EVENT, hasAnalyticsConsent } from '@/lib/cookieConsent';
  * analítica, así que no se instala ninguna cookie de GA antes de decidir ni
  * después de rechazar. Si retira el consentimiento se corta la recogida
  * mediante Consent Mode y se borran las cookies _ga que hubieran quedado.
+ *
+ * Tampoco mide el tráfico propio: ni las rutas del panel ni la navegación con
+ * la sesión de administrador abierta. Se usa el mismo mecanismo que para
+ * retirar el consentimiento, así que si se inicia sesión con el script ya
+ * cargado la recogida se corta en el acto sin recargar.
  */
 export default function GoogleAnalytics({ measurementId }) {
+  const pathname = usePathname();
+  const { isAdmin, loading } = useAuth();
   const [allowed, setAllowed] = useState(false);
   const [everAllowed, setEverAllowed] = useState(false);
 
+  // Mientras se comprueba la sesión no se da por bueno el tráfico: más vale
+  // perder los primeros instantes de una visita que contaminar el informe con
+  // las propias.
+  const propio = loading || isAdmin || esTraficoPropio(pathname);
+
+  useEffect(() => {
+    if (!loading) marcarSesionDeAdmin(isAdmin);
+  }, [isAdmin, loading]);
+
   useEffect(() => {
     const sync = () => {
-      const consent = hasAnalyticsConsent();
+      const consent = hasAnalyticsConsent() && !propio;
       setAllowed(consent);
       if (consent) setEverAllowed(true);
 
@@ -34,7 +53,7 @@ export default function GoogleAnalytics({ measurementId }) {
     sync();
     window.addEventListener(CONSENT_EVENT, sync);
     return () => window.removeEventListener(CONSENT_EVENT, sync);
-  }, []);
+  }, [propio]);
 
   // No cargar en desarrollo para no contaminar los datos.
   if (process.env.NODE_ENV !== 'production' || !measurementId) return null;

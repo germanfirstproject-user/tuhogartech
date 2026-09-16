@@ -5,9 +5,19 @@
  * Permite trackear eventos personalizados y conversiones
  */
 
-// Verificar si gtag está disponible
+import { esTraficoPropio } from './traficoPropio';
+
+/**
+ * ¿Se puede mandar un evento a Google Analytics?
+ *
+ * Además de que gtag esté cargado, se descarta el tráfico propio: las rutas
+ * del panel y cualquier navegación con la sesión de administrador abierta. El
+ * componente GoogleAnalytics ya corta la recogida por Consent Mode en ese
+ * caso; esto evita además que los eventos lleguen a intentarse.
+ */
 const isGtagAvailable = () => {
-  return typeof window !== 'undefined' && typeof window.gtag === 'function';
+  if (typeof window === 'undefined' || typeof window.gtag !== 'function') return false;
+  return !esTraficoPropio(window.location.pathname);
 };
 
 /**

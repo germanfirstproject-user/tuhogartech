@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { trackSearch } from '@/lib/analytics';
 import styles from './SearchBar.module.css';
 
 export default function SearchBar() {
@@ -14,7 +13,9 @@ export default function SearchBar() {
     e.preventDefault();
     const trimmedQuery = query.trim();
     if (trimmedQuery) {
-      trackSearch(trimmedQuery, 0); // Se actualizará con resultados en la página de búsqueda
+      // La búsqueda se contabiliza en la página de resultados, que es la que
+      // sabe cuántos ha habido. Hacerlo también aquí la duplicaba y además
+      // mandaba siempre cero resultados.
       router.push(`/buscar?q=${encodeURIComponent(trimmedQuery)}`);
       setQuery(''); // Limpiar después de buscar
       setIsExpanded(false); // Cerrar en móvil

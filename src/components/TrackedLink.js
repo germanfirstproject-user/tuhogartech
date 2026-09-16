@@ -45,7 +45,17 @@ export default function TrackedLink({
   };
 
   return (
-    <Link href={href} onClick={registrar} {...resto}>
+    <Link
+      href={href}
+      onClick={registrar}
+      /* Mismo mecanismo que en AffiliateLink: la medición propia los recoge
+         desde su escuchador global, sin necesidad de llamarla aquí. */
+      data-med-modulo={modulo || undefined}
+      data-med-id={itemId || undefined}
+      data-med-titulo={itemName || undefined}
+      data-med-posicion={posicion ?? undefined}
+      {...resto}
+    >
       {children}
     </Link>
   );

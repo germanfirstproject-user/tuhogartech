@@ -9,6 +9,7 @@ import ProductsGrid from '@/components/ProductsGrid';
 import styles from '../page.module.css';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 import CategoryAmazonCTA from '@/components/CategoryAmazonCTA';
+import MarcaPagina from '@/components/MarcaPagina';
 
 // Revalidar cada 5 minutos (300 segundos)
 export const revalidate = 300;
@@ -78,6 +79,15 @@ export default async function CategoryPage({ params }) {
 
   return (
     <main className={styles.categoryPage}>
+      {/* Para que la categoría salga con su nombre en el informe de contenido
+          del panel y no solo como una ruta. */}
+      <MarcaPagina
+        tipo="categoria"
+        id={category.slug}
+        slug={category.slug}
+        titulo={category.name}
+      />
+
       <div className={styles.header}>
         <h1 className={styles.categoryTitle}>{category.name}</h1>
         {category.description && (

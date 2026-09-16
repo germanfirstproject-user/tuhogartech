@@ -1,0 +1,448 @@
+/* Sección de analítica del panel.
+   Sigue el aire del resto del admin (tarjetas blancas sobre fondo claro) pero
+   con una densidad mayor: aquí lo que manda son las tablas. */
+
+.container {
+  padding: 2rem;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.35rem 0;
+}
+
+.subtitle {
+  font-size: 0.9375rem;
+  color: #666;
+  margin: 0;
+  max-width: 62ch;
+  line-height: 1.55;
+}
+
+/* ---------------------------------------------------- navegación interna */
+
+.subnav {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e3e3e0;
+  padding-bottom: 0.75rem;
+}
+
+.subnavItem {
+  padding: 0.5rem 0.9375rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #555;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.subnavItem:hover {
+  background: #f0efeb;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.subnavActivo {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.subnavActivo:hover {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* ---------------------------------------------------- rango de fechas */
+
+.rango {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  background: #fff;
+  border: 1px solid #e3e3e0;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.rangoPreset {
+  padding: 0.4375rem 0.8125rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.rangoPreset:hover {
+  border-color: #999;
+  color: #1a1a1a;
+}
+
+.rangoPresetActivo,
+.rangoPresetActivo:hover {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  color: #fff;
+}
+
+.rangoFechas {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-left: auto;
+  font-size: 0.8125rem;
+  color: #666;
+}
+
+.rangoInput {
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: #1a1a1a;
+}
+
+/* ---------------------------------------------------- indicadores */
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi {
+  background: #fff;
+  border: 1px solid #e3e3e0;
+  border-radius: 12px;
+  padding: 1.125rem 1.25rem;
+}
+
+.kpiEtiqueta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a8a85;
+  margin: 0 0 0.375rem;
+}
+
+.kpiValor {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.kpiPie {
+  font-size: 0.75rem;
+  color: #888;
+  margin: 0.3125rem 0 0;
+  line-height: 1.4;
+}
+
+/* ---------------------------------------------------- tarjetas */
+
+.tarjeta {
+  background: #fff;
+  border: 1px solid #e3e3e0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.tarjetaCabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.tarjetaTitulo {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.tarjetaNota {
+  font-size: 0.8125rem;
+  color: #777;
+  margin: 0.25rem 0 0;
+  line-height: 1.5;
+}
+
+.columnas2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ---------------------------------------------------- tablas */
+
+.herramientas {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.buscador {
+  padding: 0.4375rem 0.6875rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  min-width: 210px;
+}
+
+.select {
+  padding: 0.4375rem 0.6875rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  background: #fff;
+  color: #1a1a1a;
+}
+
+.botonExportar {
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid #1a7f4b;
+  background: #1a7f4b;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.botonExportar:hover {
+  background: #146138;
+}
+
+.botonExportar:disabled {
+  background: #b9c7be;
+  border-color: #b9c7be;
+  cursor: not-allowed;
+}
+
+.botonSecundario {
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #555;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.botonSecundario:hover {
+  border-color: #999;
+  color: #1a1a1a;
+}
+
+.tablaEnvoltorio {
+  overflow-x: auto;
+  border: 1px solid #eceae5;
+  border-radius: 10px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.tabla th {
+  text-align: left;
+  padding: 0.625rem 0.75rem;
+  background: #faf9f6;
+  border-bottom: 1px solid #eceae5;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+
+.thOrdenable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.thOrdenable:hover {
+  color: #1a1a1a;
+}
+
+.flecha {
+  margin-left: 0.25rem;
+  color: #999;
+  font-size: 0.6875rem;
+}
+
+.tabla td {
+  padding: 0.5625rem 0.75rem;
+  border-bottom: 1px solid #f3f1ec;
+  color: #333;
+  vertical-align: top;
+}
+
+.tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla tbody tr:hover {
+  background: #fbfaf7;
+}
+
+.numero {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.recorte {
+  max-width: 34ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.ruta {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: #444;
+}
+
+.etiqueta {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  background: #f0efeb;
+  color: #555;
+  white-space: nowrap;
+}
+
+.etiquetaAmazon {
+  background: #fdf0d9;
+  color: #8a5a00;
+}
+
+.etiquetaSalida {
+  background: #eef2fb;
+  color: #3a5a99;
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.875rem;
+  font-size: 0.8125rem;
+  color: #666;
+  flex-wrap: wrap;
+}
+
+.paginacionBotones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ---------------------------------------------------- estados */
+
+.vacio {
+  padding: 2.5rem 1.25rem;
+  text-align: center;
+  color: #888;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.vacioTitulo {
+  font-weight: 600;
+  color: #555;
+  margin: 0 0 0.375rem;
+}
+
+.cargando {
+  padding: 2.5rem;
+  text-align: center;
+  color: #888;
+}
+
+.error {
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  background: #fdeaea;
+  border: 1px solid #f3c2c2;
+  color: #8a2020;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.aviso {
+  padding: 0.875rem 1.125rem;
+  border-radius: 10px;
+  background: #f4f7fd;
+  border: 1px solid #d8e3f7;
+  color: #2f4c80;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.grafico {
+  width: 100%;
+  height: 300px;
+}
+
+@media (max-width: 720px) {
+  .container {
+    padding: 1.25rem 1rem;
+  }
+
+  .rangoFechas {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .kpiValor {
+    font-size: 1.5rem;
+  }
+}

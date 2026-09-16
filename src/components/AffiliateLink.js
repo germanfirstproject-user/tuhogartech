@@ -47,6 +47,14 @@ export default function AffiliateLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer sponsored"
+      /* La medición propia lee estos atributos desde su escuchador global de
+         clics. Se dejan escritos en el DOM en lugar de llamarla aquí para que
+         haya un único punto donde se decide qué es un clic de afiliado, y para
+         que un enlace nuevo nunca se quede sin medir por olvido. */
+      data-med-modulo={position || undefined}
+      data-med-id={productId || undefined}
+      data-med-titulo={productName || undefined}
+      data-med-posicion={cardIndex ?? undefined}
       onClick={registrar}
       /* El clic con la rueda del ratón dispara `auxclick`, no `click`: sin
          esto, abrir el enlace en una pestaña nueva no se contaría. */

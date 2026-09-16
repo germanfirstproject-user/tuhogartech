@@ -104,25 +104,6 @@
   gap: 1rem;
 }
 
-.loginButton {
-  background: var(--color-text);
-  color: var(--color-text-light);
-  padding: 0.5rem 1.25rem;
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.9375rem;
-  transition: background-color 0.15s ease;
-  border: none;
-  cursor: pointer;
-}
-
-.loginButton:hover {
-  background: var(--color-primary-dark);
-  color: var(--color-text-light);
-  text-decoration: none;
-}
-
 /* ===================================
    MENÚ DE USUARIO
    =================================== */

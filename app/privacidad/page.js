@@ -59,6 +59,7 @@ export default function PrivacidadPage() {
             <li><strong>Supabase (PostgreSQL):</strong> Nuestro proveedor de base de datos y autenticación, ubicado en la UE</li>
             <li><strong>Google OAuth:</strong> Solo si eliges iniciar sesión con Google (reciben confirmación de autenticación)</li>
             <li><strong>Netlify:</strong> Nuestro proveedor de alojamiento y red de distribución de contenidos</li>
+            <li><strong>Estadísticas propias:</strong> Se quedan en nuestra base de datos y no se ceden a nadie (ver apartado 5.2)</li>
             <li><strong>Google Analytics:</strong> Solo si aceptas las cookies de analítica (ver apartados 5 y 10)</li>
           </ul>
           <p>
@@ -102,7 +103,64 @@ export default function PrivacidadPage() {
             </tbody>
           </table>
 
-          <h3 className={styles.subsectionTitle}>5.2. Cookies de analítica (requieren tu consentimiento)</h3>
+          <h3 className={styles.subsectionTitle}>5.2. Estadísticas propias (requieren tu consentimiento)</h3>
+          <p>
+            Medimos el uso de la web con un sistema propio, alojado en nuestra base de
+            datos, sin intermediarios. Solo funciona si aceptas esta categoría: mientras no
+            lo hagas no se crea ningún identificador ni se envía ningún dato, y si retiras
+            el consentimiento se borra lo que hubiera en tu navegador y la recogida se
+            detiene al instante.
+          </p>
+          <p>Lo que se registra:</p>
+          <ul>
+            <li>Qué páginas abres y en qué orden, con fecha y hora.</li>
+            <li>Cuántos segundos pasas en cada una y hasta dónde bajas con el scroll.</li>
+            <li>Qué enlaces pulsas, incluidos los que llevan a Amazon.</li>
+            <li>Qué escribes en el buscador de la web y cuántos resultados obtienes.</li>
+            <li>Desde qué página de la web llegas a otra.</li>
+            <li>Desde qué sitio has llegado y la campaña, si el enlace venía etiquetado.</li>
+            <li>Si usas móvil, tableta u ordenador, el navegador, el sistema y el ancho de pantalla.</li>
+          </ul>
+          <p>
+            <strong>Lo que no se registra:</strong> no se guarda tu dirección IP, no se
+            elabora ninguna huella de tu navegador y no se crea ningún identificador que te
+            siga entre visitas. El identificador de la sesión es un número aleatorio que se
+            guarda en el almacenamiento de sesión del navegador y desaparece al cerrar la
+            pestaña, de modo que dos visitas distintas no se pueden relacionar entre sí.
+            Tampoco se cruza nada de esto con tu cuenta si tienes una, ni se cede a
+            terceros, ni se usa con fines publicitarios.
+          </p>
+          <table className={styles.cookieTable}>
+            <thead>
+              <tr><th>Nombre</th><th>Titular</th><th>Finalidad</th><th>Duración</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>tht_med_sid</td>
+                <td>Tu Hogar Tech</td>
+                <td>Identificador aleatorio de la visita, para agrupar sus páginas</td>
+                <td>Almacenamiento de sesión, hasta cerrar la pestaña</td>
+              </tr>
+              <tr>
+                <td>tht_med_ini</td>
+                <td>Tu Hogar Tech</td>
+                <td>Momento de inicio de la visita, para calcular su duración</td>
+                <td>Almacenamiento de sesión, hasta cerrar la pestaña</td>
+              </tr>
+              <tr>
+                <td>tht_med_prev</td>
+                <td>Tu Hogar Tech</td>
+                <td>Última página vista, para reconstruir el recorrido dentro de la web</td>
+                <td>Almacenamiento de sesión, hasta cerrar la pestaña</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            Los datos se guardan en nuestra base de datos de Supabase, con servidores en la
+            Unión Europea, y se eliminan automáticamente a los catorce meses.
+          </p>
+
+          <h3 className={styles.subsectionTitle}>5.3. Cookies de analítica de Google (requieren tu consentimiento)</h3>
           <p>
             Solo se instalan si las aceptas expresamente. Si las rechazas, el script de
             Google Analytics no llega a cargarse y no se envía ningún dato. Si retiras el
@@ -137,7 +195,7 @@ export default function PrivacidadPage() {
             transferencia internacional a Estados Unidos, descrita en el apartado 10.
           </p>
 
-          <h3 className={styles.subsectionTitle}>5.3. Cookies de afiliación de terceros</h3>
+          <h3 className={styles.subsectionTitle}>5.4. Cookies de afiliación de terceros</h3>
           <p>
             Cuando haces clic en un enlace a Amazon y sales de este sitio, Amazon puede
             instalar sus propias cookies en su dominio para atribuir la posible compra. Ese
@@ -147,7 +205,7 @@ export default function PrivacidadPage() {
             de Amazon mientras navegas por él.
           </p>
 
-          <h3 className={styles.subsectionTitle}>5.4. Cómo aceptar, rechazar o cambiar de opinión</h3>
+          <h3 className={styles.subsectionTitle}>5.5. Cómo aceptar, rechazar o cambiar de opinión</h3>
           <p>
             La primera vez que visitas el sitio aparece un aviso donde puedes aceptar,
             rechazar o configurar las cookies por categoría. Rechazar es tan sencillo como
@@ -160,7 +218,7 @@ export default function PrivacidadPage() {
             de tu navegador.
           </p>
 
-          <h3 className={styles.subsectionTitle}>5.4. Configuración del Navegador</h3>
+          <h3 className={styles.subsectionTitle}>5.6. Configuración del navegador</h3>
           <p>Puedes configurar tu navegador para rechazar cookies:</p>
           <ul>
             <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer">Google Chrome</a></li>

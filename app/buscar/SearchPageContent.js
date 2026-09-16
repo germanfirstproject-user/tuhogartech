@@ -1,10 +1,12 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ProductsGrid from '@/components/ProductsGrid';
 import BlogCard from '@/components/BlogCard';
 import { searchUnified } from '@/lib/supabase';
+import { registrarBusqueda } from '@/lib/medicion';
+import { trackSearch } from '@/lib/analytics';
 import styles from './page.module.css';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 
@@ -17,6 +19,8 @@ export default function SearchPageContent() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentProductPage, setCurrentProductPage] = useState(1);
+  // Último término ya contabilizado, para no repetirlo al cambiar el orden.
+  const ultimaRegistrada = useRef(null);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -32,6 +36,22 @@ export default function SearchPageContent() {
       if (response.success) {
         setResults(response.data);
         setCurrentProductPage(1); // Reset a primera página al cambiar búsqueda
+
+        // La búsqueda se registra aquí y no en la caja del buscador porque es
+        // donde se sabe cuántos resultados ha dado. Una búsqueda con cero
+        // resultados es el dato más accionable de todos: dice qué contenido
+        // falta en la web.
+        const total =
+          (response.data?.stats?.productsCount ?? response.data?.products?.length ?? 0) +
+          (response.data?.stats?.blogsCount ?? response.data?.blogs?.length ?? 0);
+
+        // Solo la primera vez por término: reordenar vuelve a ejecutar este
+        // efecto y, sin esta guarda, una misma búsqueda contaría varias veces.
+        if (ultimaRegistrada.current !== query) {
+          ultimaRegistrada.current = query;
+          registrarBusqueda(query, total);
+          trackSearch(query, total);
+        }
       } else {
         console.error('Error en búsqueda:', response.error);
         setResults(null);

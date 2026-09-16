@@ -5,9 +5,22 @@ import { useAuth } from '@/contexts/AuthContext';
 import { addReadBlog } from '@/lib/supabase';
 import { trackBlogRead } from '@/lib/analytics';
 import { consumeNavSource } from '@/lib/navSource';
+import { describirPagina } from '@/lib/medicion';
 
 export default function BlogReadTracker({ blogId, blog }) {
   const { user, isLoggedIn } = useAuth();
+
+  // Sin retraso y en su propio efecto: la medición propia manda la vista a los
+  // 60 ms de cargar la ruta, así que esto tiene que haber pasado ya.
+  useEffect(() => {
+    if (!blog) return;
+    describirPagina({
+      page_type: 'blog',
+      entity_id: blog.id,
+      entity_slug: blog.slug,
+      entity_title: blog.title,
+    });
+  }, [blog]);
 
   useEffect(() => {
     const trackRead = async () => {

@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import CookieConsent from '@/components/CookieConsent';
+import Medicion from '@/components/Medicion';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { getSiteSettings } from '@/lib/supabase';
 
@@ -85,11 +86,17 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://www.googletagmanager.com" />
       </head>
       <body className={`${inter.variable} ${fraunces.variable}`}>
-        <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         <AuthProvider>
+          {/* Dentro del proveedor de sesión: necesita saber si quien navega es
+              el administrador para no medirse a sí mismo. */}
+          <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
           <Header />
           {children}
           <Footer />
+          {/* Va después del contenido para que, en cada navegación, los
+              medidores de cada plantilla ya hayan dicho qué producto o qué
+              artículo se está viendo antes de que se mande la vista. */}
+          <Medicion />
           <CookieConsent />
         </AuthProvider>
       </body>

@@ -5,9 +5,21 @@ import { useAuth } from '@/contexts/AuthContext';
 import { addVisitedProduct } from '@/lib/supabase';
 import { trackProductView } from '@/lib/analytics';
 import { consumeNavSource } from '@/lib/navSource';
+import { describirPagina } from '@/lib/medicion';
 
 export default function ProductVisitTracker({ productId, product }) {
   const { user, isLoggedIn } = useAuth();
+
+  // Igual que en el blog: esto corre en el mismo ciclo que la navegación, antes
+  // de que la medición propia mande la vista, para que sepa de qué ficha es.
+  useEffect(() => {
+    if (!product) return;
+    describirPagina({
+      page_type: 'producto',
+      entity_id: product.id,
+      entity_title: product.title,
+    });
+  }, [product]);
 
   useEffect(() => {
     const trackVisit = async () => {

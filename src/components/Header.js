@@ -102,9 +102,12 @@ export default function Header() {
           <SearchBar />
         </div>
 
-        {/* Auth Section */}
-        <div className={styles.authSection}>
-          {isLoggedIn ? (
+        {/* Zona de sesión. Sin sesión iniciada no se muestra nada: la web no
+            pide cuenta para nada de lo que ofrece, así que un botón de acceso
+            en la cabecera solo añadía ruido. /login sigue existiendo y
+            funcionando para quien llegue por su cuenta. */}
+        {isLoggedIn && (
+          <div className={styles.authSection}>
             <div className={styles.userMenu} ref={userMenuRef}>
               <button
                 className={styles.userButton}
@@ -117,16 +120,16 @@ export default function Header() {
               {userDropdownOpen && (
                 <div className={styles.dropdown}>
                   <div className={styles.dropdownHeader}>{user?.email}</div>
-                  <Link 
-                    href="/profile" 
+                  <Link
+                    href="/profile"
                     className={styles.dropdownItem}
                     onClick={() => setUserDropdownOpen(false)}
                   >
                     Mi Perfil
                   </Link>
                   {isAdmin && (
-                    <Link 
-                      href="/admin" 
+                    <Link
+                      href="/admin"
                       className={styles.dropdownItem}
                       onClick={() => setUserDropdownOpen(false)}
                     >
@@ -142,12 +145,8 @@ export default function Header() {
                 </div>
               )}
             </div>
-          ) : (
-            <Link href="/login" className={styles.loginButton}>
-              Iniciar Sesión
-            </Link>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Mobile Menu */}
@@ -167,18 +166,19 @@ export default function Header() {
           >
             Blog
           </Link>
-          {isLoggedIn ? (
+          {/* Igual que en escritorio: sin sesión no hay acceso a /login aquí. */}
+          {isLoggedIn && (
             <>
-              <Link 
-                href="/profile" 
+              <Link
+                href="/profile"
                 className={styles.mobileLinkProfile}
                 onClick={closeMobileMenu}
               >
                 Mi Perfil
               </Link>
               {isAdmin && (
-                <Link 
-                  href="/admin" 
+                <Link
+                  href="/admin"
                   className={styles.mobileLink}
                   onClick={closeMobileMenu}
                 >
@@ -192,14 +192,6 @@ export default function Header() {
                 Cerrar Sesión
               </button>
             </>
-          ) : (
-            <Link 
-              href="/login" 
-              className={styles.mobileLink}
-              onClick={closeMobileMenu}
-            >
-              Iniciar Sesión
-            </Link>
           )}
         </nav>
       )}

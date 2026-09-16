@@ -168,7 +168,6 @@ export const ETIQUETAS_TIPO = {
   clic_externo: 'Clic externo',
   clic_afiliado: 'Clic a Amazon',
   busqueda: 'Búsqueda',
-  hito_scroll: 'Hito de scroll',
   interaccion: 'Interacción',
 };
 

@@ -49,6 +49,8 @@ export default function AnaliticaContenido() {
           clics_afiliado: clics,
           duracion_media: f.duracion_media === null ? null : Number(f.duracion_media),
           scroll_medio: f.scroll_medio === null ? null : Number(f.scroll_medio),
+          leen_mitad_pct: f.leen_mitad_pct === null ? null : Number(f.leen_mitad_pct),
+          leen_entero_pct: f.leen_entero_pct === null ? null : Number(f.leen_entero_pct),
           // La cifra que de verdad ordena el valor de cada contenido: de cada
           // cien personas que lo abren, cuántas acaban pulsando hacia Amazon.
           conversion: vistas > 0 ? Number(((clics / vistas) * 100).toFixed(1)) : null,
@@ -96,10 +98,18 @@ export default function AnaliticaContenido() {
       render: (f) => formatearDuracion(f.duracion_media),
     },
     {
-      clave: 'scroll_medio',
-      titulo: 'Scroll medio',
+      clave: 'leen_mitad_pct',
+      titulo: 'Pasan de la mitad',
+      ancho: 18,
       numero: true,
-      render: (f) => (f.scroll_medio === null ? '—' : `${f.scroll_medio} %`),
+      render: (f) => (f.leen_mitad_pct === null ? '—' : `${f.leen_mitad_pct} %`),
+    },
+    {
+      clave: 'leen_entero_pct',
+      titulo: 'Llegan al final',
+      ancho: 18,
+      numero: true,
+      render: (f) => (f.leen_entero_pct === null ? '—' : `${f.leen_entero_pct} %`),
     },
     {
       clave: 'clics_afiliado',

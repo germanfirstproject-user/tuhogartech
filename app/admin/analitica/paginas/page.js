@@ -37,6 +37,8 @@ export default function AnaliticaPaginas() {
         salidas: Number(f.salidas),
         duracion_media: f.duracion_media === null ? null : Number(f.duracion_media),
         scroll_medio: f.scroll_medio === null ? null : Number(f.scroll_medio),
+        leen_mitad_pct: f.leen_mitad_pct === null ? null : Number(f.leen_mitad_pct),
+        leen_entero_pct: f.leen_entero_pct === null ? null : Number(f.leen_entero_pct),
         // Porcentaje de sesiones que terminan aquí. Una cifra alta en una
         // ficha de producto es buena señal (se han ido a Amazon); en la
         // portada, todo lo contrario.
@@ -92,6 +94,20 @@ export default function AnaliticaPaginas() {
       render: (f) => (f.scroll_medio === null ? '—' : `${f.scroll_medio} %`),
     },
     {
+      clave: 'leen_mitad_pct',
+      titulo: 'Pasan de la mitad',
+      ancho: 18,
+      numero: true,
+      render: (f) => (f.leen_mitad_pct === null ? '—' : `${f.leen_mitad_pct} %`),
+    },
+    {
+      clave: 'leen_entero_pct',
+      titulo: 'Llegan al final',
+      ancho: 18,
+      numero: true,
+      render: (f) => (f.leen_entero_pct === null ? '—' : `${f.leen_entero_pct} %`),
+    },
+    {
       clave: 'tasa_salida',
       titulo: 'Acaban aquí',
       numero: true,
@@ -106,8 +122,9 @@ export default function AnaliticaPaginas() {
           <h1 className={styles.title}>Páginas</h1>
           <p className={styles.subtitle}>
             Cada ruta de la web con sus vistas, el tiempo que se le dedica y
-            hasta dónde se baja. El scroll medio es lo que dice si una guía
-            larga se lee o se abandona en el primer apartado.
+            hasta dónde se baja. «Pasan de la mitad» y «Llegan al final» son
+            las dos columnas que dicen si una guía larga se lee de verdad o se
+            abandona en el primer apartado.
           </p>
         </div>
         <button type="button" className={styles.botonSecundario} onClick={cargar}>

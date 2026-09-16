@@ -28,16 +28,22 @@ const CLAVE_INICIO = 'tht_med_ini';
 const CLAVE_ANTERIOR = 'tht_med_prev';
 const ENDPOINT = '/api/analitica';
 
-const INTERVALO_ENVIO_MS = 15000;
-const MAX_COLA = 30;
-const HITOS_SCROLL = [25, 50, 75, 100];
+// No hay envío periódico. Los eventos se acumulan en memoria y salen cuando
+// la visita se interrumpe de verdad: al ocultar la pestaña, al cerrarla o al
+// marcharse a Amazon. Una lectura de diez minutos son dos peticiones, no
+// cuarenta.
+//
+// El tope de cola es una válvula de seguridad, no el modo normal de trabajo:
+// si alguien encadena una sesión larguísima, se vuelca antes de que el lote
+// crezca hasta un tamaño que sendBeacon pueda rechazar.
+const MAX_COLA = 60;
 
 // ---------------------------------------------------------------- estado
 
 let activo = false;
 let cola = [];
-let temporizador = null;
 let sesion = null;
+let pendienteScroll = false;
 let pagina = null;
 let pathAnterior = null;
 let desmontar = [];
@@ -269,26 +275,47 @@ function encolar(evento) {
 
 // ------------------------------------------------------- páginas
 
-function contextoDeSalida() {
-  if (!pagina) return null;
-  return {
-    tipo: 'salida',
-    path: pagina.path,
-    page_type: pagina.page_type,
-    entity_id: pagina.entity_id,
-    entity_slug: pagina.entity_slug,
-    entity_title: pagina.entity_title,
-    duration_seconds: Math.round((ahora() - pagina.entrada) / 1000),
-    scroll_depth: pagina.scrollMax,
-  };
+/**
+ * Segundos que la página ha estado de verdad delante de los ojos.
+ *
+ * Se acumula por tramos y el cronómetro se para cuando la pestaña se oculta,
+ * así que una pestaña abierta toda la tarde de fondo no suma media hora de
+ * lectura. Es lo que distingue el tiempo en pantalla del tiempo en memoria.
+ */
+function segundosVistos() {
+  if (!pagina) return 0;
+  const enCurso = pagina.desdeCuando ? ahora() - pagina.desdeCuando : 0;
+  return Math.round((pagina.acumulado + enCurso) / 1000);
 }
 
-/** Cierra la página actual mandando su duración y hasta dónde se bajó. */
+/**
+ * Cierra la página actual encolando un único evento de salida con su duración
+ * y hasta dónde se llegó a bajar.
+ *
+ * El scroll viaja aquí y solo aquí: antes se mandaba además un evento por
+ * cada cuarto de página, cuatro filas por visita que decían lo mismo que este
+ * número y que multiplicaban por cinco el tamaño de la tabla sin añadir nada
+ * que no se pueda calcular después.
+ */
 export function cerrarPagina() {
-  const salida = contextoDeSalida();
-  if (!salida) return;
+  if (!pagina) return;
+
+  const segundos = segundosVistos();
+
   // Menos de un segundo es un rebote de renderizado, no una visita.
-  if (salida.duration_seconds >= 1) encolar(salida);
+  if (segundos >= 1) {
+    encolar({
+      tipo: 'salida',
+      path: pagina.path,
+      page_type: pagina.page_type,
+      entity_id: pagina.entity_id,
+      entity_slug: pagina.entity_slug,
+      entity_title: pagina.entity_title,
+      duration_seconds: segundos,
+      scroll_depth: pagina.scrollMax,
+    });
+  }
+
   pagina = null;
 }
 
@@ -305,9 +332,11 @@ export function abrirPagina(path) {
   const abierta = {
     path,
     page_type: tipoDePagina(path),
-    entrada: ahora(),
+    // El tiempo se lleva en dos piezas: lo ya acumulado en tramos anteriores
+    // y el instante en que arrancó el tramo actual.
+    acumulado: 0,
+    desdeCuando: ahora(),
     scrollMax: 0,
-    hitos: new Set(),
     vistaEnviada: false,
     listoParaScroll: false,
   };
@@ -319,6 +348,19 @@ export function abrirPagina(path) {
   setTimeout(() => {
     if (pagina === abierta) abierta.listoParaScroll = true;
   }, 350);
+}
+
+/** Para el cronómetro de la página sin cerrarla. */
+function pausarPagina() {
+  if (!pagina || !pagina.desdeCuando) return;
+  pagina.acumulado += ahora() - pagina.desdeCuando;
+  pagina.desdeCuando = null;
+}
+
+/** Lo reanuda al volver a la pestaña. */
+function reanudarPagina() {
+  if (!pagina || pagina.desdeCuando) return;
+  pagina.desdeCuando = ahora();
 }
 
 /**
@@ -355,9 +397,14 @@ export function confirmarVista() {
 
   recordarPath(pagina.path);
 
-  // La primera vista se manda enseguida en lugar de esperar al envío
-  // periódico: si alguien entra y cierra a los cinco segundos, esa visita
-  // existió y debe contarse aunque el beacon de salida no llegue.
+  // Único envío que no espera a que la visita se interrumpa, y solo ocurre una
+  // vez por sesión.
+  //
+  // Es el seguro contra el caso en que el navegador se lleve la pestaña por
+  // delante sin avisar: en iOS, deslizar para cerrar la aplicación no siempre
+  // dispara `pagehide`, y sin esto la sesión entera desaparecería sin dejar
+  // rastro. A cambio de una petición se garantiza que toda visita quede
+  // contada con su página de entrada y su origen.
   if (esPrimera && sesion) {
     sesion.primeraEnviada = true;
     enviar();
@@ -394,50 +441,48 @@ export function registrarInteraccion({ modulo, link_text, entity_id, entity_titl
 
 // ------------------------------------------------------- escuchas del DOM
 
-function medirScroll() {
-  if (!pagina) return;
+/**
+ * Anota el punto más bajo al que se ha llegado. No encola nada: el dato viaja
+ * una sola vez, dentro del evento de salida de la página.
+ *
+ * El evento `scroll` se dispara en cada fotograma mientras se arrastra, y
+ * `scrollHeight` obliga al navegador a recalcular la maquetación. Leerlo
+ * sesenta veces por segundo se nota en un móvil modesto, así que el trabajo
+ * real se aplaza a un requestAnimationFrame y se descarta lo que llegue
+ * mientras tanto: basta con una medida por fotograma pintado.
+ */
+function anotarScroll() {
+  if (!pagina || pendienteScroll) return;
+  pendienteScroll = true;
 
-  // Justo después de una navegación de cliente hay un instante en el que el
-  // documento ya es el nuevo pero el navegador aún no ha devuelto el scroll
-  // arriba. Medir ahí atribuía a la página recién abierta el recorrido de la
-  // anterior, y una página corta se marcaba como leída al 100 % sin que nadie
-  // la hubiera tocado.
-  if (!pagina.listoParaScroll) return;
+  requestAnimationFrame(() => {
+    pendienteScroll = false;
+    if (!pagina) return;
 
-  const alto = document.documentElement.scrollHeight - window.innerHeight;
+    // Justo después de una navegación de cliente hay un instante en el que el
+    // documento ya es el nuevo pero el navegador aún no ha devuelto el scroll
+    // arriba. Medir ahí atribuía a la página recién abierta el recorrido de la
+    // anterior, y una página corta se marcaba como leída al 100 % sin que
+    // nadie la hubiera tocado.
+    if (!pagina.listoParaScroll) return;
 
-  // Una página que cabe entera en la pantalla se ha visto entera, y así se
-  // registra en el evento de salida. Pero no emite hitos: no hay recorrido
-  // que medir, y marcar 25, 50, 75 y 100 de golpe llenaba la tabla de eventos
-  // que no dicen nada y falseaba el reparto de abandono de las páginas largas.
-  if (alto <= 0) {
-    pagina.scrollMax = 100;
-    return;
-  }
+    const alto = document.documentElement.scrollHeight - window.innerHeight;
 
-  const desplazado = window.scrollY || 0;
-
-  // Segunda red de seguridad: no se puede haber bajado más de lo que mide la
-  // página. Si sale que sí, la lectura es de un estado intermedio y no vale.
-  if (desplazado > alto + 50) return;
-
-  const pct = Math.round((desplazado / alto) * 100);
-  const acotado = Math.min(100, Math.max(0, pct));
-
-  if (acotado > pagina.scrollMax) pagina.scrollMax = acotado;
-
-  for (const hito of HITOS_SCROLL) {
-    if (pagina.scrollMax >= hito && !pagina.hitos.has(hito)) {
-      pagina.hitos.add(hito);
-      encolar({
-        tipo: 'hito_scroll',
-        path: pagina.path,
-        page_type: pagina.page_type,
-        entity_id: pagina.entity_id,
-        scroll_depth: hito,
-      });
+    // Una página que cabe entera en la pantalla se ha visto entera.
+    if (alto <= 0) {
+      pagina.scrollMax = 100;
+      return;
     }
-  }
+
+    const desplazado = window.scrollY || 0;
+
+    // Segunda red de seguridad: no se puede haber bajado más de lo que mide la
+    // página. Si sale que sí, la lectura es de un estado intermedio y no vale.
+    if (desplazado > alto + 50) return;
+
+    const pct = Math.min(100, Math.max(0, Math.round((desplazado / alto) * 100)));
+    if (pct > pagina.scrollMax) pagina.scrollMax = pct;
+  });
 }
 
 /**
@@ -498,18 +543,35 @@ function alPulsar(evento) {
       .slice(0, 200) || undefined,
   });
 
-  // Un clic que se va del sitio no da tiempo a esperar al envío periódico.
+  // Un enlace a Amazon abre en pestaña nueva: esta página no se oculta ni se
+  // descarga, así que ninguno de los disparadores habituales va a saltar. Si
+  // no se vuelca aquí, el evento más valioso del sitio podría perderse si
+  // luego cierran la pestaña de golpe.
   if (tipo === 'clic_afiliado' || tipo === 'clic_externo') enviar({ conBeacon: true });
 }
 
-/** Cambio de pestaña o minimizado: solo cuenta cuando pasa a oculta. */
-function alOcultarse() {
-  if (document.visibilityState !== 'hidden') return;
-  vaciarTodo();
+/**
+ * Cambio de pestaña, minimizado o cambio de aplicación en el móvil.
+ *
+ * Al ocultarse se para el cronómetro y se manda lo acumulado, que es el
+ * momento natural para hacerlo: la persona ha dejado de leer. Pero la página
+ * NO se cierra. Antes sí, y el efecto era que al volver a la pestaña se
+ * dejaba de medir hasta la siguiente navegación.
+ *
+ * Al volver se reanuda el cronómetro donde estaba, de modo que el rato con la
+ * pestaña de fondo no cuenta como tiempo de lectura.
+ */
+function alCambiarVisibilidad() {
+  if (document.visibilityState === 'hidden') {
+    pausarPagina();
+    enviar({ conBeacon: true });
+  } else {
+    reanudarPagina();
+  }
 }
 
 /**
- * La página se va (cierre, recarga, navegación fuera del sitio).
+ * La página se va de verdad (cierre, recarga, navegación fuera del sitio).
  *
  * Aquí no se mira visibilityState: durante la descarga sigue valiendo
  * «visible» en varios navegadores, y comprobarlo hacía que el último envío
@@ -517,10 +579,6 @@ function alOcultarse() {
  * nunca.
  */
 function alIrse() {
-  vaciarTodo();
-}
-
-function vaciarTodo() {
   cerrarPagina();
   enviar({ conBeacon: true });
 }
@@ -541,14 +599,15 @@ export function arrancar() {
     desmontar.push(() => objetivo.removeEventListener(tipo, fn, opciones));
   };
 
-  escuchar(window, 'scroll', medirScroll, { passive: true });
-  escuchar(window, 'resize', medirScroll, { passive: true });
+  escuchar(window, 'scroll', anotarScroll, { passive: true });
+  escuchar(window, 'resize', anotarScroll, { passive: true });
   escuchar(document, 'click', alPulsar, true);
   escuchar(document, 'auxclick', alPulsar, true);
-  escuchar(document, 'visibilitychange', alOcultarse);
+  escuchar(document, 'visibilitychange', alCambiarVisibilidad);
   escuchar(window, 'pagehide', alIrse);
 
-  temporizador = setInterval(() => enviar(), INTERVALO_ENVIO_MS);
+  // Sin setInterval: no hay ningún envío por reloj. Todo sale en los momentos
+  // en que la visita se interrumpe.
 }
 
 /** Detiene la medición y borra el rastro. Se usa al retirar el consentimiento. */
@@ -565,10 +624,8 @@ export function parar({ olvidar = true } = {}) {
   });
   desmontar = [];
 
-  if (temporizador) clearInterval(temporizador);
-  temporizador = null;
-
   cola = [];
+  pendienteScroll = false;
   pagina = null;
   pathAnterior = null;
 
@@ -578,3 +635,4 @@ export function parar({ olvidar = true } = {}) {
 export function estaActiva() {
   return activo;
 }
+

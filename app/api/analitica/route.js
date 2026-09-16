@@ -140,6 +140,8 @@ function limpiarEvento(e) {
     entity_id: texto(e.entity_id, 80),
     entity_slug: texto(e.entity_slug, 200),
     entity_title: texto(e.entity_title, 300),
+    target_entity_id: texto(e.target_entity_id, 80),
+    target_entity_title: texto(e.target_entity_title, 300),
     from_path: texto(e.from_path, 400),
     modulo: texto(e.modulo, 60),
     posicion: entero(e.posicion, 0, 100000),

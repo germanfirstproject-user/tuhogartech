@@ -76,46 +76,6 @@ export async function obtenerSesiones(desde, hasta, { limite = 200, offset = 0 }
   return { success: true, data: data || [], total: count || 0, error: null };
 }
 
-/** Eventos en bruto, con filtros. Es la vista que alimenta la exportación fina. */
-export async function obtenerEventos(
-  desde,
-  hasta,
-  { tipo = null, pageType = null, texto = null, limite = 500, offset = 0 } = {}
-) {
-  const { desde: d, hasta: h } = rango(desde, hasta);
-
-  let consulta = supabase
-    .from('analytics_events')
-    .select('*', { count: 'exact' })
-    .gte('occurred_at', d)
-    .lt('occurred_at', h);
-
-  if (tipo) consulta = consulta.eq('tipo', tipo);
-  if (pageType) consulta = consulta.eq('page_type', pageType);
-
-  if (texto) {
-    // Se escapan las comas porque `or()` las usa como separador y una coma en
-    // el texto partiría el filtro en condiciones sueltas.
-    const limpio = String(texto).replace(/[,()]/g, ' ').trim();
-    if (limpio) {
-      consulta = consulta.or(
-        `path.ilike.%${limpio}%,entity_title.ilike.%${limpio}%,search_term.ilike.%${limpio}%,link_href.ilike.%${limpio}%`
-      );
-    }
-  }
-
-  const { data, error, count } = await consulta
-    .order('occurred_at', { ascending: false })
-    .range(offset, offset + limite - 1);
-
-  if (error) {
-    console.error('Analítica (eventos):', error.message);
-    return { success: false, error: error.message, data: [], total: 0 };
-  }
-
-  return { success: true, data: data || [], total: count || 0, error: null };
-}
-
 /** Borra las sesiones anteriores a N días. Los eventos caen en cascada. */
 export async function purgarAnalitica(dias = 425) {
   const { data, error } = await supabase.rpc('limpiar_analitica', { dias });

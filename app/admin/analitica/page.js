@@ -15,6 +15,7 @@ import {
   ETIQUETAS_ORIGEN,
   formatearDuracion,
   formatearNumero,
+  purgarAnalitica,
   obtenerBusquedas,
   obtenerContenido,
   obtenerDispositivos,
@@ -37,6 +38,8 @@ export default function AnaliticaResumen() {
   const [rango, setRango] = useState(() => rangoPorDefecto(30));
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const [purgando, setPurgando] = useState(false);
+  const [mensajePurga, setMensajePurga] = useState(null);
   const [datos, setDatos] = useState({
     resumen: null,
     serie: [],
@@ -86,6 +89,27 @@ export default function AnaliticaResumen() {
   useEffect(() => {
     cargar();
   }, [cargar]);
+
+  const purgar = async () => {
+    const dias = 425;
+    if (
+      !window.confirm(
+        `Se borrarán las visitas con más de ${dias} días (unos 14 meses) y todos sus eventos. Es irreversible. ¿Continuar?`
+      )
+    ) {
+      return;
+    }
+
+    setPurgando(true);
+    const resultado = await purgarAnalitica(dias);
+    setPurgando(false);
+    setMensajePurga(
+      resultado.success
+        ? `Se han borrado ${resultado.borradas} visitas antiguas.`
+        : `No se pudo purgar: ${resultado.error}`
+    );
+    cargar();
+  };
 
   const r = datos.resumen;
   const hayDatos = Number(r?.sesiones || 0) > 0;
@@ -315,6 +339,25 @@ export default function AnaliticaResumen() {
                     : `${b.resultados_medios} resultados de media`,
               }))}
             />
+          </div>
+
+          <div className={styles.tarjeta}>
+            <h2 className={styles.tarjetaTitulo}>Conservación de los datos</h2>
+            <p className={styles.tarjetaNota}>
+              El RGPD pide no guardar los datos más tiempo del necesario, y en el
+              aviso de cookies se promete borrarlos a los catorce meses. Esto lo
+              cumple: elimina las visitas anteriores a esa fecha y, con ellas,
+              todos sus eventos. Con pulsarlo una o dos veces al año basta.
+            </p>
+            {mensajePurga && <p className={styles.aviso}>{mensajePurga}</p>}
+            <button
+              type="button"
+              className={styles.botonSecundario}
+              onClick={purgar}
+              disabled={purgando}
+            >
+              {purgando ? 'Borrando…' : 'Borrar lo anterior a catorce meses'}
+            </button>
           </div>
         </>
       )}

@@ -14,8 +14,8 @@ import {
 import styles from '../analitica.module.css';
 
 const FILTROS = [
-  { valor: '', etiqueta: 'Todos los clics' },
   { valor: 'clic_afiliado', etiqueta: 'Solo los que van a Amazon' },
+  { valor: '', etiqueta: 'Todos los clics' },
   { valor: 'clic', etiqueta: 'Solo navegación interna' },
   { valor: 'clic_externo', etiqueta: 'Solo salidas a otras webs' },
 ];
@@ -34,11 +34,13 @@ export default function AnaliticaClics() {
     setFilas(
       resultado.data.map((f, i) => ({
         ...f,
-        __clave: `${f.tipo}-${f.link_href}-${f.origen_path}-${i}`,
+        __clave: `${f.tipo}-${f.origen_path}-${f.destino_id}-${f.modulo}-${i}`,
         clics: Number(f.clics),
         sesiones: Number(f.sesiones),
         tipo_legible: ETIQUETAS_TIPO[f.tipo] || f.tipo,
-        destino: f.link_href || f.modulo || '—',
+        // Para un enlace interno no hay «producto pulsado»; lo que identifica
+        // el destino es la propia ruta.
+        destino: f.destino_titulo || f.link_text || f.link_href || '—',
       }))
     );
     setCargando(false);
@@ -54,8 +56,7 @@ export default function AnaliticaClics() {
   );
 
   const totales = useMemo(() => {
-    const suma = (t) =>
-      filas.filter((f) => f.tipo === t).reduce((n, f) => n + f.clics, 0);
+    const suma = (t) => filas.filter((f) => f.tipo === t).reduce((n, f) => n + f.clics, 0);
     return {
       amazon: suma('clic_afiliado'),
       interno: suma('clic'),
@@ -79,15 +80,15 @@ export default function AnaliticaClics() {
       ),
     },
     {
-      clave: 'entity_title',
-      titulo: 'Producto o elemento',
-      ancho: 40,
-      render: (f) => <span className={styles.recorte}>{f.entity_title || f.entity_id || '—'}</span>,
-      exportar: (f) => f.entity_title || f.entity_id || '',
+      clave: 'origen_titulo',
+      titulo: 'Se pulsa en',
+      ancho: 42,
+      render: (f) => <span className={styles.recorte}>{f.origen_titulo || '—'}</span>,
+      exportar: (f) => f.origen_titulo || '',
     },
     {
       clave: 'origen_path',
-      titulo: 'Se pulsa desde',
+      titulo: 'Ruta de origen',
       ancho: 40,
       render: (f) => (
         <span className={styles.ruta} title={f.origen_path}>
@@ -96,19 +97,25 @@ export default function AnaliticaClics() {
       ),
     },
     {
+      clave: 'destino',
+      titulo: 'Qué se pulsa',
+      ancho: 45,
+      render: (f) => <span className={styles.recorte}>{f.destino}</span>,
+    },
+    {
       clave: 'modulo',
-      titulo: 'Botón / módulo',
+      titulo: 'Desde qué botón',
       ancho: 24,
       render: (f) => <span className={styles.recorte}>{f.modulo || '—'}</span>,
       exportar: (f) => f.modulo || '',
     },
     {
-      clave: 'destino',
-      titulo: 'Destino',
+      clave: 'link_href',
+      titulo: 'Enlace',
       ancho: 45,
       render: (f) => (
-        <span className={styles.ruta} title={f.destino}>
-          <span className={styles.recorte}>{f.destino}</span>
+        <span className={styles.ruta} title={f.link_href}>
+          <span className={styles.recorte}>{f.link_href || '—'}</span>
         </span>
       ),
     },
@@ -127,10 +134,9 @@ export default function AnaliticaClics() {
         <div>
           <h1 className={styles.title}>Clics</h1>
           <p className={styles.subtitle}>
-            Dónde se pulsa. La columna «Botón / módulo» distingue los distintos
-            sitios desde los que se puede llegar a Amazon: la tarjeta dentro de
-            un artículo, el botón de la ficha, el recopilatorio del final. Sin
-            ese dato, todos los clics parecen el mismo.
+            Dónde se pulsa y qué se pulsa, que son dos cosas distintas: un mismo
+            producto recibe clics desde su ficha, desde la tarjeta de un artículo
+            y desde el recopilatorio del final. «Desde qué botón» los separa.
           </p>
         </div>
         <button type="button" className={styles.botonSecundario} onClick={cargar}>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { CONSENT_EVENT, hasStatsConsent } from '@/lib/cookieConsent';
@@ -33,6 +33,20 @@ function MedicionInterna() {
   const searchParams = useSearchParams();
   const { isAdmin, loading } = useAuth();
 
+  // El consentimiento se lleva como estado y no se consulta desde el efecto de
+  // ruta. Así, aceptarlo vuelve a ejecutar ese efecto en lugar de tener que
+  // abrir la página por su cuenta desde aquí. Antes había dos sitios que
+  // llamaban a abrirPagina —este y el de ruta— y la página de entrada se
+  // contaba dos veces en cada visita.
+  const [consentido, setConsentido] = useState(false);
+
+  useEffect(() => {
+    const sincronizar = () => setConsentido(hasStatsConsent());
+    sincronizar();
+    window.addEventListener(CONSENT_EVENT, sincronizar);
+    return () => window.removeEventListener(CONSENT_EVENT, sincronizar);
+  }, []);
+
   /**
    * Quién navega. Mientras la sesión se está comprobando, la medición sigue
    * funcionando pero retiene lo que acumula.
@@ -57,30 +71,16 @@ function MedicionInterna() {
     autorizarEnvio();
   }, [isAdmin, loading]);
 
-  // Arranque y reacción al consentimiento. Si se retira, se para y se borra.
+  // Único sitio que abre páginas. Se vuelve a ejecutar al navegar y al cambiar
+  // el consentimiento, que son los dos motivos por los que hay algo que hacer.
   useEffect(() => {
-    const sincronizar = () => {
-      if (hasStatsConsent() && !esTraficoPropio(window.location.pathname)) {
-        arrancar();
-        // Al aceptar desde el banner ya estamos dentro de una página: hay que
-        // abrirla a mano porque el efecto de ruta no se va a volver a ejecutar.
-        abrirPagina(window.location.pathname);
-        confirmarVista();
-      } else {
-        parar();
-      }
-    };
+    if (!consentido) {
+      parar();
+      return undefined;
+    }
 
-    sincronizar();
-    window.addEventListener(CONSENT_EVENT, sincronizar);
-    return () => window.removeEventListener(CONSENT_EVENT, sincronizar);
-  }, []);
-
-  useEffect(() => {
-    if (!hasStatsConsent()) return undefined;
-
-    // Las rutas del panel no se miden. abrirPagina también lo comprueba, pero
-    // así se evita incluso arrancar la medición si la visita empieza ahí.
+    // Las rutas del panel no se miden, pero la página anterior sí se cierra
+    // para no perder el tiempo que se pasó en ella.
     if (esTraficoPropio(pathname)) {
       cerrarPagina();
       return undefined;
@@ -96,7 +96,7 @@ function MedicionInterna() {
     return () => clearTimeout(t);
     // searchParams entra en las dependencias para que /buscar?q=… cuente como
     // página distinta cada vez que cambia la consulta.
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, consentido]);
 
   // Al desmontar (cierre de la aplicación) se cierra la página abierta para no
   // perder su duración.

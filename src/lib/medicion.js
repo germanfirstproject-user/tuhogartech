@@ -50,6 +50,8 @@ let cola = [];
 let sesion = null;
 let pendienteScroll = false;
 let pagina = null;
+// Qué producto o artículo es la página, cuando se sabe antes de abrirla.
+let descripcionPendiente = null;
 let pathAnterior = null;
 let desmontar = [];
 
@@ -355,6 +357,12 @@ export function abrirPagina(path) {
   };
   pagina = abierta;
 
+  // Si la plantilla ya dijo de qué va esta página, se recoge ahora.
+  if (descripcionPendiente?.ruta === path) {
+    Object.assign(abierta, descripcionPendiente.datos);
+  }
+  descripcionPendiente = null;
+
   // Se deja un margen para que el navegador asiente la posición de scroll de
   // la página nueva antes de empezar a medirla. Se comprueba la identidad del
   // objeto para no reactivar una página que ya se ha cerrado mientras tanto.
@@ -382,13 +390,52 @@ function reanudarPagina() {
  * antes de que el proveedor mande la vista.
  */
 export function describirPagina({ path, entity_id, entity_slug, entity_title, page_type } = {}) {
-  if (!activo || !pagina) return;
-  if (path && path !== pagina.path) return;
+  // No se exige que la medición esté ya en marcha. Los efectos de la
+  // plantilla corren ANTES que los del proveedor que la arranca y abre la
+  // página, así que exigirlo descartaba siempre la descripción y las vistas
+  // salían sin saber de qué artículo o producto eran.
+  //
+  // Esto no recoge nada: el título y el identificador ya están en la página,
+  // se quedan en memoria y no salen a ningún sitio si no hay consentimiento.
+  if (typeof window === 'undefined') return;
 
-  if (entity_id) pagina.entity_id = String(entity_id);
-  if (entity_slug) pagina.entity_slug = entity_slug;
-  if (entity_title) pagina.entity_title = entity_title;
-  if (page_type) pagina.page_type = page_type;
+  // La ruta a la que se refiere la descripción. Los medidores de cada
+  // plantilla no la pasan, pero corren ya en la página nueva, así que la de
+  // la barra de direcciones es la correcta.
+  const ruta = path || window.location.pathname;
+
+  const datos = {};
+  if (entity_id) datos.entity_id = String(entity_id);
+  if (entity_slug) datos.entity_slug = entity_slug;
+  if (entity_title) datos.entity_title = entity_title;
+  if (page_type) datos.page_type = page_type;
+  if (!Object.keys(datos).length) return;
+
+  // Se guarda aunque la página todavía no esté abierta. Es lo habitual: los
+  // efectos de la plantilla corren antes que los del proveedor que abre la
+  // página, así que esta descripción suele llegar primero. Antes se aplicaba
+  // sobre la página anterior, que aún seguía abierta, y el resultado era que
+  // cada salida se etiquetaba con la entidad de la página siguiente y las
+  // vistas salían sin ninguna.
+  descripcionPendiente = { ruta, datos };
+
+  aplicarDescripcion(ruta, datos);
+}
+
+/**
+ * Vuelca una descripción sobre la página abierta y sobre la vista que ya esté
+ * en la cola, si las hay y son de esa misma ruta.
+ *
+ * Lo segundo importa porque la vista se encola a los 60 ms de navegar: si la
+ * descripción llega más tarde, todavía se puede completar mientras el evento
+ * siga sin mandarse.
+ */
+function aplicarDescripcion(ruta, datos) {
+  if (pagina && pagina.path === ruta) Object.assign(pagina, datos);
+
+  for (const evento of cola) {
+    if (evento.tipo === 'vista' && evento.path === ruta) Object.assign(evento, datos);
+  }
 }
 
 /** Manda la vista de la página abierta. Se llama con un respiro tras navegar. */
@@ -545,8 +592,17 @@ function alPulsar(evento) {
     tipo,
     path: pagina.path,
     page_type: pagina.page_type,
-    entity_id: datos.medId || pagina.entity_id,
-    entity_title: datos.medTitulo || undefined,
+    // La entidad es la de la PÁGINA, igual que en cualquier otro evento. Antes
+    // se ponía aquí el producto pulsado, y el efecto era que un artículo no se
+    // llevaba ningún clic a Amazon: se los quedaba todos el producto. La
+    // columna «% que pulsa» del informe de contenido daba cero para todos los
+    // artículos, que es justo lo contrario de lo que pretendía medir.
+    entity_id: pagina.entity_id,
+    entity_slug: pagina.entity_slug,
+    entity_title: pagina.entity_title,
+    // Lo que se ha pulsado va en su propia casilla.
+    target_entity_id: datos.medId || undefined,
+    target_entity_title: datos.medTitulo || undefined,
     modulo: datos.medModulo || undefined,
     posicion: datos.medPosicion ? Number(datos.medPosicion) : undefined,
     link_href: destino ? destino.slice(0, 600) : undefined,
@@ -655,6 +711,7 @@ export function parar({ olvidar = true } = {}) {
   desmontar = [];
 
   cola = [];
+  descripcionPendiente = null;
   pendienteScroll = false;
   // envioAutorizado no se toca: es una propiedad de quién navega, no del
   // estado de la medición. Pararla por falta de consentimiento y volver a

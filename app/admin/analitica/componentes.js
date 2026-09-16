@@ -16,7 +16,6 @@ const SECCIONES = [
   { href: '/admin/analitica/busquedas', etiqueta: 'Búsquedas' },
   { href: '/admin/analitica/clics', etiqueta: 'Clics' },
   { href: '/admin/analitica/sesiones', etiqueta: 'Sesiones' },
-  { href: '/admin/analitica/eventos', etiqueta: 'Eventos' },
 ];
 
 export function SubNav() {

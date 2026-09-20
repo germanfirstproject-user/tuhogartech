@@ -1,21 +1,30 @@
 import CategoryIcon from './CategoryIcon';
+import ProductPhoto from './ProductPhoto';
 import { visualDeProducto } from '@/lib/productVisual';
 import styles from './ProductVisual.module.css';
 
 /**
- * Sustituto de la fotografía de producto.
+ * Imagen de la ficha: la fotografía propia si la hay, y si no, la identidad
+ * visual de la categoría.
  *
- * Ocupa el hueco que antes tenía la imagen de Amazon: color e icono de la
- * categoría, más una trama y un tono propios de cada producto para que dos
- * fichas de la misma sección no salgan iguales.
+ * El visual ocupa el hueco que antes tenía la imagen de Amazon: color e icono
+ * de la categoría, más una trama y un tono propios de cada producto para que
+ * dos fichas de la misma sección no salgan iguales.
  *
  * Se dibuja entero con SVG y CSS, así que no pesa, no depende de terceros y
- * cualquier producto nuevo queda cubierto sin preparar nada.
+ * cualquier producto nuevo queda cubierto sin preparar nada. Por eso sigue
+ * siendo el respaldo: mientras el catálogo se fotografía, las fichas sin foto
+ * y las que no consigan cargarla se ven exactamente igual que hasta ahora.
+ *
+ * La foto sale de `products.image_url`, servida desde el bucket
+ * `product-images`. La columna `images` guarda URLs de Amazon y no se pinta:
+ * su programa de afiliados no autoriza enlazar su CDN desde fuera de sus
+ * herramientas.
  */
-export default function ProductVisual({ product, mostrarMarca = true, className = '' }) {
+export default function ProductVisual({ product, mostrarMarca = true, prioritaria = false, className = '' }) {
   const { icono, color, fondo, trama, rotacion, semilla } = visualDeProducto(product);
 
-  return (
+  const visual = (
     <div
       className={`${styles.visual} ${className}`}
       style={{ '--c': color, '--fondo': fondo }}
@@ -29,6 +38,17 @@ export default function ProductVisual({ product, mostrarMarca = true, className 
         <span className={styles.marca}>{product.brand}</span>
       )}
     </div>
+  );
+
+  return (
+    <ProductPhoto
+      src={product?.image_url}
+      alt={product?.title || ''}
+      prioritaria={prioritaria}
+      className={className}
+    >
+      {visual}
+    </ProductPhoto>
   );
 }
 

@@ -165,12 +165,13 @@ export default async function ProductDetailPage({ params }) {
 
         {/* Contenido Principal */}
         <div className={styles.content}>
-          {/* Identidad visual: color e icono de la categoría. No se usan las
-              fotos de Amazon, que su programa de afiliados no autoriza a
-              mostrar fuera de sus propias herramientas. */}
+          {/* La foto propia del producto, y si aún no la tiene, la identidad
+              visual de su categoría. Las fotos de Amazon siguen sin usarse:
+              su programa de afiliados no autoriza a mostrarlas fuera de sus
+              propias herramientas. */}
           <div className={styles.imageSection}>
             <div className={styles.mainImage}>
-              <ProductVisual product={product} />
+              <ProductVisual product={product} prioritaria />
             </div>
 
           </div>

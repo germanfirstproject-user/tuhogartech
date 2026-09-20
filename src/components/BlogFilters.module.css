@@ -1,0 +1,140 @@
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.etiqueta {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.select {
+  appearance: none;
+  min-width: 260px;
+  max-width: 100%;
+  padding: var(--space-3) var(--space-8) var(--space-3) var(--space-4);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  background-color: white;
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  /* Flecha propia: el control nativo se pinta distinto en cada navegador y
+     rompe la altura de la fila junto a los chips. */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-4) center;
+  transition: border-color var(--transition-fast);
+}
+
+.select:hover {
+  border-color: var(--color-primary);
+}
+
+.select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+  background-color: white;
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.chip:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.chipActivo,
+.chipActivo:hover:not(:disabled) {
+  color: var(--color-text-light);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.chipCuenta {
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.chipActivo .chipCuenta {
+  color: var(--color-text-light);
+  opacity: 0.85;
+}
+
+.limpiar {
+  padding: var(--space-3) 0;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.limpiar:hover {
+  color: var(--color-text);
+}
+
+.limpiar:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .filtros {
+    gap: var(--space-4);
+  }
+
+  .grupo,
+  .select {
+    width: 100%;
+    min-width: 0;
+  }
+}

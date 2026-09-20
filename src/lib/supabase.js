@@ -650,6 +650,34 @@ export async function updateUserMetadata(userId, metadata) {
  * ========================================
  */
 
+/**
+ * Pares (categoría, tipo) de los artículos publicados, para contar cuántos
+ * caen en cada opción del filtro.
+ *
+ * Son dos columnas de una tabla de dos docenas de filas, así que se traen
+ * enteras y se cuentan en memoria: hacerlo con un `group by` por cada filtro
+ * serían dos consultas más, y los recuentos tienen que cruzarse entre sí
+ * (al marcar un tipo, los recuentos de categoría solo cuentan ese tipo).
+ */
+export async function getBlogFacets() {
+  try {
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('category, post_type')
+      .eq('status', 'published');
+
+    if (error) {
+      console.error('Error fetching blog facets:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: data || [] };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
 // Obtener todos los blogs
 export async function getBlogs(filters = {}, page = 1, pageSize = 12) {
   try {
@@ -661,6 +689,9 @@ export async function getBlogs(filters = {}, page = 1, pageSize = 12) {
     }
     if (filters.category) {
       query = query.eq('category', filters.category);
+    }
+    if (filters.postType) {
+      query = query.eq('post_type', filters.postType);
     }
 
     // Los listados públicos se ordenan por fecha de publicación, que es la que

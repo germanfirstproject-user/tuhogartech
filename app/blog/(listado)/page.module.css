@@ -95,6 +95,31 @@
   gap: var(--space-3);
 }
 
+.blogLabels {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+}
+
+.blogType {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  /* Separador en lugar de una segunda píldora: la categoría ya lleva color,
+     y dos distintivos seguidos compiten con el titular de la tarjeta. */
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--color-border);
+}
+
+/* Sin categoría no hay nada de lo que separarlo. */
+.blogType:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+
 .blogCategory {
   display: inline-block;
   font-size: 0.6875rem;

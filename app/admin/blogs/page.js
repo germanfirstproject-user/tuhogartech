@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase, getBlogs, insertBlog, updateBlog, deleteBlog, uploadBlogImage, deleteBlogImage } from '@/lib/supabase';
 import RichTextEditor from '@/components/RichTextEditor';
 import { slugify } from '@/lib/slug';
+import { BLOG_TYPES } from '@/lib/blogTypes';
 import styles from './page.module.css';
 
 const BLOGS_PER_PAGE = 20;
@@ -29,6 +30,7 @@ export default function BlogsAdminPage() {
     featured_image: '',
     featured_image_alt: '',
     category: '',
+    post_type: '',
     tags: '',
     status: 'draft',
     author_name: AUTOR_POR_DEFECTO,
@@ -101,6 +103,9 @@ export default function BlogsAdminPage() {
         featured_image: featuredImageUrl || '',
         featured_image_alt: formData.featured_image_alt || '',
         category: formData.category || '',
+        // Nulo, y no cadena vacía: el CHECK de la columna acepta NULL para un
+        // artículo sin clasificar, pero '' no es uno de los cuatro tipos.
+        post_type: formData.post_type || null,
         tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(t => t) : [],
         status: formData.status || 'draft',
         seo_title: formData.seo_title || '',
@@ -154,6 +159,7 @@ export default function BlogsAdminPage() {
       featured_image: blog.featured_image || '',
       featured_image_alt: blog.featured_image_alt || '',
       category: blog.category || '',
+      post_type: blog.post_type || '',
       tags: Array.isArray(blog.tags) ? blog.tags.join(', ') : '',
       status: blog.status || 'draft',
       author_name: blog.author_name || AUTOR_POR_DEFECTO,
@@ -195,6 +201,7 @@ export default function BlogsAdminPage() {
       featured_image: '',
       featured_image_alt: '',
       category: '',
+      post_type: '',
       tags: '',
       status: 'draft',
       author_name: AUTOR_POR_DEFECTO,
@@ -304,6 +311,20 @@ export default function BlogsAdminPage() {
                       value={formData.category}
                       onChange={(e) => setFormData({...formData, category: e.target.value})}
                     />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label>Tipo de artículo</label>
+                    <select
+                      value={formData.post_type}
+                      onChange={(e) => setFormData({...formData, post_type: e.target.value})}
+                    >
+                      <option value="">Sin clasificar</option>
+                      {BLOG_TYPES.map((tipo) => (
+                        <option key={tipo.slug} value={tipo.slug}>{tipo.label}</option>
+                      ))}
+                    </select>
+                    <small>Es lo que filtra el lector en /blog. Sin clasificar no aparece en ningún filtro.</small>
                   </div>
 
                   <div className={styles.formGroup}>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { getBlogs, getBlogBySlug, getBlogById, getProductById } from '@/lib/supabase';
 import { ArrowLeft } from 'lucide-react';
 import BlogReadTracker from '@/components/BlogReadTracker';
@@ -83,19 +84,11 @@ export default async function BlogPostPage({ params }) {
     blog = result.success ? result.data : null;
   }
 
+  // `notFound()` y no un JSX propio: devolver la pantalla de "no encontrado"
+  // con un HTTP 200 es un soft 404, y Google acaba indexando esas URLs como
+  // páginas válidas. Esto sirve app/not-found.js con el 404 de verdad.
   if (!blog) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.notFound}>
-          <h1 className={styles.notFoundTitle}>Blog no encontrado</h1>
-          <p className={styles.notFoundText}>El artículo que buscas no existe o ha sido eliminado.</p>
-          <Link href="/blog" className={styles.backButton}>
-            <ArrowLeft size={16} />
-            Volver al Blog
-          </Link>
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   // Productos citados en el artículo, para intercalar tarjetas y el

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { getProducts, getProductById, getProductSeo, getRelatedProducts, getBlogsReferencingProduct, getFeaturedProducts, getCategoryByName } from '@/lib/supabase';
 import { categoryToSlug } from '@/lib/utils';
 import { ArrowLeft, Package, Star, Users } from 'lucide-react';
@@ -65,15 +66,11 @@ export default async function ProductDetailPage({ params }) {
   const result = await getProductById(params.id);
   const product = result.success ? result.data : null;
 
+  // Mismo caso que en la ficha del artículo: la pantalla de "no encontrado"
+  // se servía con un HTTP 200, así que cualquier /producto/{id} inventado era
+  // una página indexable. `notFound()` devuelve el 404 real.
   if (!product) {
-    return (
-      <div className={styles.emptyState}>
-        <h1 className={styles.emptyStateTitle}>Producto no encontrado</h1>
-        <Link href="/productos" style={{ marginTop: 'var(--space-4)' }}>
-          <button className={styles.primaryButton}>Volver a Productos</button>
-        </Link>
-      </div>
-    );
+    notFound();
   }
 
   // Obtener datos relacionados

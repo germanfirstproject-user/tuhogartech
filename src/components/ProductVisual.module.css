@@ -16,6 +16,17 @@
   container-type: size;
 }
 
+/* La foto ocupa el mismo hueco que el visual al que sustituye, para que el
+   listado no se descuadre según qué fichas estén ya fotografiadas. Las fotos
+   vienen recortadas en cuadrado sobre fondo claro; `contain` respeta el
+   producto aunque alguna llegue con otra proporción. */
+.foto {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
 /* La trama va muy tenue: acompaña, no compite con el icono */
 .trama {
   position: absolute;

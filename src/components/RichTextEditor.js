@@ -1,200 +1,113 @@
 'use client';
 
-import { useMemo, useRef, useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+import { useEffect, useRef, useState } from 'react';
 import { uploadBlogImage } from '@/lib/supabase';
-import 'react-quill/dist/quill.snow.css';
 import styles from './RichTextEditor.module.css';
 
-// Importar React Quill dinámicamente para evitar problemas con SSR
-const ReactQuill = dynamic(() => import('react-quill'), { 
-  ssr: false,
-  loading: () => <p>Cargando editor...</p>
-});
+/**
+ * Editor del contenido de los artículos: HTML a mano y nada más.
+ *
+ * Antes esto montaba React Quill y el modo HTML era un botón opcional. Se quitó
+ * el editor visual porque Quill normaliza el contenido contra su lista blanca de
+ * formatos nada más cargarlo, y esa lista no incluye `table` ni `div`: bastaba
+ * con abrir un artículo en el panel para que el siguiente guardado se llevara por
+ * delante las tablas, los bloques `data-note`, `data-verdict` y `data-scroll`, la
+ * entradilla `data-lede` y el `alt` de las imágenes del cuerpo. Y no se puede
+ * arreglar declarando el formato: `react-quill@2` monta Quill 1.3.7, que no sabe
+ * representar una tabla de ninguna manera.
+ *
+ * Los artículos se escriben en HTML, así que el editor visual no aportaba nada
+ * que no se pudiera hacer aquí, y sí destruía trabajo ya publicado.
+ */
+export default function RichTextEditor({
+  value,
+  onChange,
+  placeholder = 'Escribe el contenido del artículo en HTML...',
+}) {
+  const textareaRef = useRef(null);
+  const [subiendo, setSubiendo] = useState(false);
+  // Posición del cursor a restaurar tras insertar una imagen, o null.
+  const [cursorPendiente, setCursorPendiente] = useState(null);
 
-export default function RichTextEditor({ value, onChange, placeholder = 'Escribe el contenido aquí...' }) {
-  const quillRef = useRef(null);
-  const [showHtml, setShowHtml] = useState(false);
-  const [htmlContent, setHtmlContent] = useState(value || '');
-
-  // Sincronizar htmlContent con value cuando cambia externamente
+  // Tras insertar una etiqueta el textarea se repinta con el valor nuevo y el
+  // cursor se iría al principio; lo devolvemos a donde estaba escribiendo.
   useEffect(() => {
-    if (!showHtml) {
-      setHtmlContent(value || '');
+    if (cursorPendiente === null) return;
+    const area = textareaRef.current;
+    if (area) {
+      area.focus();
+      area.setSelectionRange(cursorPendiente, cursorPendiente);
     }
-  }, [value, showHtml]);
+    setCursorPendiente(null);
+  }, [cursorPendiente]);
 
-  const toggleHtmlMode = () => {
-    if (showHtml) {
-      // Cambiar de HTML a visual
-      onChange(htmlContent);
-      setShowHtml(false);
-    } else {
-      // Cambiar de visual a HTML
-      setHtmlContent(value || '');
-      setShowHtml(true);
+  const handleChange = (e) => onChange(e.target.value);
+
+  /** Sube una imagen al bucket e inserta su etiqueta donde esté el cursor. */
+  const handleUpload = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // permite volver a elegir el mismo fichero
+    if (!file) return;
+
+    // El alt se pide aquí y no después porque una imagen sin alt no se nota al
+    // revisar el artículo, pero es un fallo de accesibilidad y de SEO.
+    const alt = window.prompt('Describe la imagen (texto alternativo):', '');
+    if (alt === null) return;
+
+    setSubiendo(true);
+    try {
+      const result = await uploadBlogImage(file);
+      if (!result.success) {
+        alert('Error al subir la imagen: ' + result.error);
+        return;
+      }
+
+      const etiqueta = `\n<img src="${result.data.url}" alt="${alt.replace(/"/g, '&quot;')}" />\n`;
+      const area = textareaRef.current;
+      const actual = value || '';
+      const desde = area ? area.selectionStart : actual.length;
+      const hasta = area ? area.selectionEnd : actual.length;
+
+      onChange(actual.slice(0, desde) + etiqueta + actual.slice(hasta));
+      setCursorPendiente(desde + etiqueta.length);
+    } catch (error) {
+      console.error('Error al subir la imagen:', error);
+      alert('Error al procesar la imagen: ' + error.message);
+    } finally {
+      setSubiendo(false);
     }
   };
-
-  const handleHtmlChange = (e) => {
-    setHtmlContent(e.target.value);
-    onChange(e.target.value);
-  };
-
-  // Agregar tooltips personalizados a los botones
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const timer = setTimeout(() => {
-      // Agregar tooltip al botón de code-block
-      const codeBlockButton = document.querySelector('.ql-code-block');
-      if (codeBlockButton) {
-        codeBlockButton.setAttribute('title', 'Bloque de Código - Haz clic para insertar/editar código');
-        codeBlockButton.setAttribute('aria-label', 'Insertar bloque de código');
-      }
-
-      // Agregar tooltip al botón de blockquote
-      const blockquoteButton = document.querySelector('.ql-blockquote');
-      if (blockquoteButton) {
-        blockquoteButton.setAttribute('title', 'Cita - Para texto destacado');
-      }
-
-      // Agregar tooltip al botón de link
-      const linkButton = document.querySelector('.ql-link');
-      if (linkButton) {
-        linkButton.setAttribute('title', 'Insertar enlace');
-      }
-
-      // Agregar tooltip al botón de image
-      const imageButton = document.querySelector('.ql-image');
-      if (imageButton) {
-        imageButton.setAttribute('title', 'Insertar imagen - Sube desde tu dispositivo');
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Handler para subir imágenes
-  const imageHandler = function() {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.click();
-
-    input.onchange = async () => {
-      const file = input.files?.[0];
-      if (!file) return;
-
-      try {
-        // Usar 'this' que apunta al objeto Quill
-        const quill = this.quill;
-        if (!quill) {
-          alert('Editor no está listo. Intenta de nuevo.');
-          return;
-        }
-
-        const range = quill.getSelection(true);
-        const cursorPosition = range ? range.index : 0;
-        
-        // Mostrar mensaje de carga
-        quill.insertText(cursorPosition, 'Subiendo imagen...', 'user');
-        quill.setSelection(cursorPosition + 'Subiendo imagen...'.length);
-        
-        // Subir imagen
-        const result = await uploadBlogImage(file);
-        
-        // Eliminar mensaje de carga
-        quill.deleteText(cursorPosition, 'Subiendo imagen...'.length);
-        
-        if (result.success) {
-          // Insertar imagen en el editor
-          quill.insertEmbed(cursorPosition, 'image', result.data.url, 'user');
-          quill.setSelection(cursorPosition + 1);
-        } else {
-          alert('Error al subir imagen: ' + result.error);
-        }
-      } catch (error) {
-        console.error('Error en imageHandler:', error);
-        alert('Error al procesar la imagen: ' + error.message);
-      }
-    };
-  };
-
-  // Configuración de módulos del editor
-  const modules = useMemo(() => ({
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        [{ 'font': [] }],
-        [{ 'size': ['small', false, 'large', 'huge'] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'script': 'sub' }, { 'script': 'super' }],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'align': [] }],
-        ['blockquote', 'code-block'],
-        ['link', 'image', 'video'],
-        ['clean']
-      ],
-      handlers: {
-        image: imageHandler
-      }
-    },
-    clipboard: {
-      matchVisual: false,
-    }
-  }), []);
-
-  const formats = [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike',
-    'color', 'background',
-    'script',
-    'list', 'bullet', 'indent',
-    'align',
-    'blockquote', 'code-block',
-    'link', 'image', 'video'
-  ];
 
   return (
     <div className={styles.editorWrapper}>
       <div className={styles.helpText}>
-        💡 <strong>Consejo:</strong> Para insertar HTML con estilos, usa el botón "Modo HTML" y pega tu código directamente.
-      </div>
-      
-      <div className={styles.editorControls}>
-        <button 
-          type="button"
-          onClick={toggleHtmlMode} 
-          className={styles.htmlToggle}
-          title={showHtml ? "Cambiar a modo visual" : "Cambiar a modo HTML"}
-        >
-          {showHtml ? '👁️ Modo Visual' : '📝 Modo HTML'}
-        </button>
+        💡 <strong>Consejo:</strong> el contenido se escribe en HTML. Puedes usar
+        tablas, <code>data-lede</code>, <code>data-note</code>,{' '}
+        <code>data-verdict</code> y <code>data-scroll</code>, que el artículo
+        pinta con estilo propio.
       </div>
 
-      {showHtml ? (
-        <textarea
-          value={htmlContent}
-          onChange={handleHtmlChange}
-          className={styles.htmlEditor}
-          placeholder="Pega tu HTML aquí..."
-          spellCheck={false}
-        />
-      ) : (
-        <ReactQuill
-          ref={quillRef}
-          theme="snow"
-          value={value}
-          onChange={onChange}
-          modules={modules}
-          formats={formats}
-          placeholder={placeholder}
-          className={styles.editor}
-        />
-      )}
+      <div className={styles.editorControls}>
+        <label className={styles.uploadButton}>
+          {subiendo ? '⏳ Subiendo…' : '🖼️ Subir imagen'}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleUpload}
+            disabled={subiendo}
+            className={styles.uploadInput}
+          />
+        </label>
+      </div>
+
+      <textarea
+        ref={textareaRef}
+        value={value || ''}
+        onChange={handleChange}
+        className={styles.htmlEditor}
+        placeholder={placeholder}
+        spellCheck={false}
+      />
     </div>
   );
 }

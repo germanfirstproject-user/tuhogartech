@@ -1,11 +1,38 @@
 /* ============ Portada editorial ============ */
 .hero {
+  position: relative;
   background: var(--color-background);
   border-bottom: 1px solid var(--color-border);
   padding: clamp(3rem, 6.5vw, 5rem) 1.5rem clamp(2.75rem, 5vw, 4rem);
 }
 
+/* Ilustración de fondo del titular: un salón con los aparatos que analizamos,
+   en la misma tinta y el mismo verde que el resto del sitio. Va tan tenue a
+   propósito, porque el titular cae encima: es textura de papel, no una
+   fotografía de archivo con un velo oscuro. La altura sale de la proporción
+   de la imagen (2:1), así que a ancho completo mide justo media pantalla y
+   no hace falta recortarla. */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50vw;
+  background: url('/hero/fondo-home.webp') center top / 100% auto no-repeat;
+  opacity: 0.5;
+  /* Se disuelve antes del filete que separa el titular de la balda, para que
+     las tarjetas se apoyen siempre sobre papel limpio */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0 46%, transparent 84%);
+  mask-image: linear-gradient(to bottom, #000 0 46%, transparent 84%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .inner {
+  position: relative;
+  /* Por encima de la ilustración */
+  z-index: 1;
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -374,6 +401,12 @@
 }
 
 @media (max-width: 900px) {
+  /* Con una sola columna el hero es alto y estrecho: la escena apaisada no
+     cabe a un tamaño en el que se reconozca nada, así que ni se descarga. */
+  .hero::before {
+    background-image: none;
+  }
+
   .lead {
     grid-template-columns: 1fr;
   }

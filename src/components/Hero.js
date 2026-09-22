@@ -7,8 +7,10 @@ import styles from './Hero.module.css';
  *
  * Dos zonas: arriba el titular a lo ancho, con el argumento y las acciones a
  * su derecha; debajo una balda con las dos selecciones y el índice de
- * categorías. Sin fotografía de fondo ni superposición oscura, que es lo que
- * hace que una home parezca una plantilla.
+ * categorías. Detrás del titular hay una ilustración propia, muy tenue y
+ * dibujada con la paleta del sitio (`.hero::before` en el módulo de estilos).
+ * Lo que seguimos sin usar es una fotografía de archivo con superposición
+ * oscura encima, que es lo que hace que una home parezca una plantilla.
  */
 export default function Hero({ stats, categories = [], picks = [] }) {
   const topCategories = categories.slice(0, 6);

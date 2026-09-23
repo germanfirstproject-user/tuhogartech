@@ -410,14 +410,27 @@
 @media (max-width: 900px) {
   /* Con una sola columna el hero es alto y estrecho, así que la escena apaisada
      no cabe entera: se amplía y se encuadra en la lámpara y la consola, que es
-     la parte que cae detrás del titular. */
+     la parte que cae detrás del titular.
+
+     El mismo criterio que en escritorio, pero en vertical: el dibujo se queda en
+     la franja del titular y se corta antes de llegar al párrafo y a los botones.
+     Con eso puede ir a la misma intensidad que en escritorio (0.85) sin quitarle
+     contraste a nada: medido a 430 px, el subtítulo se queda en 6,35:1, igual que
+     sobre papel limpio. Bajar la opacidad no servía: alargando el dibujo hasta el
+     párrafo, ni al 0,44 llegaba a 4,5:1.
+
+     El corte va en píxeles por lo mismo que en escritorio. El titular acaba en
+     y=200 tanto a 430 px como a 768 px, y el párrafo empieza en y=225, así que un
+     corte fijo cae siempre en el hueco entre los dos. En porcentaje se movía con
+     la altura del hero: a 768 px el 34% son 345 px y el dibujo se metía debajo del
+     párrafo, que bajaba a 3,76:1. */
   .hero::before {
     height: 132vw;
     background-size: 280% auto;
     background-position: 26% top;
-    opacity: 0.62;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0 52%, transparent 88%);
-    mask-image: linear-gradient(to bottom, #000 0 52%, transparent 88%);
+    opacity: 0.85;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0 190px, transparent 224px);
+    mask-image: linear-gradient(to bottom, #000 0 190px, transparent 224px);
   }
 
   .lead {

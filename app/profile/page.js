@@ -336,7 +336,7 @@ export default function ProfilePage() {
                   </div>
                   {favoriteProducts.length > 6 && (
                     <div className={styles.seeMore}>
-                      <Link href="/productos" className={styles.seeMoreLink}>
+                      <Link href="/resenas" className={styles.seeMoreLink}>
                         Ver todos ({favoriteProducts.length}) →
                       </Link>
                     </div>
@@ -346,10 +346,10 @@ export default function ProfilePage() {
 
               <div className={styles.quickActions}>
                 <button
-                  onClick={() => router.push('/productos')}
+                  onClick={() => router.push('/resenas')}
                   className={styles.actionButtonSecondary}
                 >
-                  Explorar productos
+                  Explorar reseñas
                 </button>
                 <button
                   onClick={() => router.push('/blog')}

@@ -8,11 +8,14 @@ import styles from './page.module.css';
 export const revalidate = 300;
 
 export const metadata = {
-  title: 'Productos - Tu Hogar Tech',
-  description: 'Explora todas nuestras categorías de productos afiliados de Amazon',
+  title: 'Reseñas - Tu Hogar Tech',
+  description:
+    'Todas nuestras reseñas de tecnología para casa, ordenadas por categoría. Qué hace bien cada aparato, qué hace mal y para quién vale.',
+  alternates: { canonical: '/resenas' },
   openGraph: {
-    title: 'Productos - Tu Hogar Tech',
-    description: 'Explora todas nuestras categorías de productos afiliados de Amazon',
+    title: 'Reseñas - Tu Hogar Tech',
+    description:
+      'Todas nuestras reseñas de tecnología para casa, ordenadas por categoría. Qué hace bien cada aparato, qué hace mal y para quién vale.',
   },
 };
 
@@ -29,9 +32,9 @@ async function CategoriesContent() {
     <>
       {/* Header */}
       <div className={styles.header}>
-        <h1 className={styles.title}>Todos los Productos</h1>
+        <h1 className={styles.title}>Todas las reseñas</h1>
         <p className={styles.subtitle}>
-          Explora nuestras {categories.length} categorías de productos seleccionados
+          {categories.length} categorías de tecnología para casa, analizadas una a una
         </p>
       </div>
 
@@ -42,7 +45,8 @@ async function CategoriesContent() {
             <Link
               key={category.id}
               /* Directo a la ruta canónica: /productos/{slug} solo redirige
-                 aquí, y hacer pasar por el salto gasta presupuesto de rastreo. */
+                 aquí desde next.config.cjs, y hacer pasar por el salto gasta
+                 presupuesto de rastreo. */
               href={`/categoria/${category.slug}`}
               className={styles.categoryLink}
               prefetch={true}
@@ -69,7 +73,7 @@ async function CategoriesContent() {
                     {category.name}
                   </h2>
                   <p className={styles.categoryCount}>
-                    {category.product_count} {category.product_count === 1 ? 'producto' : 'productos'}
+                    {category.product_count} {category.product_count === 1 ? 'reseña' : 'reseñas'}
                   </p>
                   {category.description && (
                     <p className={styles.categoryDescription}>
@@ -83,7 +87,7 @@ async function CategoriesContent() {
         ) : (
           <div className={styles.emptyState}>
             <p className={styles.emptyStateText}>
-              No hay productos disponibles aún
+              Todavía no hay reseñas publicadas
             </p>
           </div>
         )}
@@ -92,7 +96,7 @@ async function CategoriesContent() {
   );
 }
 
-export default function ProductosPage() {
+export default function ResenasPage() {
   return (
     <main className={styles.main}>
       <div className={styles.container}>

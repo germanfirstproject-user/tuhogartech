@@ -23,7 +23,7 @@ export default async function sitemap() {
   // siendo válido aunque la base de datos no responda durante la compilación.
   const estaticas = [
     { url: BASE, lastModified: ahora, changeFrequency: 'daily', priority: 1 },
-    { url: `${BASE}/productos`, lastModified: ahora, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/resenas`, lastModified: ahora, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/blog`, lastModified: ahora, changeFrequency: 'weekly', priority: 0.8 },
     // Prioridad alta para una página fija: es la que respalda la firma de
     // todos los artículos y a la que apunta el marcado de autoría.
@@ -48,7 +48,7 @@ export default async function sitemap() {
 
     dinamicas = [
       // Categorías. Se usa /categoria/{slug}, que es la ruta canónica:
-      // /productos/{slug} existe pero solo redirige aquí.
+      // /productos/{slug} solo redirige aquí, desde next.config.cjs.
       ...categorias
         .filter((c) => c.is_active)
         .map((c) => ({

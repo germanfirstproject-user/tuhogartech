@@ -78,7 +78,7 @@ export async function GET() {
     '## Páginas principales',
     '',
     `- [Portada](${BASE}): selección de productos destacados, mejor valorados y últimas guías.`,
-    `- [Catálogo de productos](${BASE}/productos): todas las fichas, filtrables por categoría.`,
+    `- [Reseñas](${BASE}/resenas): todas las reseñas, agrupadas por categoría.`,
     `- [Guías y comparativas](${BASE}/blog): artículos de fondo, comparativas y explicaciones «qué es…».`,
     `- [Cómo analizamos](${BASE}/como-analizamos): metodología, límites del análisis y cómo se financia el sitio.`,
     '',

@@ -63,7 +63,7 @@ export default async function CategoryPage({ params }) {
         <div className={styles.emptyState}>
           <h1 className={styles.title}>Categoría no encontrada</h1>
           <p className={styles.description}>La categoría que buscas no existe o ha sido movida</p>
-          <Link href="/productos" className={styles.button}>Volver a Productos</Link>
+          <Link href="/resenas" className={styles.button}>Volver a las reseñas</Link>
         </div>
       </main>
     );
@@ -119,8 +119,8 @@ export default async function CategoryPage({ params }) {
         </div>
       ) : (
         <div className={styles.emptyProducts}>
-          <p>No hay productos disponibles en esta categoría todavía.</p>
-          <Link href="/productos" className={styles.button}>Ver todos los productos</Link>
+          <p>Todavía no hay reseñas en esta categoría.</p>
+          <Link href="/resenas" className={styles.button}>Ver todas las reseñas</Link>
         </div>
       )}
 

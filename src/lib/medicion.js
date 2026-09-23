@@ -79,7 +79,10 @@ export function tipoDePagina(path = '') {
   if (path.startsWith('/blog/')) return 'blog';
   if (path === '/blog') return 'listado_blog';
   if (path.startsWith('/categoria/')) return 'categoria';
-  if (path.startsWith('/productos')) return 'listado_productos';
+  // La ruta se llama /resenas desde el 23-09-2026; /productos sigue aquí porque
+  // los informes anteriores a esa fecha se agrupan con esta misma etiqueta y
+  // partirla en dos rompería la serie.
+  if (path.startsWith('/resenas') || path.startsWith('/productos')) return 'listado_productos';
   if (path.startsWith('/buscar')) return 'buscar';
   if (path.startsWith('/admin')) return 'admin';
   if (['/aviso-legal', '/privacidad', '/terminos'].includes(path)) return 'legal';

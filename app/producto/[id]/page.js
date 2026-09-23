@@ -120,8 +120,8 @@ export default async function ProductDetailPage({ params }) {
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "Productos",
-        "item": "https://tuhogartech.com/productos"
+        "name": "Reseñas",
+        "item": "https://tuhogartech.com/resenas"
       },
       {
         "@type": "ListItem",
@@ -151,8 +151,8 @@ export default async function ProductDetailPage({ params }) {
       <div className={styles.container}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>
-          <Link href="/productos" className={styles.breadcrumbLink}>
-            Productos
+          <Link href="/resenas" className={styles.breadcrumbLink}>
+            Reseñas
           </Link>
           <span className={styles.breadcrumbSeparator}>/</span>
           <Link

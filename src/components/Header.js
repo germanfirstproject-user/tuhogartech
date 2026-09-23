@@ -88,8 +88,8 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className={styles.desktopNav}>
-            <Link href="/productos" className={styles.navLink}>
-              Productos
+            <Link href="/resenas" className={styles.navLink}>
+              Reseñas
             </Link>
             <Link href="/blog" className={styles.navLink}>
               Blog
@@ -153,11 +153,11 @@ export default function Header() {
       {mobileMenuOpen && (
         <nav className={styles.mobileMenu} ref={mobileMenuRef}>
           <Link 
-            href="/productos" 
+            href="/resenas" 
             className={styles.mobileLink}
             onClick={closeMobileMenu}
           >
-            Productos
+            Reseñas
           </Link>
           <Link 
             href="/blog" 

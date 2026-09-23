@@ -39,8 +39,8 @@ export default function Footer() {
             <h4 className={styles.sectionSubtitle}>Navegación</h4>
             <ul className={styles.linkList}>
               <li>
-                <Link href="/productos" className={styles.link}>
-                  Productos
+                <Link href="/resenas" className={styles.link}>
+                  Reseñas
                 </Link>
               </li>
               <li>

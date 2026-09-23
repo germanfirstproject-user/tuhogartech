@@ -18,8 +18,8 @@ export default function NotFound() {
           <Link href="/" style={{ padding: '0.75rem 1.5rem', background: 'var(--color-primary)', color: 'white', borderRadius: 'var(--radius-md)', textDecoration: 'none', fontWeight: 500 }}>
             Volver al inicio
           </Link>
-          <Link href="/productos" style={{ padding: '0.75rem 1.5rem', border: '1px solid var(--color-border-dark)', color: 'var(--color-text)', borderRadius: 'var(--radius-md)', textDecoration: 'none', fontWeight: 500 }}>
-            Ver productos
+          <Link href="/resenas" style={{ padding: '0.75rem 1.5rem', border: '1px solid var(--color-border-dark)', color: 'var(--color-text)', borderRadius: 'var(--radius-md)', textDecoration: 'none', fontWeight: 500 }}>
+            Ver las reseñas
           </Link>
         </div>
       </div>

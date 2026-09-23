@@ -40,11 +40,14 @@ export default function Hero({ stats, categories = [], picks = [] }) {
 
             <div className={styles.actions}>
               <TrackedLink
-                href="/productos"
+                href="/resenas"
+                /* El nombre del módulo se queda como está aunque la ruta haya
+                   pasado a /resenas: es la etiqueta con la que se han guardado
+                   todos los clics anteriores y cambiarla partiría la serie. */
                 modulo="home_portada_boton_catalogo"
                 className={styles.buttonPrimary}
               >
-                Ver todos los productos
+                Ver todas las reseñas
               </TrackedLink>
               <TrackedLink
                 href="/blog"
@@ -104,7 +107,7 @@ export default function Hero({ stats, categories = [], picks = [] }) {
                 ))}
               </ul>
               <TrackedLink
-                href="/productos"
+                href="/resenas"
                 modulo="home_portada_todas_categorias"
                 className={styles.indexAll}
               >

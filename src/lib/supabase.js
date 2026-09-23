@@ -1009,6 +1009,33 @@ export async function deleteProductSeo(productId) {
 }
 
 /**
+ * Ids de los productos cuya ficha pide no ser indexada.
+ *
+ * La fuente de verdad es `product_seo.meta_robots`, que es lo que la ficha ya
+ * vuelca en su etiqueta robots. El sitemap lo consulta para no listar una URL
+ * que luego pide no aparecer en el buscador: son dos señales contradictorias y
+ * Google avisa de ellas en Search Console.
+ */
+export async function getProductIdsNoIndexables() {
+  try {
+    const { data, error } = await supabase
+      .from('product_seo')
+      .select('product_id')
+      .ilike('meta_robots', '%noindex%');
+
+    if (error) {
+      console.error('Error fetching noindex products:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: (data || []).map((fila) => fila.product_id) };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+/**
  * CATEGORIES FUNCTIONS
  */
 

@@ -1,4 +1,4 @@
-import { getProducts, getCategories, getBlogs } from '@/lib/supabase';
+import { getProducts, getCategories, getBlogs, getProductIdsNoIndexables } from '@/lib/supabase';
 
 const BASE = 'https://tuhogartech.com';
 
@@ -36,11 +36,16 @@ export default async function sitemap() {
   let dinamicas = [];
 
   try {
-    const [productosRes, categoriasRes, blogsRes] = await Promise.all([
+    const [productosRes, categoriasRes, blogsRes, noIndexRes] = await Promise.all([
       getProducts(),
       getCategories(),
       getBlogs({ status: 'published' }, 0),
+      getProductIdsNoIndexables(),
     ]);
+
+    // Fichas marcadas como noindex. Si la consulta falla se deja el conjunto
+    // vacío: un sitemap de más es preferible a uno que se queda sin productos.
+    const noIndexables = new Set(noIndexRes.success ? noIndexRes.data : []);
 
     const productos = productosRes.success ? productosRes.data : [];
     const categorias = categoriasRes.success ? categoriasRes.data : [];
@@ -48,7 +53,7 @@ export default async function sitemap() {
 
     dinamicas = [
       // Categorías. Se usa /categoria/{slug}, que es la ruta canónica:
-      // /productos/{slug} solo redirige aquí, desde next.config.cjs.
+      // /productos/{slug} solo redirige aquí, desde next.config.mjs.
       ...categorias
         .filter((c) => c.is_active)
         .map((c) => ({
@@ -68,13 +73,16 @@ export default async function sitemap() {
           priority: 0.8,
         })),
 
-      // Fichas de producto: el grueso del sitio.
-      ...productos.map((p) => ({
-        url: `${BASE}/producto/${p.id}`,
-        lastModified: fecha(p.updated_at, p.created_at),
-        changeFrequency: 'weekly',
-        priority: 0.6,
-      })),
+      // Fichas de producto. Solo las indexables: hoy son las que algún
+      // artículo enlaza, que son las únicas que llegan con enlaces propios.
+      ...productos
+        .filter((p) => !noIndexables.has(p.id))
+        .map((p) => ({
+          url: `${BASE}/producto/${p.id}`,
+          lastModified: fecha(p.updated_at, p.created_at),
+          changeFrequency: 'weekly',
+          priority: 0.6,
+        })),
     ];
   } catch (error) {
     console.error('Sitemap: no se pudo leer el contenido dinámico', error);

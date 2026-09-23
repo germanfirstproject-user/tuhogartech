@@ -1,6 +1,7 @@
 'use client';
 
 import AffiliateLink from '@/components/AffiliateLink';
+import AvisoAfiliado from '@/components/AvisoAfiliado';
 import FavoriteButton from '@/components/FavoriteButton';
 
 export default function ProductActions({ product, styles }) {
@@ -25,6 +26,11 @@ export default function ProductActions({ product, styles }) {
         )}
         <FavoriteButton productId={product.id} />
       </div>
+
+      {/* Amazon pide una marca pegada a cada enlace, además del aviso global
+          del pie. Va fuera de la fila para que no compita por el espacio con el
+          botón de favoritos. */}
+      {product.affiliate_link && <AvisoAfiliado className={styles.avisoAfiliado} />}
     </>
   );
 }

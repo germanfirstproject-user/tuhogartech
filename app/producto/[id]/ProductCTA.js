@@ -1,6 +1,7 @@
 'use client';
 
 import AffiliateLink from '@/components/AffiliateLink';
+import AvisoAfiliado from '@/components/AvisoAfiliado';
 import styles from './ProductCTA.module.css';
 
 export default function ProductCTA({ product }) {
@@ -33,10 +34,10 @@ export default function ProductCTA({ product }) {
         </svg>
       </AffiliateLink>
 
-      <p className={styles.note}>
-        Enlace de afiliado: el precio no cambia para ti y a nosotros nos ayuda a
-        mantener la web.
-      </p>
+      {/* Este bloque ya llevaba su aviso; ahora la redacción sale del mismo
+          sitio que la de los demás botones, para que no se separen con el
+          tiempo. */}
+      <AvisoAfiliado className={styles.note} />
     </div>
   );
 }

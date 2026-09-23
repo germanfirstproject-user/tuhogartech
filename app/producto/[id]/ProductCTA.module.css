@@ -78,10 +78,11 @@
   flex-shrink: 0;
 }
 
+/* Solo colocación: el tamaño y el color los pone `AvisoAfiliado`. Si los
+   declarasen los dos, al tener la misma especificidad ganaría el que quedara
+   más abajo en el CSS empaquetado, que no es algo sobre lo que convenga
+   apoyarse. */
 .note {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  line-height: 1.5;
   margin: 1.25rem auto 0;
   max-width: 30rem;
 }

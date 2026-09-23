@@ -144,6 +144,12 @@
   flex-shrink: 0;
 }
 
+/* Línea propia dentro de la fila de acciones, debajo del botón y del enlace */
+.card .aviso {
+  flex-basis: 100%;
+  font-size: 0.75rem;
+}
+
 .card .detailLink {
   font-size: 0.875rem;
   font-weight: 500;

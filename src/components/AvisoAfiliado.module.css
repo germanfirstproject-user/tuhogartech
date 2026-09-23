@@ -1,0 +1,13 @@
+.aviso {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  /* No se usa el gris tenue del sitio: se queda en 3,42:1 sobre el papel y este
+     aviso es obligatorio, así que tiene que leerse. */
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.marca {
+  font-weight: 600;
+  color: var(--color-text);
+}

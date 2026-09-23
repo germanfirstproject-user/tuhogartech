@@ -195,6 +195,12 @@
   border-radius: var(--radius-lg);
 }
 
+/* El aviso de afiliado que va debajo del botón principal. `.priceSection` es
+   un bloque normal, así que solo hace falta separarlo del botón. */
+.avisoAfiliado {
+  margin-top: var(--space-3);
+}
+
 .priceContainer {
   margin-bottom: var(--space-3);
   display: flex;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { getSiteSettings } from "@/lib/supabase";
 import { openCookiePreferences } from "@/lib/cookieConsent";
+import { DECLARACION_AFILIADO } from "@/lib/amazon";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
@@ -97,10 +98,9 @@ export default function Footer() {
           <p className={styles.copyright}>
             &copy; {currentYear} {siteName}. Todos los derechos reservados.
           </p>
-          <p className={styles.affiliate}>
-            {siteName} participa en el Programa de Afiliados de Amazon EU y obtiene
-            ingresos por las compras que cumplen los requisitos aplicables.
-          </p>
+          {/* El literal del contrato, no una redacción propia. Ver
+              `DECLARACION_AFILIADO` en AmazonDisclaimer.js. */}
+          <p className={styles.affiliate}>{DECLARACION_AFILIADO}</p>
         </div>
       </div>
     </footer>

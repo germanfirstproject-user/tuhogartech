@@ -1,4 +1,5 @@
 import AffiliateLink from './AffiliateLink';
+import AvisoAfiliado from './AvisoAfiliado';
 import CategoryIcon from './CategoryIcon';
 import { colorDeCategoria, iconoDeCategoria } from '@/lib/productVisual';
 import styles from './CategoryAmazonCTA.module.css';
@@ -31,20 +32,29 @@ export default function CategoryAmazonCTA({ category }) {
         </p>
       </div>
 
-      <AffiliateLink
-        href={category.amazon_link}
-        category={category.name}
-        position="categoria_cabecera"
-        className={styles.boton}
-      >
-        Ver en Amazon
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-          <polyline points="15 3 21 3 21 9" />
-          <line x1="10" y1="14" x2="21" y2="3" />
-        </svg>
-      </AffiliateLink>
+      {/* El botón y su aviso van juntos en la misma celda de la rejilla: el
+          aviso que pide Amazon tiene que quedar pegado al enlace, y si fuera
+          hermano suelto rompería las tres columnas. */}
+      <div className={styles.accion}>
+        <AffiliateLink
+          href={category.amazon_link}
+          category={category.name}
+          position="categoria_cabecera"
+          className={styles.boton}
+        >
+          Ver en Amazon
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+               strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+        </AffiliateLink>
+
+        <AvisoAfiliado className={styles.aviso}>
+          El precio no cambia para ti.
+        </AvisoAfiliado>
+      </div>
     </aside>
   );
 }

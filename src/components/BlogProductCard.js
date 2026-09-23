@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import AffiliateLink from './AffiliateLink';
+import AvisoAfiliado from './AvisoAfiliado';
 import ProductVisual from './ProductVisual';
 import { trackBlogCardView } from '@/lib/analytics';
 import styles from './BlogProductCard.module.css';
@@ -123,6 +124,10 @@ export default function BlogProductCard({ product, blog, index, compact = false 
           <Link href={`/producto/${product.id}`} className={styles.detailLink}>
             Leer el análisis
           </Link>
+
+          {/* Ocupa su propia línea dentro de la fila de acciones: el aviso de
+              Amazon tiene que ir junto al enlace, no al final del artículo. */}
+          {product.affiliate_link && <AvisoAfiliado className={styles.aviso} />}
         </div>
       </div>
     </aside>

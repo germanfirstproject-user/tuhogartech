@@ -1,0 +1,218 @@
+/* Piezas compartidas por las páginas de categoría y subcategoría. */
+
+/* Migas de pan */
+.migas {
+  margin-bottom: 1.25rem;
+}
+
+.migasLista {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.migasLista li + li::before {
+  content: '/';
+  margin-right: 0.375rem;
+  color: var(--color-border-dark);
+}
+
+.migasLista a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.migasLista a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.migasActual {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* Etiqueta encima del H1: el nombre corto de la categoría */
+.antetitulo {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin: 0 0 0.625rem;
+}
+
+/* Introducción */
+.intro {
+  max-width: 72ch;
+  margin-top: 1rem;
+}
+
+.intro p {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.875rem;
+}
+
+.intro p:first-child {
+  font-size: 1.1875rem;
+  color: var(--color-text);
+}
+
+.intro p:last-child {
+  margin-bottom: 0;
+}
+
+/* Accesos a las subcategorías */
+.subnav {
+  margin: 2rem 0 0.5rem;
+}
+
+.subnavTitulo {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.75rem;
+}
+
+.subnavLista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid var(--color-border-dark);
+  border-radius: 999px;
+  background: var(--color-background-secondary);
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+.chipActivo,
+.chipActivo:hover {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-text-light);
+}
+
+.chipCuenta {
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.chipActivo .chipCuenta {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Bloque de artículos */
+.guias {
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.guiasTitulo {
+  font-family: var(--font-family-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.375rem;
+  letter-spacing: -0.01em;
+}
+
+.guiasNota {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 1.5rem;
+}
+
+.guiasLista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 1.25rem;
+}
+
+/* Paginación con enlaces normales, que el buscador sí sigue */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 2.5rem 0 0;
+}
+
+.pagina {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-dark);
+  background: var(--color-background-secondary);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+
+.pagina:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.paginaActual,
+.paginaActual:hover {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-text-light);
+}
+
+.paginaInfo {
+  width: 100%;
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .intro p:first-child {
+    font-size: 1.0625rem;
+  }
+
+  .guiasLista {
+    grid-template-columns: 1fr;
+  }
+}

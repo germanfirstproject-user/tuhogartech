@@ -1,4 +1,4 @@
-import { getCategories, getCategoriesWithCounts, getBlogs } from '@/lib/supabase';
+import { getCategories, getCategoriesWithCounts, getBlogs, getSubcategoryPages } from '@/lib/supabase';
 
 /**
  * /llms.txt — índice del sitio en Markdown para modelos de lenguaje.
@@ -26,6 +26,7 @@ function limpiar(texto = '') {
 export async function GET() {
   let categorias = [];
   let articulos = [];
+  let subcategorias = [];
 
   // Si la base de datos no responde, el archivo sale igual con la parte fija:
   // vale más un índice incompleto que un 500 delante de un rastreador.
@@ -33,11 +34,14 @@ export async function GET() {
     // getCategoriesWithCounts() solo devuelve nombre, slug e imagen; la
     // descripción y el is_active están en la fila completa. Se piden las dos
     // cosas y se cruzan por slug.
-    const [catsRes, contadosRes, blogsRes] = await Promise.all([
+    const [catsRes, contadosRes, blogsRes, subsRes] = await Promise.all([
       getCategories(),
       getCategoriesWithCounts(),
       getBlogs({ status: 'published' }, 0),
+      getSubcategoryPages(),
     ]);
+
+    if (subsRes.success) subcategorias = subsRes.data;
 
     if (catsRes.success) {
       const conteo = new Map(
@@ -92,6 +96,12 @@ export async function GET() {
       lineas.push(
         `- [${limpiar(c.name)}](${BASE}/categoria/${c.slug}) (${c.count} productos)${sufijo}`
       );
+      for (const s of subcategorias.filter((s) => s.category_slug === c.slug)) {
+        const nota = limpiar(s.seo_description);
+        lineas.push(
+          `  - [${limpiar(s.name)}](${BASE}/categoria/${c.slug}/${s.slug})${nota ? `: ${nota}` : ''}`
+        );
+      }
     }
     lineas.push('');
   }

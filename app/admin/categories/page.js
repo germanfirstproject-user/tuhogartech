@@ -15,6 +15,8 @@ export default function CategoriesAdminPage() {
     name: '',
     slug: '',
     description: '',
+    h1: '',
+    intro: '',
     image_url: '',
     image_alt: '',
     amazon_link: '',
@@ -87,6 +89,8 @@ export default function CategoriesAdminPage() {
       // que generar el slug aquí o el alta falla.
       slug: formData.slug.trim() || slugify(formData.name),
       description: formData.description || null,
+      h1: formData.h1.trim() || null,
+      intro: formData.intro.trim() || null,
       image_url: imageUrl || null,
       image_alt: formData.image_alt || null,
       amazon_link: formData.amazon_link.trim() || null,
@@ -128,6 +132,8 @@ export default function CategoriesAdminPage() {
       name: category.name || '',
       slug: category.slug || '',
       description: category.description || '',
+      h1: category.h1 || '',
+      intro: category.intro || '',
       image_url: category.image_url || '',
       image_alt: category.image_alt || '',
       amazon_link: category.amazon_link || '',
@@ -167,6 +173,8 @@ export default function CategoriesAdminPage() {
       name: '',
       slug: '',
       description: '',
+      h1: '',
+      intro: '',
       image_url: '',
       image_alt: '',
       amazon_link: '',
@@ -245,6 +253,27 @@ export default function CategoriesAdminPage() {
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                     rows={3}
                   />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Título de la página (H1)</label>
+                  <input
+                    type="text"
+                    value={formData.h1}
+                    onChange={(e) => setFormData({...formData, h1: e.target.value})}
+                    placeholder="Lo que busca la gente, p. ej. «Escáneres de documentos, fotos y negativos»"
+                  />
+                  <small>Si se deja vacío, el H1 es el nombre. El nombre se sigue usando en menús, migas y enlaces.</small>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Introducción</label>
+                  <textarea
+                    value={formData.intro}
+                    onChange={(e) => setFormData({...formData, intro: e.target.value})}
+                    rows={8}
+                  />
+                  <small>Se muestra debajo del H1. Separa los párrafos con una línea en blanco.</small>
                 </div>
 
                 <div className={styles.formRow}>
@@ -334,7 +363,7 @@ export default function CategoriesAdminPage() {
                     onChange={(e) => setFormData({...formData, seo_title: e.target.value})}
                     maxLength={60}
                   />
-                  <small>{formData.seo_title.length}/60 caracteres</small>
+                  <small>{formData.seo_title.length}/44 caracteres. Sin la marca: la web añade « | Tu Hogar Tech» al final.</small>
                 </div>
 
                 <div className={styles.formGroup}>

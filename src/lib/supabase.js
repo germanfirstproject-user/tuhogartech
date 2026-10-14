@@ -1198,6 +1198,232 @@ export async function getCategoryByName(name) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Subcategorías
+//
+// Viven en su propia tabla, colgadas de la categoría por id. El producto sigue
+// guardando su subcategoría como texto en products.subcategory, con el nombre
+// exacto de la fila de subcategories: es como ya funcionaba products.category
+// con categories.name. Solo tienen página propia las que tienen has_page; las
+// demás son etiquetas dentro de su categoría hasta que reúnan productos
+// suficientes para no ser una página casi vacía.
+// ---------------------------------------------------------------------------
+
+// Subcategorías activas de una categoría, en su orden, con cuántos productos
+// tiene cada una. Las que se quedan a 0 no se devuelven: un enlace a una
+// página sin productos no le sirve a nadie.
+export async function getSubcategoriesByCategory(category) {
+  try {
+    const [subsResult, productsResult] = await Promise.all([
+      supabase
+        .from('subcategories')
+        .select('id, name, slug, h1, has_page, display_order')
+        .eq('category_id', category.id)
+        .eq('is_active', true)
+        .order('display_order', { ascending: true }),
+      supabase.from('products').select('subcategory').eq('category', category.name),
+    ]);
+
+    if (subsResult.error) {
+      console.error('Error fetching subcategories:', subsResult.error);
+      return { success: false, error: subsResult.error.message, data: [] };
+    }
+
+    const counts = new Map();
+    for (const row of productsResult.data || []) {
+      if (!row.subcategory) continue;
+      counts.set(row.subcategory, (counts.get(row.subcategory) || 0) + 1);
+    }
+
+    const data = (subsResult.data || [])
+      .map((sub) => ({ ...sub, count: counts.get(sub.name) || 0 }))
+      .filter((sub) => sub.count > 0);
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+// Una subcategoría por el slug de su categoría y el suyo propio.
+export async function getSubcategoryBySlugs(categorySlug, subcategorySlug) {
+  try {
+    const { data, error } = await supabase
+      .from('subcategories')
+      .select('*, categories!inner(*)')
+      .eq('categories.slug', categorySlug)
+      .eq('slug', subcategorySlug)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching subcategory:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    if (!data) return { success: false, error: 'Subcategoría no encontrada', data: null };
+
+    const { categories: category, ...subcategory } = data;
+    return { success: true, data: { subcategory, category } };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Todas las subcategorías con página, con el slug de su categoría. Para el
+// sitemap, llms.txt y generateStaticParams.
+export async function getSubcategoryPages() {
+  try {
+    const { data, error } = await supabase
+      .from('subcategories')
+      .select('name, slug, seo_description, updated_at, display_order, categories!inner(slug, name, is_active)')
+      .eq('is_active', true)
+      .eq('has_page', true)
+      .eq('categories.is_active', true)
+      .order('display_order', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching subcategory pages:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    const result = (data || []).map(({ categories: category, ...sub }) => ({
+      ...sub,
+      category_slug: category.slug,
+      category_name: category.name,
+    }));
+
+    return { success: true, data: result };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+// Todas las subcategorías con el nombre de su categoría, para el desplegable
+// del panel de productos.
+export async function getAllSubcategories() {
+  try {
+    const { data, error } = await supabase
+      .from('subcategories')
+      .select('name, slug, has_page, display_order, categories!inner(name)')
+      .order('display_order', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching subcategories:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return {
+      success: true,
+      data: (data || []).map(({ categories: c, ...s }) => ({ ...s, category_name: c.name })),
+    };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+// Subcategoría de un producto (por nombre dentro de su categoría), para las
+// migas de pan de la ficha.
+export async function getSubcategoryByName(categoryId, name) {
+  try {
+    if (!categoryId || !name) return { success: true, data: null };
+
+    const { data, error } = await supabase
+      .from('subcategories')
+      .select('name, slug, has_page')
+      .eq('category_id', categoryId)
+      .eq('name', name)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching subcategory by name:', error);
+      return { success: false, error: error.message, data: null };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+// Productos de una subcategoría, paginados.
+export async function getProductsBySubcategory(category, subcategory, page = 1, pageSize = 12) {
+  try {
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data, error, count } = await supabase
+      .from('products')
+      .select('*', { count: 'exact' })
+      .eq('category', category)
+      .eq('subcategory', subcategory)
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      console.error('Error fetching products by subcategory:', error);
+      return { success: false, error: error.message, data: [], totalPages: 0, currentPage: page, totalCount: 0 };
+    }
+
+    return {
+      success: true,
+      data: data || [],
+      totalPages: Math.ceil((count || 0) / pageSize),
+      currentPage: page,
+      totalCount: count || 0,
+    };
+  } catch (err) {
+    console.error('Supabase connection error:', err);
+    return { success: false, error: err.message, data: [], totalPages: 0, currentPage: page, totalCount: 0 };
+  }
+}
+
+// Ids de producto de una subcategoría (todas las páginas), para saber qué
+// artículos los mencionan.
+export async function getProductIdsBySubcategory(category, subcategory) {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('id')
+      .eq('category', category)
+      .eq('subcategory', subcategory);
+
+    if (error) return { success: false, error: error.message, data: [] };
+    return { success: true, data: (data || []).map((p) => p.id) };
+  } catch (err) {
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
+// Artículos publicados con su contenido, para cruzarlos con los productos que
+// enlazan. Son pocos y la página se regenera cada pocos minutos, así que sale
+// más a cuenta leerlos todos que buscar texto dentro del HTML en la consulta.
+export async function getPublishedBlogsWithContent() {
+  try {
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('id, slug, title, excerpt, featured_image, featured_image_alt, category, published_at, views_count, content')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false, nullsFirst: false });
+
+    if (error) {
+      console.error('Error fetching published blogs:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: data || [] };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
 // Insertar categoría
 export async function insertCategory(categoryData) {
   try {

@@ -1170,7 +1170,10 @@ export async function getCategoryBySlug(slug) {
       return { success: true, data: matchedCategory };
     }
 
-    return { success: false, error: 'Categoría no encontrada', data: null };
+    // `notFound` distingue «no existe» de «la base de datos no respondió»: la
+    // página da un 404 en el primer caso y un error (que conserva la versión
+    // en caché) en el segundo.
+    return { success: false, error: 'Categoría no encontrada', data: null, notFound: true };
   } catch (err) {
     console.error('Error:', err);
     return { success: false, error: err.message, data: null };

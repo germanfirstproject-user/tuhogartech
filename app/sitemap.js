@@ -19,6 +19,11 @@ function fecha(...candidatas) {
 export default async function sitemap() {
   const ahora = new Date();
 
+  // Las páginas legales y la de metodología van sin <lastmod>: antes llevaban
+  // la hora de cada regeneración, así que el sitemap decía que cambiaban cada
+  // hora sin cambiar nunca. Google deja de fiarse de las fechas de un sitemap
+  // así, también de las que sí son buenas (artículos y fichas).
+  //
   // Páginas fijas. Van primero y fuera del try para que el sitemap siga
   // siendo válido aunque la base de datos no responda durante la compilación.
   const estaticas = [
@@ -27,10 +32,10 @@ export default async function sitemap() {
     { url: `${BASE}/blog`, lastModified: ahora, changeFrequency: 'weekly', priority: 0.8 },
     // Prioridad alta para una página fija: es la que respalda la firma de
     // todos los artículos y a la que apunta el marcado de autoría.
-    { url: `${BASE}/como-analizamos`, lastModified: ahora, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${BASE}/aviso-legal`, lastModified: ahora, changeFrequency: 'yearly', priority: 0.2 },
-    { url: `${BASE}/privacidad`, lastModified: ahora, changeFrequency: 'yearly', priority: 0.2 },
-    { url: `${BASE}/terminos`, lastModified: ahora, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${BASE}/como-analizamos`, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE}/aviso-legal`, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${BASE}/privacidad`, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${BASE}/terminos`, changeFrequency: 'yearly', priority: 0.2 },
   ];
 
   let dinamicas = [];

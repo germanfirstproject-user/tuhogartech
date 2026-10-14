@@ -1,4 +1,5 @@
 import { extractProductIds } from '@/lib/blogProducts';
+import { rutaFicha } from '@/lib/fichas';
 
 export const BASE_URL = 'https://tuhogartech.com';
 
@@ -69,7 +70,7 @@ export function esquemaListado(nombre, productos, desde = 0) {
     itemListElement: productos.map((p, i) => ({
       '@type': 'ListItem',
       position: desde + i + 1,
-      url: `${BASE_URL}/producto/${p.id}`,
+      url: `${BASE_URL}${rutaFicha(p)}`,
       name: p.title,
     })),
   };

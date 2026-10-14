@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { getProducts, getProductById, getProductSeo, getRelatedProducts, getBlogsReferencingProduct, getFeaturedProducts, getCategoryByName, getSubcategoryByName } from '@/lib/supabase';
 import { categoryToSlug } from '@/lib/utils';
+import { rutaFicha, idDeFicha } from '@/lib/fichas';
 import { ArrowLeft, Package, Star, Users } from 'lucide-react';
 import ProductVisitTracker from '@/components/ProductVisitTracker';
 import ProductActions from './ProductActions';
@@ -19,12 +20,13 @@ export async function generateStaticParams() {
   const result = await getProducts();
   const products = result.success ? result.data : [];
   return products.map((product) => ({
-    id: product.id,
+    ficha: rutaFicha(product).split('/').pop(),
   }));
 }
 
 export async function generateMetadata({ params }) {
-  const result = await getProductById(params.id);
+  const id = idDeFicha(params.ficha);
+  const result = id ? await getProductById(id) : { success: false };
   const product = result.success ? result.data : null;
 
   if (!product) {
@@ -34,7 +36,7 @@ export async function generateMetadata({ params }) {
   }
 
   // Obtener SEO personalizado si existe
-  const seoResult = await getProductSeo(params.id);
+  const seoResult = await getProductSeo(id);
   const seo = seoResult.success ? seoResult.data : null;
 
   return {
@@ -57,26 +59,39 @@ export async function generateMetadata({ params }) {
       images: ['https://tuhogartech.com/og-image.png'],
     },
     alternates: {
-      canonical: seo?.canonical_url || `https://tuhogartech.com/producto/${params.id}`,
+      // Una canónica guardada con la dirección vieja (/producto/{id}) mandaría
+      // a Google a una redirección; esas se ignoran.
+      canonical: (seo?.canonical_url && !seo.canonical_url.includes('/producto/'))
+        ? seo.canonical_url
+        : `https://tuhogartech.com${rutaFicha(product)}`,
     },
   };
 }
 
 export default async function ProductDetailPage({ params }) {
-  const result = await getProductById(params.id);
+  const id = idDeFicha(params.ficha);
+  const result = id ? await getProductById(id) : { success: false };
   const product = result.success ? result.data : null;
 
   // Mismo caso que en la ficha del artículo: la pantalla de "no encontrado"
-  // se servía con un HTTP 200, así que cualquier /producto/{id} inventado era
-  // una página indexable. `notFound()` devuelve el 404 real.
+  // se servía con un HTTP 200, así que cualquier ficha inventada era una
+  // página indexable. `notFound()` devuelve el 404 real.
   if (!product) {
     notFound();
   }
 
+  // La ficha se busca por el número; el nombre de detrás puede venir viejo
+  // (cambió el título), mal copiado o faltar. Todas esas variantes van a la
+  // dirección buena con una redirección permanente, para que solo haya una.
+  const ruta = rutaFicha(product);
+  if (`/resenas/${params.ficha}` !== ruta) {
+    permanentRedirect(ruta);
+  }
+
   // Obtener datos relacionados
   const [relatedResult, blogsResult, featuredResult, categoryResult] = await Promise.all([
-    getRelatedProducts(params.id, product.category, 4),
-    getBlogsReferencingProduct(params.id, product.title, 4),
+    getRelatedProducts(id, product.category, 4),
+    getBlogsReferencingProduct(id, product.title, 4),
     getFeaturedProducts(),
     getCategoryByName(product.category)
   ]);
@@ -147,7 +162,7 @@ export default async function ProductDetailPage({ params }) {
         "@type": "ListItem",
         "position": subcategoria ? 5 : 4,
         "name": product.title,
-        "item": `https://tuhogartech.com/producto/${params.id}`
+        "item": `https://tuhogartech.com${ruta}`
       }
     ]
   };
@@ -161,7 +176,7 @@ export default async function ProductDetailPage({ params }) {
       />
 
       <main className={styles.main}>
-        <ProductVisitTracker productId={params.id} product={product} />
+        <ProductVisitTracker productId={id} product={product} />
       <div className={styles.container}>
         {/* Breadcrumb */}
         <div className={styles.breadcrumb}>

@@ -6,7 +6,7 @@ import { trackModuleClick } from '@/lib/analytics';
 
 /** Destinos que tienen un medidor capaz de consumir el origen guardado. */
 const DESTINOS_CON_MEDIDOR = [
-  { prefijo: '/producto/', tipo: 'producto' },
+  { prefijo: '/resenas/', tipo: 'producto' },
   { prefijo: '/blog/', tipo: 'blog' },
 ];
 

@@ -1,6 +1,7 @@
 import TrackedLink from './TrackedLink';
 import ProductVisual from './ProductVisual';
 import styles from './Hero.module.css';
+import { rutaFicha } from '@/lib/fichas';
 
 /**
  * Portada editorial de la home.
@@ -146,7 +147,7 @@ function PickCard({ product, label, priority = false, posicion = 1 }) {
 
   return (
     <TrackedLink
-      href={`/producto/${product.id}`}
+      href={rutaFicha(product)}
       /* Cada hueco de la portada se mide por separado: interesa saber si el
          segundo destacado recibe algo o si toda la atención va al primero. */
       modulo={`home_portada_destacado_${posicion}`}

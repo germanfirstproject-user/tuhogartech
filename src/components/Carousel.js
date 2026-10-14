@@ -6,6 +6,7 @@ import ProductVisual from './ProductVisual';
 import { setNavSource } from '@/lib/navSource';
 import { trackModuleClick } from '@/lib/analytics';
 import styles from './Carousel.module.css';
+import { rutaFicha } from '@/lib/fichas';
 
 /**
  * @param {string} moduleName    - Identificador del módulo para la medición.
@@ -156,7 +157,7 @@ function ProductCard({ product, moduleName, posicion, destacado = false }) {
 
   return (
     <Link 
-      href={`/producto/${product.id}`} 
+      href={rutaFicha(product)} 
       className={styles.card} 
       prefetch={false}
       scroll={true}

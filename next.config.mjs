@@ -92,7 +92,7 @@ const nextConfig = {
       // Ficha con la dirección larga de antes de usar el id; hoy es la 204.
       {
         source: '/producto/kodak-mini-2-retro-navidad-regalos-4pass-impresora-fotografica-38-fotos-fotos-instantaneas-tamano-54x86mm-conexion-inalambrica-bluetooth-blanco',
-        destination: '/producto/204',
+        destination: '/resenas/204-kodak-mini-2-retro-impresora-fotos-bluetooth',
         permanent: true,
       },
 

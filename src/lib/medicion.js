@@ -75,7 +75,9 @@ function uuid() {
 /** Tipo de página a partir de la ruta. Es lo que agrupa los informes. */
 export function tipoDePagina(path = '') {
   if (path === '/') return 'inicio';
-  if (path.startsWith('/producto/')) return 'producto';
+  // Fichas: /resenas/{id}-{nombre} desde el 14-10-2026 (antes /producto/{id}).
+  // Va antes que el listado /resenas, que comparte el principio.
+  if (path.startsWith('/resenas/') || path.startsWith('/producto/')) return 'producto';
   if (path.startsWith('/blog/')) return 'blog';
   if (path === '/blog') return 'listado_blog';
   if (path.startsWith('/categoria/')) return 'categoria';

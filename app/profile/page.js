@@ -7,6 +7,7 @@ import ProductVisual from '@/components/ProductVisual';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserData, updateUserPreferences, getUserFavoriteProducts, deleteOwnAccount } from '@/lib/supabase';
 import styles from './page.module.css';
+import { rutaFicha } from '@/lib/fichas';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -321,7 +322,7 @@ export default function ProfilePage() {
                     {favoriteProducts.slice(0, 6).map((product) => (
                       <Link 
                         key={product.id} 
-                        href={`/producto/${product.id}`}
+                        href={rutaFicha(product)}
                         className={styles.productCard}
                       >
                         <div className={styles.productImage}>

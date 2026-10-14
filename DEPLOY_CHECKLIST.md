@@ -5,7 +5,7 @@
 ### 1. Cambiar URLs Placeholder
 Buscar y reemplazar `https://tupagina.com` por tu dominio real:
 
-- [ ] `app/producto/[id]/page.js`
+- [ ] `app/resenas/[ficha]/page.js`
   - Línea ~95 (canonical URL en schema)
   - Línea ~50 (canonical en metadata)
   

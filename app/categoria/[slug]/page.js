@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import {
   getCategoryBySlug,
   getCategories,
@@ -35,16 +36,27 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }) {
-  const result = await getCategoryBySlug(params.slug);
-  const category = result.success ? result.data : null;
+/**
+ * La categoría, o un 404 de verdad si no existe.
+ *
+ * Antes se pintaba «Categoría no encontrada» con un HTTP 200, y Search Console
+ * lo marcaba como soft 404 (/categoria/electronica). Además, si la base de
+ * datos fallaba en una regeneración, la página guardada en caché pasaba a ser
+ * ese aviso, igual en todas las categorías y sin canónica, que es lo que
+ * Google acaba agrupando como «Duplicada sin versión canónica».
+ *
+ * Si el fallo es de la base de datos se lanza un error en vez del 404: con
+ * ISR, Next sigue sirviendo la última versión buena.
+ */
+async function categoriaOError(slug) {
+  const result = await getCategoryBySlug(slug);
+  if (result.success && result.data) return result.data;
+  if (result.notFound) notFound();
+  throw new Error(`No se pudo leer la categoría ${slug}: ${result.error}`);
+}
 
-  if (!category) {
-    return {
-      title: 'Categoría no encontrada',
-      description: 'La categoría que buscas no existe',
-    };
-  }
+export async function generateMetadata({ params }) {
+  const category = await categoriaOError(params.slug);
 
   // Sin la marca: la añade la plantilla de app/layout.js.
   const title = tituloSinMarca(category.seo_title) || category.h1 || category.name;
@@ -68,26 +80,15 @@ export async function generateMetadata({ params }) {
       description: category.seo_description || category.description,
     },
     alternates: {
-      canonical: `https://tuhogartech.com/categoria/${params.slug}`,
+      // El slug guardado, no el de la URL: getCategoryBySlug también acepta el
+      // nombre convertido a slug, y esa segunda dirección no debe ser canónica.
+      canonical: `https://tuhogartech.com/categoria/${category.slug}`,
     },
   };
 }
 
 export default async function CategoryPage({ params }) {
-  const result = await getCategoryBySlug(params.slug);
-  const category = result.success ? result.data : null;
-
-  if (!category) {
-    return (
-      <main className={styles.container}>
-        <div className={styles.emptyState}>
-          <h1 className={styles.title}>Categoría no encontrada</h1>
-          <p className={styles.description}>La categoría que buscas no existe o ha sido movida</p>
-          <Link href="/resenas" className={styles.button}>Volver a las reseñas</Link>
-        </div>
-      </main>
-    );
-  }
+  const category = await categoriaOError(params.slug);
 
   // Obtener productos de esta categoría
   const [productsResult, destacadosResult, subsResult, blogsResult] = await Promise.all([

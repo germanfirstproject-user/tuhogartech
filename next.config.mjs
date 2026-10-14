@@ -80,6 +80,22 @@ const nextConfig = {
      resuelve sin tocar el servidor y con el código correcto. */
   async redirects() {
     return [
+      /* Direcciones antiguas que Google sigue probando (Search Console,
+         14-10-2026). Los slugs viejos de categoría perdían las letras con
+         tilde («impresoras-porttiles», «bateras-y-energa»), así que la regla
+         genérica de abajo los mandaba a una categoría que no existe. Tienen
+         que ir antes que ella: gana la primera regla que coincide. */
+      { source: '/productos/impresoras-porttiles', destination: '/categoria/impresoras-portatiles', permanent: true },
+      { source: '/productos/bateras-y-energa', destination: '/categoria/baterias-y-energia', permanent: true },
+      { source: '/categoria/impresoras-porttiles', destination: '/categoria/impresoras-portatiles', permanent: true },
+      { source: '/categoria/bateras-y-energa', destination: '/categoria/baterias-y-energia', permanent: true },
+      // Ficha con la dirección larga de antes de usar el id; hoy es la 204.
+      {
+        source: '/producto/kodak-mini-2-retro-navidad-regalos-4pass-impresora-fotografica-38-fotos-fotos-instantaneas-tamano-54x86mm-conexion-inalambrica-bluetooth-blanco',
+        destination: '/producto/204',
+        permanent: true,
+      },
+
       { source: '/productos', destination: '/resenas', permanent: true },
       { source: '/productos/:category', destination: '/categoria/:category', permanent: true },
     ];

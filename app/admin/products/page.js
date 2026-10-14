@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getProducts, insertProduct, updateProduct, deleteProduct, getProductSeo, upsertProductSeo, getCategories, getSiteSettings } from '@/lib/supabase';
+import { getProducts, insertProduct, updateProduct, deleteProduct, getProductSeo, upsertProductSeo, getCategories, getSiteSettings, getAllSubcategories } from '@/lib/supabase';
 import ProductVisual from '@/components/ProductVisual';
 import styles from './page.module.css';
 
@@ -13,6 +13,7 @@ const LIMITE_TITULO_SERP = 60;
 export default function ProductsAdminPage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [showSeoModal, setShowSeoModal] = useState(false);
@@ -77,11 +78,12 @@ export default function ProductsAdminPage() {
   };
 
   const loadCategories = async () => {
-    const result = await getCategories();
+    const [result, subsResult] = await Promise.all([getCategories(), getAllSubcategories()]);
     if (result.success) {
       // Filtrar solo categorías activas para el dropdown
       setCategories(result.data.filter(cat => cat.is_active));
     }
+    if (subsResult.success) setSubcategories(subsResult.data);
   };
 
   const handleSubmit = async (e) => {
@@ -418,11 +420,29 @@ export default function ProductsAdminPage() {
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
                     <label>Subcategoría</label>
+                    {/* Se escribe a mano o se elige de la lista. Tiene que
+                        coincidir con el nombre exacto de la tabla de
+                        subcategorías para que el producto salga en su página. */}
                     <input
                       type="text"
+                      list="subcategorias-de-la-categoria"
                       value={formData.subcategory}
                       onChange={(e) => setFormData({...formData, subcategory: e.target.value})}
                     />
+                    <datalist id="subcategorias-de-la-categoria">
+                      {subcategories
+                        .filter(s => s.category_name === formData.category)
+                        .map(s => (
+                          <option key={s.slug} value={s.name} />
+                        ))}
+                    </datalist>
+                    {formData.subcategory &&
+                      formData.category &&
+                      !subcategories.some(
+                        s => s.category_name === formData.category && s.name === formData.subcategory
+                      ) && (
+                        <small>Esta subcategoría no existe en {formData.category}: el producto no saldrá en ninguna página de subcategoría.</small>
+                      )}
                   </div>
 
                   <div className={styles.formGroup}>

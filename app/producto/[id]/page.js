@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getProducts, getProductById, getProductSeo, getRelatedProducts, getBlogsReferencingProduct, getFeaturedProducts, getCategoryByName } from '@/lib/supabase';
+import { getProducts, getProductById, getProductSeo, getRelatedProducts, getBlogsReferencingProduct, getFeaturedProducts, getCategoryByName, getSubcategoryByName } from '@/lib/supabase';
 import { categoryToSlug } from '@/lib/utils';
 import { ArrowLeft, Package, Star, Users } from 'lucide-react';
 import ProductVisitTracker from '@/components/ProductVisitTracker';
@@ -89,6 +89,12 @@ export default async function ProductDetailPage({ params }) {
   // Usar el slug real de la BD, o generarlo como fallback
   const categorySlug = categoryData?.slug || categoryToSlug(product.category);
 
+  // La subcategoría solo entra en las migas si tiene página propia; si no,
+  // sería un enlace a un 404.
+  const subResult = await getSubcategoryByName(categoryData?.id, product.subcategory);
+  const subcategoria = subResult.success && subResult.data?.has_page ? subResult.data : null;
+  const subcategoriaHref = subcategoria ? `/categoria/${categorySlug}/${subcategoria.slug}` : null;
+
   // Aquí había un bloque Product y se ha retirado a conciencia.
   //
   // Google exige que un Product declare al menos uno de estos tres campos:
@@ -129,9 +135,17 @@ export default async function ProductDetailPage({ params }) {
         "name": product.category,
         "item": `https://tuhogartech.com/categoria/${categorySlug}`
       },
+      ...(subcategoria
+        ? [{
+            "@type": "ListItem",
+            "position": 4,
+            "name": subcategoria.name,
+            "item": `https://tuhogartech.com${subcategoriaHref}`
+          }]
+        : []),
       {
         "@type": "ListItem",
-        "position": 4,
+        "position": subcategoria ? 5 : 4,
         "name": product.title,
         "item": `https://tuhogartech.com/producto/${params.id}`
       }
@@ -161,6 +175,14 @@ export default async function ProductDetailPage({ params }) {
           >
             {product.category}
           </Link>
+          {subcategoria && (
+            <>
+              <span className={styles.breadcrumbSeparator}>/</span>
+              <Link href={subcategoriaHref} className={styles.breadcrumbLink}>
+                {subcategoria.name}
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Contenido Principal */}
@@ -241,7 +263,14 @@ export default async function ProductDetailPage({ params }) {
                 )}
                 {product.subcategory && (
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
-                    Subcategoría: <span style={{ fontWeight: 'bold' }}>{product.subcategory}</span>
+                    Subcategoría:{' '}
+                    {subcategoria ? (
+                      <Link href={subcategoriaHref} style={{ fontWeight: 'bold' }}>
+                        {product.subcategory}
+                      </Link>
+                    ) : (
+                      <span style={{ fontWeight: 'bold' }}>{product.subcategory}</span>
+                    )}
                   </span>
                 )}
               </div>

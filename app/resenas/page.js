@@ -1,27 +1,34 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { getCategories } from '@/lib/supabase';
+import { getCategories, getBlogs } from '@/lib/supabase';
+import BlogCard from '@/components/BlogCard';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import styles from './page.module.css';
 
 // Revalidar cada 5 minutos (300 segundos)
 export const revalidate = 300;
 
+// Sin la marca: la añade la plantilla de app/layout.js. Con ella puesta aquí
+// también, el título salía «Reseñas - Tu Hogar Tech | Tu Hogar Tech».
 export const metadata = {
-  title: 'Reseñas - Tu Hogar Tech',
+  title: 'Reseñas de tecnología para casa',
   description:
     'Todas nuestras reseñas de tecnología para casa, ordenadas por categoría. Qué hace bien cada aparato, qué hace mal y para quién vale.',
   alternates: { canonical: '/resenas' },
   openGraph: {
-    title: 'Reseñas - Tu Hogar Tech',
+    title: 'Reseñas de tecnología para casa | Tu Hogar Tech',
     description:
       'Todas nuestras reseñas de tecnología para casa, ordenadas por categoría. Qué hace bien cada aparato, qué hace mal y para quién vale.',
   },
 };
 
 async function CategoriesContent() {
-  const result = await getCategories();
+  const [result, blogsResult] = await Promise.all([
+    getCategories(),
+    getBlogs({ status: 'published' }, 1, 6),
+  ]);
   const allCategories = result.success ? result.data : [];
+  const recientes = blogsResult.success ? blogsResult.data : [];
   
   // Filtrar solo categorías activas con productos
   const categories = allCategories
@@ -92,6 +99,27 @@ async function CategoriesContent() {
           </div>
         )}
       </div>
+
+      {/* Debajo de las categorías, lo último publicado: quien llega al
+          listado completo suele estar comparando, y ahí las guías ayudan más
+          que otra fila de tarjetas. */}
+      {recientes.length > 0 && (
+        <section className={styles.recientes} aria-labelledby="articulos-recientes">
+          <div className={styles.recientesCabecera}>
+            <h2 id="articulos-recientes" className={styles.recientesTitulo}>
+              Artículos recientes
+            </h2>
+            <Link href="/blog" className={styles.recientesTodos}>
+              Ver todas las guías
+            </Link>
+          </div>
+          <div className={styles.recientesLista}>
+            {recientes.map((blog) => (
+              <BlogCard key={blog.id} blog={blog} />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }

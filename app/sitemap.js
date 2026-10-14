@@ -1,4 +1,4 @@
-import { getProducts, getCategories, getBlogs, getProductIdsNoIndexables } from '@/lib/supabase';
+import { getProducts, getCategories, getBlogs, getProductIdsNoIndexables, getSubcategoryPages } from '@/lib/supabase';
 
 const BASE = 'https://tuhogartech.com';
 
@@ -36,11 +36,12 @@ export default async function sitemap() {
   let dinamicas = [];
 
   try {
-    const [productosRes, categoriasRes, blogsRes, noIndexRes] = await Promise.all([
+    const [productosRes, categoriasRes, blogsRes, noIndexRes, subcategoriasRes] = await Promise.all([
       getProducts(),
       getCategories(),
       getBlogs({ status: 'published' }, 0),
       getProductIdsNoIndexables(),
+      getSubcategoryPages(),
     ]);
 
     // Fichas marcadas como noindex. Si la consulta falla se deja el conjunto
@@ -50,6 +51,7 @@ export default async function sitemap() {
     const productos = productosRes.success ? productosRes.data : [];
     const categorias = categoriasRes.success ? categoriasRes.data : [];
     const blogs = blogsRes.success ? blogsRes.data : [];
+    const subcategorias = subcategoriasRes.success ? subcategoriasRes.data : [];
 
     dinamicas = [
       // Categorías. Se usa /categoria/{slug}, que es la ruta canónica:
@@ -62,6 +64,15 @@ export default async function sitemap() {
           changeFrequency: 'weekly',
           priority: 0.7,
         })),
+
+      // Subcategorías con página propia. Solo la primera página de cada una:
+      // las siguientes se descubren por sus enlaces de paginación.
+      ...subcategorias.map((s) => ({
+        url: `${BASE}/categoria/${s.category_slug}/${s.slug}`,
+        lastModified: fecha(s.updated_at),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      })),
 
       // Artículos: solo los publicados, y con el mismo slug que su canonical.
       ...blogs

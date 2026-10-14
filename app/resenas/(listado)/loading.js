@@ -1,3 +1,8 @@
+/* Este listado vive en el grupo (listado) para que su pantalla de carga no
+   envuelva también las fichas de /resenas/[ficha]. Con ella, la ficha
+   empezaba a enviarse con un 200 antes de saber si tenía que redirigir o dar
+   un 404, y esas respuestas acababan siendo 200 con una redirección por
+   <meta>, que Google no trata como permanente. */
 import { ProductGridSkeleton } from '@/components/Skeletons';
 import styles from './page.module.css';
 

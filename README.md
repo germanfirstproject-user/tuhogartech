@@ -174,7 +174,7 @@ Abre [http://localhost:3000](http://localhost:3000)
 #### 1. **Cambiar URLs placeholder (OPCIONAL - solo si ya tienes dominio)**
 
 Si ya tienes tu dominio final, buscar y reemplazar `https://tupagina.com` por tu dominio real en:
-- `app/producto/[id]/page.js` (2 lugares - Schema.org)
+- `app/resenas/[ficha]/page.js` (2 lugares - Schema.org)
 - `app/blog/[id]/page.js` (2 lugares - Schema.org)
 - `app/categoria/[slug]/page.js` (1 lugar - Schema.org)
 - `app/robots.js` (1 lugar)
@@ -277,7 +277,7 @@ NEXT_PUBLIC_SITE_URL=https://tu-sitio.netlify.app  # Usa tu subdominio de Netlif
 
 3. **Verificar SEO (cuando tengas contenido)**
    - Usa [Google Rich Results Test](https://search.google.com/test/rich-results)
-   - Valida productos: `https://tu-sitio.netlify.app/producto/[id]`
+   - Valida productos: `https://tu-sitio.netlify.app/resenas/[id]-[nombre]`
    - Valida blogs: `https://tu-sitio.netlify.app/blog/[id]`
 
 4. **Configurar Google Search Console (opcional)**
@@ -304,7 +304,7 @@ NEXT_PUBLIC_SITE_URL=https://tu-sitio.netlify.app  # Usa tu subdominio de Netlif
 │   │   ├── featured/       # Productos destacados
 │   │   ├── settings/       # Configuración del sitio
 │   │   └── users/          # Gestión de usuarios
-│   ├── producto/[id]/      # Detalle de producto
+│   ├── resenas/[ficha]/    # Ficha de producto (/resenas/{id}-{nombre})
 │   ├── blog/[id]/          # Detalle de blog
 │   ├── categoria/[slug]/   # Listado por categoría
 │   ├── productos/          # Listado de productos

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getProducts, getBlogs, getCategories, getUserStats, getAuthUsers } from '@/lib/supabase';
 import styles from './dashboard.module.css';
+import { rutaFicha } from '@/lib/fichas';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -196,7 +197,7 @@ export default function AdminDashboard() {
           {stats.recentProducts.length > 0 ? (
             <div className={styles.recentList}>
               {stats.recentProducts.map((product) => (
-                <div key={product.id} className={styles.recentItem} onClick={() => handleCardClick(`/producto/${product.id}`)}>
+                <div key={product.id} className={styles.recentItem} onClick={() => handleCardClick(rutaFicha(product))}>
                   <div className={styles.recentItemIcon}>🛍️</div>
                   <div className={styles.recentItemContent}>
                     <h4>{product.title || 'Producto sin nombre'}</h4>

@@ -7,6 +7,7 @@ import AvisoAfiliado from './AvisoAfiliado';
 import ProductVisual from './ProductVisual';
 import { trackBlogCardView } from '@/lib/analytics';
 import styles from './BlogProductCard.module.css';
+import { rutaFicha } from '@/lib/fichas';
 
 /**
  * Tarjeta de producto intercalada en un artículo.
@@ -69,7 +70,7 @@ export default function BlogProductCard({ product, blog, index, compact = false 
 
   return (
     <aside ref={referencia} className={`${styles.card} ${compact ? styles.cardCompact : ''}`}>
-      <Link href={`/producto/${product.id}`} className={styles.media} aria-hidden="true" tabIndex={-1}>
+      <Link href={rutaFicha(product)} className={styles.media} aria-hidden="true" tabIndex={-1}>
         <ProductVisual product={product} mostrarMarca={false} />
       </Link>
 
@@ -77,7 +78,7 @@ export default function BlogProductCard({ product, blog, index, compact = false 
         {product.brand && <p className={styles.brand}>{product.brand}</p>}
 
         <h3 className={styles.title}>
-          <Link href={`/producto/${product.id}`} className={styles.titleLink}>
+          <Link href={rutaFicha(product)} className={styles.titleLink}>
             {product.title}
           </Link>
         </h3>
@@ -121,7 +122,7 @@ export default function BlogProductCard({ product, blog, index, compact = false 
             </AffiliateLink>
           )}
 
-          <Link href={`/producto/${product.id}`} className={styles.detailLink}>
+          <Link href={rutaFicha(product)} className={styles.detailLink}>
             Leer el análisis
           </Link>
 

@@ -1,5 +1,6 @@
 import { MIN_PRODUCTOS_INDEXABLE } from '@/lib/categorias';
 import { getProducts, getCategories, getBlogs, getProductIdsNoIndexables, getSubcategoryPages } from '@/lib/supabase';
+import { rutaFicha } from '@/lib/fichas';
 
 const BASE = 'https://tuhogartech.com';
 
@@ -95,7 +96,7 @@ export default async function sitemap() {
       ...productos
         .filter((p) => !noIndexables.has(p.id))
         .map((p) => ({
-          url: `${BASE}/producto/${p.id}`,
+          url: `${BASE}${rutaFicha(p)}`,
           lastModified: fecha(p.updated_at, p.created_at),
           changeFrequency: 'weekly',
           priority: 0.6,

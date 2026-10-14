@@ -5,7 +5,7 @@
 -- iguales reparten la autoridad del dominio entre todas.
 --
 -- Dónde vive la decisión: product_seo.meta_robots, que es el campo que la ficha
--- ya vuelca en su etiqueta robots (app/producto/[id]/page.js) y que el sitemap
+-- ya vuelca en su etiqueta robots (app/resenas/[ficha]/page.js) y que el sitemap
 -- consulta para no listar lo que pide no ser indexado (app/sitemap.js).
 --
 -- La regla se recalcula con este script cada vez que se publica, se edita o se
@@ -16,9 +16,10 @@
 --   UPDATE product_seo SET meta_robots = 'index, follow';
 
 WITH enlazados AS (
-  -- Mismo patrón que extractProductIds() en src/lib/blogProducts.js
+  -- Mismo patrón que extractProductIds() en src/lib/blogProducts.js: solo el
+  -- número de /resenas/{id}-{nombre}, o de /producto/{id} (dirección antigua).
   SELECT DISTINCT m[1] AS product_id
-  FROM blogs b, regexp_matches(b.content, '/producto/([A-Za-z0-9-]+)', 'g') m
+  FROM blogs b, regexp_matches(b.content, '/(?:resenas|producto)/([0-9]+)', 'g') m
 )
 UPDATE product_seo s
 SET meta_robots = CASE WHEN s.product_id IN (SELECT product_id FROM enlazados)

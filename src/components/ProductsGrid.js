@@ -4,6 +4,7 @@ import Link from 'next/link';
 import ProductVisual from './ProductVisual';
 import FavoriteButton from '@/components/FavoriteButton';
 import styles from './ProductsGrid.module.css';
+import { rutaFicha } from '@/lib/fichas';
 
 /**
  * @param {string[]} idsDestacados - Productos marcados como destacados en el
@@ -18,7 +19,7 @@ export default function ProductsGrid({ products, idsDestacados = [] }) {
       {products.map((product) => (
         <div key={product.id} className={styles.productWrapper}>
           <Link
-            href={`/producto/${product.id}`}
+            href={rutaFicha(product)}
             style={{ textDecoration: 'none', flex: 1 }}
           >
             <div className={styles.productCard}>

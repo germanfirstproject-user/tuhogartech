@@ -1,3 +1,4 @@
+import { MIN_PRODUCTOS_INDEXABLE } from '@/lib/categorias';
 import { getCategories, getCategoriesWithCounts, getBlogs, getSubcategoryPages } from '@/lib/supabase';
 
 /**
@@ -96,7 +97,7 @@ export async function GET() {
       lineas.push(
         `- [${limpiar(c.name)}](${BASE}/categoria/${c.slug}) (${c.count} productos)${sufijo}`
       );
-      for (const s of subcategorias.filter((s) => s.category_slug === c.slug)) {
+      for (const s of subcategorias.filter((s) => s.category_slug === c.slug && s.count >= MIN_PRODUCTOS_INDEXABLE)) {
         const nota = limpiar(s.seo_description);
         lineas.push(
           `  - [${limpiar(s.name)}](${BASE}/categoria/${c.slug}/${s.slug})${nota ? `: ${nota}` : ''}`

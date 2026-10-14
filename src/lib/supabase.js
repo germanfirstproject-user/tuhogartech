@@ -1220,7 +1220,7 @@ export async function getSubcategoriesByCategory(category) {
     const [subsResult, productsResult] = await Promise.all([
       supabase
         .from('subcategories')
-        .select('id, name, slug, h1, has_page, display_order')
+        .select('id, name, slug, h1, description, image_url, has_page, display_order')
         .eq('category_id', category.id)
         .eq('is_active', true)
         .order('display_order', { ascending: true }),
@@ -1279,23 +1279,35 @@ export async function getSubcategoryBySlugs(categorySlug, subcategorySlug) {
 // sitemap, llms.txt y generateStaticParams.
 export async function getSubcategoryPages() {
   try {
-    const { data, error } = await supabase
-      .from('subcategories')
-      .select('name, slug, seo_description, updated_at, display_order, categories!inner(slug, name, is_active)')
-      .eq('is_active', true)
-      .eq('has_page', true)
-      .eq('categories.is_active', true)
-      .order('display_order', { ascending: true });
+    const [{ data, error }, productos] = await Promise.all([
+      supabase
+        .from('subcategories')
+        .select('name, slug, seo_description, updated_at, display_order, categories!inner(slug, name, is_active)')
+        .eq('is_active', true)
+        .eq('has_page', true)
+        .eq('categories.is_active', true)
+        .order('display_order', { ascending: true }),
+      supabase.from('products').select('category, subcategory').not('subcategory', 'is', null),
+    ]);
 
     if (error) {
       console.error('Error fetching subcategory pages:', error);
       return { success: false, error: error.message, data: [] };
     }
 
+    // Cuántos productos tiene cada una, para que el sitemap y llms.txt dejen
+    // fuera las que todavía no llegan al mínimo indexable.
+    const cuentas = new Map();
+    for (const p of productos.data || []) {
+      const clave = `${p.category}\u0000${p.subcategory}`;
+      cuentas.set(clave, (cuentas.get(clave) || 0) + 1);
+    }
+
     const result = (data || []).map(({ categories: category, ...sub }) => ({
       ...sub,
       category_slug: category.slug,
       category_name: category.name,
+      count: cuentas.get(`${category.name}\u0000${sub.name}`) || 0,
     }));
 
     return { success: true, data: result };

@@ -13,6 +13,8 @@ import {
   parrafos,
   articulosQueMencionan,
   esquemaListado,
+  esquemaSubcategorias,
+  usaRejilla,
 } from '@/lib/categorias';
 import ProductsGrid from '@/components/ProductsGrid';
 import styles from '../page.module.css';
@@ -21,7 +23,7 @@ import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 import CategoryAmazonCTA from '@/components/CategoryAmazonCTA';
 import MarcaPagina from '@/components/MarcaPagina';
 import MigasDePan from '@/components/MigasDePan';
-import SubcategoriasNav from '@/components/SubcategoriasNav';
+import TarjetaSubcategoria from '@/components/TarjetaSubcategoria';
 import GuiasRelacionadas from '@/components/GuiasRelacionadas';
 
 // Revalidar cada 5 minutos (300 segundos)
@@ -111,6 +113,17 @@ export default async function CategoryPage({ params }) {
 
   const intro = parrafos(category.intro);
 
+  // Con dos o más subcategorías, la categoría es una puerta: tarjetas de
+  // subcategoría y los productos dentro de cada una. Así la página no crece
+  // con el catálogo. Con una sola, se enseñan los productos aquí mismo.
+  const rejilla = usaRejilla(subcategorias);
+  const conPagina = subcategorias.filter((s) => s.has_page);
+  const nombresConPagina = new Set(conPagina.map((s) => s.name));
+  // Productos sin subcategoría con página: no se quedan sin enlace.
+  const sueltos = rejilla
+    ? products.filter((p) => !nombresConPagina.has(p.subcategory))
+    : products;
+
   return (
     <main className={styles.categoryPage}>
       {/* Para que la categoría salga con su nombre en el informe de contenido
@@ -122,13 +135,24 @@ export default async function CategoryPage({ params }) {
         titulo={category.name}
       />
 
-      {products.length > 0 && (
+      {rejilla ? (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(esquemaListado(category.h1 || category.name, products)),
+            __html: JSON.stringify(
+              esquemaSubcategorias(category.h1 || category.name, category, conPagina)
+            ),
           }}
         />
+      ) : (
+        products.length > 0 && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(esquemaListado(category.h1 || category.name, products)),
+            }}
+          />
+        )
       )}
 
       <MigasDePan
@@ -144,53 +168,56 @@ export default async function CategoryPage({ params }) {
             reconocible desde el menú; el H1 es la frase que se busca. */}
         {category.h1 && <p className={piezas.antetitulo}>{category.name}</p>}
         <h1 className={styles.categoryTitle}>{category.h1 || category.name}</h1>
-        {intro.length > 0 ? (
-          <div className={piezas.intro}>
-            {intro.map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </div>
-        ) : (
-          category.description && (
-            <p className={styles.categoryDescription}>{category.description}</p>
-          )
+        {/* Arriba solo una frase: el texto largo va al pie de la página. */}
+        {(category.description || intro[0]) && (
+          <p className={piezas.entradilla}>{category.description || intro[0]}</p>
         )}
-
-        <SubcategoriasNav
-          categoria={category}
-          subcategorias={subcategorias}
-          total={products.length}
-        />
       </div>
 
-      {/* Antes del listado: quien busca una categoría entera suele querer ver
-          el surtido, no una ficha concreta. */}
-      <CategoryAmazonCTA category={category} />
+      {rejilla && (
+        <section className={piezas.rejilla} aria-labelledby="tipos-categoria">
+          <h2 id="tipos-categoria" className={piezas.rejillaTitulo}>
+            {category.name} por tipo
+          </h2>
+          <ul className={piezas.rejillaLista}>
+            {conPagina.map((s) => (
+              <li key={s.slug}>
+                <TarjetaSubcategoria categoria={category} subcategoria={s} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-      {products.length > 0 ? (
+      {sueltos.length > 0 && (
         <div className={styles.productsSection}>
           {/* El listado necesita su propio encabezado: sin él la página pasaba
               del h1 de la categoría a los h3 de cada tarjeta, saltándose un
               nivel, y no tenía ningún h2. */}
           <div className={styles.listadoHeader}>
             <h2 className={styles.listadoTitulo}>
-              Todos los productos de {category.name}
+              {rejilla ? `Otros productos de ${category.name}` : `Todos los productos de ${category.name}`}
             </h2>
             <p className={styles.listadoNota}>
-              {products.length === 1
+              {sueltos.length === 1
                 ? '1 producto analizado, con sus características y su valoración en Amazon'
-                : `${products.length} productos analizados, con sus características y su valoración en Amazon`}
+                : `${sueltos.length} productos analizados, con sus características y su valoración en Amazon`}
             </p>
           </div>
 
-          <ProductsGrid products={products} idsDestacados={idsDestacados} />
+          <ProductsGrid products={sueltos} idsDestacados={idsDestacados} />
         </div>
-      ) : (
+      )}
+
+      {products.length === 0 && (
         <div className={styles.emptyProducts}>
           <p>Todavía no hay reseñas en esta categoría.</p>
           <Link href="/resenas" className={styles.button}>Ver todas las reseñas</Link>
         </div>
       )}
+
+      {/* Quien busca una categoría entera suele querer ver el surtido. */}
+      <CategoryAmazonCTA category={category} />
 
       <GuiasRelacionadas
         titulo={`Guías de ${category.name}`}
@@ -198,7 +225,16 @@ export default async function CategoryPage({ params }) {
         articulos={guias}
       />
 
-      {products.length > 0 && <AmazonDisclaimer />}
+      {intro.length > 0 && (
+        <section className={piezas.comoElegir} aria-labelledby="como-elegir">
+          <h2 id="como-elegir">Qué mirar antes de comprar</h2>
+          {intro.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </section>
+      )}
+
+      {sueltos.length > 0 && <AmazonDisclaimer />}
     </main>
   );
 }

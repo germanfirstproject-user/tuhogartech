@@ -74,3 +74,36 @@ export function esquemaListado(nombre, productos, desde = 0) {
     })),
   };
 }
+
+/**
+ * Productos que necesita una subcategoría para que su página se indexe. Con
+ * menos, la página existe para navegar pero lleva noindex y no sale en el
+ * sitemap: una lista de un solo producto es contenido flojo para Google.
+ * Se indexa sola en cuanto se añade el segundo.
+ */
+export const MIN_PRODUCTOS_INDEXABLE = 2;
+
+/**
+ * Una categoría se presenta como rejilla de subcategorías cuando tiene al
+ * menos dos con página. Con una sola, la tarjeta llevaría al mismo listado,
+ * así que se enseñan los productos directamente.
+ */
+export function usaRejilla(subcategorias) {
+  return subcategorias.filter((s) => s.has_page).length >= 2;
+}
+
+/** ItemList con las subcategorías de una categoría. */
+export function esquemaSubcategorias(nombre, categoria, subcategorias) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: nombre,
+    numberOfItems: subcategorias.length,
+    itemListElement: subcategorias.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${BASE_URL}/categoria/${categoria.slug}/${s.slug}`,
+      name: s.name,
+    })),
+  };
+}

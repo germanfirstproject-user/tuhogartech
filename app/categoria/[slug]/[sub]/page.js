@@ -13,6 +13,7 @@ import {
   parrafos,
   articulosQueMencionan,
   esquemaListado,
+  MIN_PRODUCTOS_INDEXABLE,
 } from '@/lib/categorias';
 import ProductsGrid from '@/components/ProductsGrid';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
@@ -59,6 +60,8 @@ export async function generateMetadata({ params, searchParams }) {
   const pagina = numeroDePagina(searchParams);
   const base = `https://tuhogartech.com/categoria/${category.slug}/${subcategory.slug}`;
   const titulo = tituloSinMarca(subcategory.seo_title) || subcategory.h1 || subcategory.name;
+  const ids = await getProductIdsBySubcategory(category.name, subcategory.name);
+  const indexable = (ids.success ? ids.data.length : 0) >= MIN_PRODUCTOS_INDEXABLE;
 
   return {
     // Las páginas 2 en adelante llevan su número para que no compitan entre
@@ -78,6 +81,9 @@ export async function generateMetadata({ params, searchParams }) {
     alternates: {
       canonical: pagina > 1 ? `${base}?page=${pagina}` : base,
     },
+    // Con un solo producto la página sirve para navegar, pero no se ofrece a
+    // Google hasta que tenga algo más que comparar.
+    ...(indexable ? {} : { robots: { index: false, follow: true } }),
   };
 }
 
@@ -150,14 +156,9 @@ export default async function SubcategoryPage({ params, searchParams }) {
       <div className={styles.header}>
         <p className={piezas.antetitulo}>{category.name}</p>
         <h1 className={styles.categoryTitle}>{h1}</h1>
-        {/* La introducción solo en la primera página: en las siguientes se
-            repetiría el mismo texto en varias URL. */}
-        {pagina === 1 && intro.length > 0 && (
-          <div className={piezas.intro}>
-            {intro.map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </div>
+        {/* Arriba solo una frase; el texto largo va al pie. */}
+        {pagina === 1 && (subcategory.description || intro[0]) && (
+          <p className={piezas.entradilla}>{subcategory.description || intro[0]}</p>
         )}
 
         <SubcategoriasNav
@@ -192,6 +193,17 @@ export default async function SubcategoryPage({ params, searchParams }) {
         }
         articulos={guias}
       />
+
+      {/* Solo en la primera página: en las siguientes se repetiría el mismo
+          texto en varias URL. */}
+      {pagina === 1 && intro.length > 0 && (
+        <section className={piezas.comoElegir} aria-labelledby="como-elegir">
+          <h2 id="como-elegir">Qué mirar antes de comprar</h2>
+          {intro.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </section>
+      )}
 
       {products.length > 0 && <AmazonDisclaimer />}
     </main>

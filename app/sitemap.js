@@ -1,3 +1,4 @@
+import { MIN_PRODUCTOS_INDEXABLE } from '@/lib/categorias';
 import { getProducts, getCategories, getBlogs, getProductIdsNoIndexables, getSubcategoryPages } from '@/lib/supabase';
 
 const BASE = 'https://tuhogartech.com';
@@ -72,7 +73,7 @@ export default async function sitemap() {
 
       // Subcategorías con página propia. Solo la primera página de cada una:
       // las siguientes se descubren por sus enlaces de paginación.
-      ...subcategorias.map((s) => ({
+      ...subcategorias.filter((s) => s.count >= MIN_PRODUCTOS_INDEXABLE).map((s) => ({
         url: `${BASE}/categoria/${s.category_slug}/${s.slug}`,
         lastModified: fecha(s.updated_at),
         changeFrequency: 'weekly',

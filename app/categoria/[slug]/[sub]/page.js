@@ -17,7 +17,6 @@ import {
 } from '@/lib/categorias';
 import ProductsGrid from '@/components/ProductsGrid';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
-import MarcaPagina from '@/components/MarcaPagina';
 import MigasDePan from '@/components/MigasDePan';
 import SubcategoriasNav from '@/components/SubcategoriasNav';
 import GuiasRelacionadas from '@/components/GuiasRelacionadas';
@@ -128,13 +127,6 @@ export default async function SubcategoryPage({ params, searchParams }) {
 
   return (
     <main className={styles.categoryPage}>
-      <MarcaPagina
-        tipo="categoria"
-        id={`${category.slug}/${subcategory.slug}`}
-        slug={`${category.slug}/${subcategory.slug}`}
-        titulo={`${category.name} › ${subcategory.name}`}
-      />
-
       {products.length > 0 && (
         <script
           type="application/ld+json"

@@ -38,10 +38,7 @@ function FavoriteButton({ productId, compact = false }) {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!isLoggedIn) {
-      alert('Debes iniciar sesión para guardar productos favoritos');
-      return;
-    }
+    if (!isLoggedIn) return;
 
     setLoading(true);
 
@@ -65,6 +62,10 @@ function FavoriteButton({ productId, compact = false }) {
       setLoading(false);
     }
   }, [isLoggedIn, isFavorite, user, productId]);
+
+  // La web ya no ofrece cuentas a los visitantes (16-10-2026): sin sesión el
+  // botón no se pinta, en lugar de pedir un inicio de sesión que no existe.
+  if (!isLoggedIn) return null;
 
   if (compact) {
     return (

@@ -1,0 +1,85 @@
+.container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.boton {
+  padding: 0.75rem 1.5rem;
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.boton:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.aviso {
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-danger);
+  margin-bottom: 1rem;
+}
+
+.tablaContenedor {
+  overflow-x: auto;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.6rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  word-break: break-all;
+}
+
+.tabla th {
+  background: var(--color-background-tertiary);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.numero {
+  text-align: right !important;
+  white-space: nowrap;
+  word-break: normal !important;
+}

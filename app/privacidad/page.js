@@ -56,7 +56,7 @@ export default function PrivacidadPage() {
           <h2>4. Divulgación de Datos a Terceros</h2>
           <p>Tus datos pueden ser compartidos con:</p>
           <ul>
-            <li><strong>Supabase (PostgreSQL):</strong> Nuestro proveedor de base de datos y autenticación, ubicado en la UE</li>
+            <li><strong>Supabase (PostgreSQL):</strong> Nuestro proveedor de base de datos y autenticación, con los datos alojados en Sídney (Australia) (ver apartado 10)</li>
             <li><strong>Netlify:</strong> Nuestro proveedor de alojamiento y red de distribución de contenidos</li>
             <li><strong>Contador de visitas:</strong> Se queda en nuestra base de datos y no se cede a nadie (ver apartado 5.2)</li>
             <li><strong>Google Analytics:</strong> Solo si aceptas las cookies de analítica (ver apartados 5 y 10)</li>
@@ -235,15 +235,15 @@ export default function PrivacidadPage() {
           <ul>
             <li><strong>Datos de cuenta activa:</strong> Mientras mantengas tu cuenta</li>
             <li><strong>Datos de cuenta eliminada:</strong> Eliminados inmediatamente, salvo obligación legal de conservación</li>
-            <li><strong>Datos analíticos:</strong> Anonimizados después de 24 meses</li>
+            <li><strong>Contador de visitas:</strong> No contiene datos personales, así que no tiene plazo de borrado</li>
           </ul>
         </section>
 
         <section className={styles.section}>
           <h2>10. Transferencias Internacionales de Datos</h2>
           <p>
-            La mayoría de nuestros proveedores están ubicados en la Unión Europea. Existe, no
-            obstante, una transferencia internacional que conviene que conozcas:
+            Algunos de nuestros proveedores tratan datos fuera del Espacio Económico Europeo.
+            Estas son las transferencias internacionales que conviene que conozcas:
           </p>
           <ul>
             <li>
@@ -258,8 +258,12 @@ export default function PrivacidadPage() {
               rechazas, no se envía ningún dato a Google.
             </li>
             <li>
-              <strong>Supabase:</strong> base de datos y autenticación, con la instancia de
-              este proyecto alojada en la Unión Europea.
+              <strong>Supabase:</strong> base de datos y autenticación. La instancia de este
+              proyecto está alojada en <strong>Sídney (Australia)</strong>, un país sin decisión de
+              adecuación de la Comisión Europea, así que la transferencia se ampara en las
+              cláusulas contractuales tipo aprobadas por la Comisión Europea, incluidas en el
+              acuerdo de tratamiento de datos de Supabase. Ahí se guardan el contador de visitas
+              (que no contiene datos personales) y, si tienes cuenta, tu email y tu sesión.
             </li>
             <li>
               <strong>Netlify:</strong> alojamiento y red de distribución de contenidos. Como

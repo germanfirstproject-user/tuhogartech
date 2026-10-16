@@ -21,7 +21,6 @@ import styles from '../page.module.css';
 import piezas from '@/components/Categoria.module.css';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 import CategoryAmazonCTA from '@/components/CategoryAmazonCTA';
-import MarcaPagina from '@/components/MarcaPagina';
 import MigasDePan from '@/components/MigasDePan';
 import TarjetaSubcategoria from '@/components/TarjetaSubcategoria';
 import GuiasRelacionadas from '@/components/GuiasRelacionadas';
@@ -128,13 +127,6 @@ export default async function CategoryPage({ params }) {
     <main className={styles.categoryPage}>
       {/* Para que la categoría salga con su nombre en el informe de contenido
           del panel y no solo como una ruta. */}
-      <MarcaPagina
-        tipo="categoria"
-        id={category.slug}
-        slug={category.slug}
-        titulo={category.name}
-      />
-
       {rejilla ? (
         <script
           type="application/ld+json"

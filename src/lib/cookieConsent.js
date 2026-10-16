@@ -12,10 +12,11 @@
 
 export const CONSENT_KEY = 'cookieConsent';
 
-// v3: se separa la medición propia de Google Analytics. Son dos finalidades
-// con dos destinatarios distintos y no pueden ir bajo la misma casilla: subir
-// la versión obliga a volver a preguntar a quien ya había decidido, que es
-// exactamente lo que exige un cambio de finalidades.
+// v3 separó la medición propia de Google Analytics. El 16-10-2026 la medición
+// propia se quitó (queda solo un contador de vistas que no guarda nada en el
+// navegador y no necesita consentimiento). Quitar una finalidad no obliga a
+// volver a preguntar, así que la versión sigue en 3 y la casilla vieja se
+// ignora.
 export const CONSENT_VERSION = 3;
 
 // Evento propio: quien dependa del consentimiento se suscribe y reacciona
@@ -25,7 +26,6 @@ export const CONSENT_EVENT = 'cookieconsentchange';
 export const DEFAULT_CONSENT = {
   necessary: true,     // Siempre activas: sesión y seguridad. No se pueden desactivar.
   analytics: false,    // Google Analytics. Requiere consentimiento expreso.
-  estadisticas: false, // Medición propia guardada en nuestra base de datos.
 };
 
 /**
@@ -49,33 +49,9 @@ export const CATEGORIAS = [
     ],
   },
   {
-    id: 'estadisticas',
-    nombre: 'Estadísticas propias',
-    resumen:
-      'Medición guardada en nuestro propio servidor. Nos dice qué se lee y qué no, que es lo que decide sobre qué escribimos después.',
-    obligatoria: false,
-    destino: 'Nuestra base de datos (Supabase, servidores en la Unión Europea). No se comparte con nadie.',
-    conserva: 'Catorce meses, y después se borra automáticamente.',
-    datos: [
-      'Qué páginas abres y en qué orden, con la fecha y la hora.',
-      'Cuántos segundos pasas en cada una y hasta dónde bajas con el scroll.',
-      'Qué enlaces pulsas, incluidos los que llevan a Amazon.',
-      'Qué escribes en el buscador de la web y cuántos resultados salen.',
-      'Desde qué página de la web llegas a otra.',
-      'Desde qué sitio has llegado (Google, una red social, un enlace) y la campaña, si venía etiquetada.',
-      'Si usas móvil, tableta u ordenador, el navegador, el sistema y el ancho de la pantalla.',
-    ],
-    noDatos: [
-      'No guardamos tu dirección IP.',
-      'No creamos una huella de tu navegador ni un identificador que te siga entre visitas: el de la sesión es aleatorio y desaparece al cerrar la pestaña.',
-      'No cruzamos nada de esto con tu cuenta si tienes una.',
-      'No hay publicidad ni venta de datos a terceros.',
-    ],
-  },
-  {
     id: 'analytics',
     nombre: 'Analítica de Google',
-    resumen: 'Google Analytics 4, para contrastar lo anterior y ver de qué búsquedas llega la gente.',
+    resumen: 'Google Analytics 4, para saber qué se lee y de qué búsquedas llega la gente.',
     obligatoria: false,
     destino: 'Google Ireland Ltd., con transferencia a Estados Unidos bajo el Marco de Privacidad de Datos UE-EE. UU.',
     conserva: 'Según la configuración de Google Analytics, catorce meses.',
@@ -105,7 +81,6 @@ export function getConsent() {
     return {
       necessary: true,
       analytics: parsed.analytics === true,
-      estadisticas: parsed.estadisticas === true,
       date: parsed.date,
       version: parsed.version,
     };
@@ -115,14 +90,13 @@ export function getConsent() {
 }
 
 /** Guarda la decisión y avisa a quien esté escuchando. */
-export function setConsent({ analytics, estadisticas }) {
+export function setConsent({ analytics }) {
   if (typeof window === 'undefined') return;
 
   const value = {
     version: CONSENT_VERSION,
     necessary: true,
     analytics: analytics === true,
-    estadisticas: estadisticas === true,
     date: new Date().toISOString(),
   };
 
@@ -143,10 +117,6 @@ export function hasAnalyticsConsent() {
   return getConsent()?.analytics === true;
 }
 
-/** Consentimiento para la medición propia, la que alimenta el panel. */
-export function hasStatsConsent() {
-  return getConsent()?.estadisticas === true;
-}
 
 /** Abre el panel de preferencias desde cualquier punto de la web. */
 export const OPEN_PREFERENCES_EVENT = 'cookiepreferencesopen';

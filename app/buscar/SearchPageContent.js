@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from 'react';
 import ProductsGrid from '@/components/ProductsGrid';
 import BlogCard from '@/components/BlogCard';
 import { searchUnified } from '@/lib/supabase';
-import { registrarBusqueda } from '@/lib/medicion';
 import { trackSearch } from '@/lib/analytics';
 import styles from './page.module.css';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
@@ -49,7 +48,6 @@ export default function SearchPageContent() {
         // efecto y, sin esta guarda, una misma búsqueda contaría varias veces.
         if (ultimaRegistrada.current !== query) {
           ultimaRegistrada.current = query;
-          registrarBusqueda(query, total);
           trackSearch(query, total);
         }
       } else {

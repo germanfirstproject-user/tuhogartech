@@ -34,7 +34,7 @@ export default function AdminLayout({ children }) {
 
   const tabs = [
     { id: 'dashboard', label: '📊 Dashboard', href: '/admin' },
-    { id: 'analitica', label: '📈 Analítica', href: '/admin/analitica' },
+    { id: 'vistas', label: '📈 Vistas', href: '/admin/vistas' },
     { id: 'products', label: '🛍️ Productos', href: '/admin/products' },
     { id: 'featured', label: '⭐ Destacados', href: '/admin/featured' },
     { id: 'blogs', label: '📝 Blogs', href: '/admin/blogs' },

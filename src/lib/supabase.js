@@ -446,69 +446,6 @@ export async function deleteProduct(id) {
  * WHERE email = 'admin@example.com';
  */
 
-// Sign up - Crear nueva cuenta (usando API route para evitar CORS)
-export async function signUp(email, password, fullName = '') {
-  try {
-    // Validar entrada
-    if (!email || !password) {
-      return { success: false, error: 'Email y contraseña son requeridos' };
-    }
-
-    if (password.length < 6) {
-      return { success: false, error: 'La contraseña debe tener al menos 6 caracteres' };
-    }
-
-    // Llamar a la API route de Next.js en lugar de Supabase directamente
-    const response = await fetch('/api/auth/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        fullName: fullName || email.split('@')[0],
-      }),
-    });
-
-    // Verificar si la respuesta es JSON válida
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error('La respuesta no es JSON:', await response.text());
-      return { 
-        success: false, 
-        error: 'Error en el servidor. Intenta de nuevo.' 
-      };
-    }
-
-    const result = await response.json();
-
-    if (!response.ok || !result.success) {
-      console.error('Error signing up:', result.error);
-      return { 
-        success: false, 
-        error: result.error || 'Error al crear la cuenta' 
-      };
-    }
-
-    // Si se creó exitosamente
-    return { 
-      success: true,
-      user: result.user || {
-        email: email,
-        isAdmin: false,
-      },
-      message: result.message || 'Cuenta creada exitosamente.' 
-    };
-  } catch (err) {
-    console.error('Signup error:', err);
-    return { 
-      success: false, 
-      error: 'Error de conexión. Verifica tu internet e intenta de nuevo.' 
-    };
-  }
-}
-
 // Sign in - Iniciar sesión
 export async function signIn(email, password) {
   try {

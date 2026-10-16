@@ -16,7 +16,7 @@ const OPCIONALES = CATEGORIAS.filter((c) => !c.obligatoria).map((c) => c.id);
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
-  const [elegido, setElegido] = useState({ analytics: false, estadisticas: false });
+  const [elegido, setElegido] = useState({ analytics: false });
   // Qué categoría tiene desplegado el detalle. Solo una a la vez: el banner es
   // pequeño y abrirlas todas lo convertiría en un muro de texto.
   const [detalle, setDetalle] = useState(null);
@@ -36,7 +36,6 @@ export default function CookieConsent() {
       const actual = getConsent();
       setElegido({
         analytics: actual?.analytics === true,
-        estadisticas: actual?.estadisticas === true,
       });
       setShowPanel(true);
       setVisible(true);

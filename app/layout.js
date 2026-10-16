@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import CookieConsent from '@/components/CookieConsent';
-import Medicion from '@/components/Medicion';
+import ContadorVistas from '@/components/ContadorVistas';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { getSiteSettings } from '@/lib/supabase';
 
@@ -93,10 +93,7 @@ export default function RootLayout({ children }) {
           <Header />
           {children}
           <Footer />
-          {/* Va después del contenido para que, en cada navegación, los
-              medidores de cada plantilla ya hayan dicho qué producto o qué
-              artículo se está viendo antes de que se mande la vista. */}
-          <Medicion />
+          <ContadorVistas />
           <CookieConsent />
         </AuthProvider>
       </body>

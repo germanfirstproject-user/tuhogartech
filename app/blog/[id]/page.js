@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getBlogs, getBlogBySlug, getBlogById, getProductById } from '@/lib/supabase';
+import { getBlogs, getBlogBySlug, getBlogById, getProductById, getUltimosArticulos } from '@/lib/supabase';
 import { ArrowLeft } from 'lucide-react';
 import BlogReadTracker from '@/components/BlogReadTracker';
 import BlogContentRenderer from '@/components/BlogContentRenderer';
 import BlogProductCard from '@/components/BlogProductCard';
 import BlogProductSummary from '@/components/BlogProductSummary';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
+import GuiasRelacionadas from '@/components/GuiasRelacionadas';
 import { extractProductIds, splitContentByProductCards } from '@/lib/blogProducts';
 import styles from './page.module.css';
 
@@ -95,7 +96,13 @@ export default async function BlogPostPage({ params }) {
   // recopilatorio final. Se piden en paralelo y se descartan los que ya no
   // existan, de modo que un producto retirado no rompe el artículo.
   const mentionedIds = extractProductIds(blog.content);
-  const fetched = await Promise.all(mentionedIds.map((id) => getProductById(id)));
+  const [fetched, ultimosResult] = await Promise.all([
+    Promise.all(mentionedIds.map((id) => getProductById(id))),
+    // Los dos últimos artículos publicados, sin contar este. Así cada
+    // artículo nuevo recibe enlaces desde todos los demás en cuanto se publica.
+    getUltimosArticulos(2, blog.id),
+  ]);
+  const ultimosArticulos = ultimosResult.success ? ultimosResult.data : [];
 
   const productsById = {};
   for (const [i, res] of fetched.entries()) {
@@ -276,6 +283,12 @@ export default async function BlogPostPage({ params }) {
                 <span key={idx} className={styles.tag}>{tag}</span>
               ))}
             </div>
+          </div>
+        )}
+
+        {ultimosArticulos.length > 0 && (
+          <div className={styles.ultimos}>
+            <GuiasRelacionadas titulo="Últimos artículos" articulos={ultimosArticulos} />
           </div>
         )}
       </article>

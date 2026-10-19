@@ -91,8 +91,8 @@ export default async function sitemap() {
           priority: 0.8,
         })),
 
-      // Fichas de producto. Solo las indexables: hoy son las que algún
-      // artículo enlaza, que son las únicas que llegan con enlaces propios.
+      // Fichas de producto. Solo las indexables: desde el 19-10-2026 son
+      // todas, salvo las que se saquen a mano desde la pestaña SEO del admin.
       ...productos
         .filter((p) => !noIndexables.has(p.id))
         .map((p) => ({

@@ -703,6 +703,37 @@ export async function getRecentBlogs(limit = 10) {
   }
 }
 
+/**
+ * Los últimos artículos publicados, por fecha de publicación (no de creación:
+ * un borrador escrito hace días y publicado hoy es lo más nuevo para el
+ * lector). Solo las columnas que pinta BlogCard. `excluirId` quita el artículo
+ * en el que se está, para no recomendarse a sí mismo.
+ */
+export async function getUltimosArticulos(limit = 6, excluirId = null) {
+  try {
+    let query = supabase
+      .from('blogs')
+      .select('id, slug, title, excerpt, featured_image, featured_image_alt, category, published_at')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .limit(limit);
+
+    if (excluirId) query = query.neq('id', excluirId);
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Error fetching latest blogs:', error);
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: data || [] };
+  } catch (err) {
+    console.error('Error:', err);
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
 // Obtener un blog por ID
 export async function getBlogById(id) {
   try {

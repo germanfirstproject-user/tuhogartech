@@ -1,4 +1,5 @@
-import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getSiteStats, getCategoriesWithCounts } from '@/lib/supabase';
+import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getSiteStats, getCategoriesWithCounts, getUltimosArticulos } from '@/lib/supabase';
+import BlogCard from '@/components/BlogCard';
 import Carousel from '@/components/Carousel';
 import AdminLink from '@/components/AdminLink';
 import Hero from '@/components/Hero';
@@ -9,6 +10,41 @@ import styles from './page.module.css';
 
 // Revalidar cada 5 minutos (300 segundos) - buen balance entre rendimiento y frescura
 export const revalidate = 300;
+
+const BASE = 'https://tuhogartech.com';
+
+// Datos estructurados de la portada: qué es la web (WebSite) y quién la
+// publica (Organization). Ayudan a que Google trate «Tu Hogar Tech» como una
+// marca y no como dos palabras sueltas. Mismo nombre y logo que el publisher
+// del marcado de los artículos, para que todo apunte a la misma entidad.
+// Sin SearchAction: /buscar está bloqueado en robots.txt.
+const ORGANIZACION_ID = `${BASE}/#organizacion`;
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${BASE}/#web`,
+  url: BASE,
+  name: 'Tu Hogar Tech',
+  alternateName: ['TuHogarTech', 'tuhogartech.com'],
+  inLanguage: 'es-ES',
+  publisher: { '@id': ORGANIZACION_ID },
+};
+
+const organizacionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': ORGANIZACION_ID,
+  name: 'Tu Hogar Tech',
+  url: BASE,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${BASE}/icon-512.png`,
+    width: 512,
+    height: 512,
+  },
+  // Cuando haya perfiles sociales con el mismo nombre, van aquí en `sameAs`.
+};
 
 const HOME_TITLE_POR_DEFECTO = 'Tu Hogar Tech — Análisis de tecnología para el hogar';
 const HOME_DESCRIPCION_POR_DEFECTO =
@@ -55,13 +91,14 @@ export async function generateMetadata() {
 
 export default async function HomePage() {
   // Cargar todos los datos en paralelo en el servidor (MUCHO más rápido)
-  const [settingsResult, featuredResult, topRatedResult, blogsResult, statsResult, categoriesResult] = await Promise.all([
+  const [settingsResult, featuredResult, topRatedResult, blogsResult, statsResult, categoriesResult, ultimosResult] = await Promise.all([
     getSiteSettings(),
     getFeaturedProducts(),
     getTopRatedProducts(10),
     getRecentBlogs(10),
     getSiteStats(),
     getCategoriesWithCounts(),
+    getUltimosArticulos(6),
   ]);
 
   const featuredProducts = featuredResult.success ? featuredResult.data : [];
@@ -69,6 +106,7 @@ export default async function HomePage() {
   const recentBlogs = blogsResult.success ? blogsResult.data : [];
   const stats = statsResult.success ? statsResult.data : { productsCount: 0, categoriesCount: 0 };
   const categories = categoriesResult.success ? categoriesResult.data : [];
+  const ultimosArticulos = ultimosResult.success ? ultimosResult.data : [];
 
   const settings = settingsResult.success ? settingsResult.data : null;
 
@@ -110,7 +148,32 @@ export default async function HomePage() {
 
   return (
     <main className={styles.main}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([websiteSchema, organizacionSchema]) }}
+      />
+
       <Hero stats={stats} categories={categories} picks={heroPicks} />
+
+      {/* Los seis últimos artículos, justo bajo el hero. Son enlaces normales
+          en el HTML (no un carrusel), así que el buscador los ve todos y los
+          artículos nuevos reciben un enlace desde la página con más autoridad
+          de la web el mismo día que se publican. */}
+      {ultimosArticulos.length > 0 && (
+        <section className={styles.carouselSection} aria-labelledby="ultimos-articulos">
+          <div className={styles.sectionHeader}>
+            <h2 id="ultimos-articulos" className={styles.sectionTitle}>Últimos artículos</h2>
+            <p className={styles.sectionSubtitle}>
+              Lo último que hemos publicado: guías, comparativas y análisis
+            </p>
+          </div>
+          <div className={styles.rejillaArticulos}>
+            {ultimosArticulos.map((blog) => (
+              <BlogCard key={blog.id} blog={blog} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <ContentCarousel slides={contentSlides} />
 

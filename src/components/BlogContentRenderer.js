@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
+import { trackAffiliateClick } from '@/lib/analytics';
 
 /**
  * Componente que renderiza contenido HTML de blogs con soporte para etiquetas <style>
  * Extrae los estilos, los aplica con scope y limpia el HTML
  */
-export default function BlogContentRenderer({ content, blogId, className }) {
+export default function BlogContentRenderer({ content, blogId, blog, className }) {
   useEffect(() => {
     if (!content) return;
 
@@ -61,10 +62,28 @@ export default function BlogContentRenderer({ content, blogId, className }) {
   // Limpiar etiquetas <style> del contenido HTML para evitar duplicación
   const cleanContent = content ? content.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '') : '';
   
+  // Los botones «Ver en Amazon» del texto (insertAmazonButtons) son HTML
+  // plano, no AffiliateLink, así que el clic se mide aquí, delegado en el
+  // contenedor, con la misma función y su propia posición.
+  const medirClicAmazon = (evento) => {
+    const enlace = evento.target.closest?.('a[data-amazon-boton]');
+    if (!enlace) return;
+    trackAffiliateClick({
+      productId: enlace.dataset.producto,
+      productName: enlace.dataset.titulo,
+      category: enlace.dataset.categoria || 'sin_categoria',
+      brand: enlace.dataset.marca,
+      linkPosition: 'blog_tabla',
+      blogId: blog?.id,
+      blogSlug: blog?.slug,
+    });
+  };
+
   return (
     <div 
       className={className}
       data-blog-content={blogId}
+      onClick={medirClicAmazon}
       dangerouslySetInnerHTML={{ __html: cleanContent }}
     />
   );

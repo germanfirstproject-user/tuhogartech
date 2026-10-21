@@ -8,7 +8,7 @@ import BlogProductCard from '@/components/BlogProductCard';
 import BlogProductSummary from '@/components/BlogProductSummary';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 import GuiasRelacionadas from '@/components/GuiasRelacionadas';
-import { extractProductIds, splitContentByProductCards } from '@/lib/blogProducts';
+import { extractProductIds, insertAmazonButtons, splitContentByProductCards } from '@/lib/blogProducts';
 import styles from './page.module.css';
 
 // Revalidar cada 10 minutos (600 segundos)
@@ -113,9 +113,15 @@ export default async function BlogPostPage({ params }) {
     .map((id) => productsById[id])
     .filter(Boolean);
 
-  const contentSegments = splitContentByProductCards(blog.content).filter(
-    (segment) => segment.type !== 'product' || productsById[segment.id]
-  );
+  const contentSegments = splitContentByProductCards(blog.content)
+    .filter((segment) => segment.type !== 'product' || productsById[segment.id])
+    // Los botones «Ver en Amazon» de las tablas se resuelven aquí, en
+    // servidor, para que el enlace de afiliado esté en el HTML inicial.
+    .map((segment) =>
+      segment.type === 'html'
+        ? { ...segment, value: insertAmazonButtons(segment.value, productsById) }
+        : segment
+    );
 
   // Schema.org - Article
   const articleSchema = {
@@ -262,6 +268,7 @@ export default async function BlogPostPage({ params }) {
                 key={`h-${i}`}
                 content={segment.value}
                 blogId={`${blog.id}-${i}`}
+                blog={blog}
               />
             )
           )}

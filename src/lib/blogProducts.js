@@ -50,3 +50,41 @@ export function splitContentByProductCards(content) {
 
   return segments.length ? segments : [{ type: 'html', value: content }];
 }
+
+// Botón de Amazon dentro del texto, sobre todo en las tablas comparativas:
+//   <a href="/resenas/337-hp-designjet-t250" data-amazon>Ver en Amazon</a>
+// Se escribe apuntando a la ficha para que, si el producto no tiene enlace de
+// afiliado (o desaparece), siga siendo un enlace útil y no uno roto.
+const AMAZON_BUTTON =
+  /<a\s+href="\/(?:resenas|producto)\/(\d+)(?:-[a-z0-9-]*)?"\s+data-amazon\s*>([\s\S]*?)<\/a>/gi;
+
+const escaparAtributo = (texto) =>
+  String(texto ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+/**
+ * Sustituye los marcadores `data-amazon` por el enlace de afiliado del
+ * producto, con la marca «Enlace de afiliado» pegada, que Amazon exige junto a
+ * cada enlace (ver AvisoAfiliado.js). El texto de la marca es el mismo.
+ *
+ * Si el producto no se ha podido cargar o no tiene enlace, el marcador se
+ * queda como enlace normal a la ficha.
+ */
+export function insertAmazonButtons(html, productsById) {
+  if (!html) return html;
+  return html.replace(AMAZON_BUTTON, (original, id, texto) => {
+    const producto = productsById?.[id];
+    if (!producto?.affiliate_link) return original.replace(/\s+data-amazon\s*>/, '>');
+    return (
+      `<a href="${escaparAtributo(producto.affiliate_link)}" target="_blank" rel="noopener noreferrer sponsored"` +
+      ` data-amazon-boton data-producto="${escaparAtributo(id)}"` +
+      ` data-titulo="${escaparAtributo(producto.title)}"` +
+      ` data-categoria="${escaparAtributo(producto.category)}"` +
+      ` data-marca="${escaparAtributo(producto.brand)}">${texto}</a>` +
+      `<span data-afiliado>Enlace de afiliado</span>`
+    );
+  });
+}

@@ -7,8 +7,8 @@ import BlogFilters from '@/components/BlogFilters';
 import Pagination from '@/components/Pagination';
 import styles from './page.module.css';
 
-// Revalidar cada 10 minutos (600 segundos)
-export const revalidate = 600;
+// Caché de 24 horas: el panel de administración la renueva al guardar (/api/revalidar)
+export const revalidate = 86400;
 
 const TITULO_BASE = 'Blog - Guías y consejos';
 const DESCRIPCION_BASE = 'Guías de compra, análisis y consejos sobre productos.';

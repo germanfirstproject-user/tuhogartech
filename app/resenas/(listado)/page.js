@@ -5,8 +5,8 @@ import BlogCard from '@/components/BlogCard';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import styles from './page.module.css';
 
-// Revalidar cada 5 minutos (300 segundos)
-export const revalidate = 300;
+// Caché de 24 horas: el panel de administración la renueva al guardar (/api/revalidar)
+export const revalidate = 86400;
 
 // Sin la marca: la añade la plantilla de app/layout.js. Con ella puesta aquí
 // también, el título salía «Reseñas - Tu Hogar Tech | Tu Hogar Tech».

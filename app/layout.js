@@ -1,6 +1,6 @@
 import './globals.css';
 import '../styles/variables.css';
-import { Inter, Fraunces } from 'next/font/google';
+import { Schibsted_Grotesk, Source_Serif_4 } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
@@ -9,13 +9,10 @@ import ContadorVistas from '@/components/ContadorVistas';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { getSiteSettings } from '@/lib/supabase';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  variable: '--font-fraunces',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-});
+// Schibsted Grotesk para interfaz y títulos; Source Serif 4 solo para el
+// cuerpo de los artículos largos.
+const schibsted = Schibsted_Grotesk({ subsets: ['latin'], variable: '--font-schibsted', display: 'swap' });
+const sourceSerif = Source_Serif_4({ subsets: ['latin'], variable: '--font-source-serif', display: 'swap' });
 
 // Generar metadata dinámica desde la base de datos
 export async function generateMetadata() {
@@ -50,7 +47,7 @@ export async function generateMetadata() {
         },
       ] : [
         {
-          url: '/og-image.png',
+          url: '/og-image-morado.png',
           width: 1200,
           height: 630,
           alt: 'Tu Hogar Tech',
@@ -61,7 +58,7 @@ export async function generateMetadata() {
       card: 'summary_large_image',
       title: settings?.home_twitter_title || settings?.home_title || defaultTitle,
       description: settings?.home_twitter_description || settings?.home_description || defaultDescription,
-      images: settings?.home_twitter_image ? [settings.home_twitter_image] : ['/og-image.png'],
+      images: settings?.home_twitter_image ? [settings.home_twitter_image] : ['/og-image-morado.png'],
     },
     robots: {
       index: true,
@@ -79,13 +76,13 @@ export async function generateMetadata() {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es">
+    <html lang="es" className={`${schibsted.variable} ${sourceSerif.variable}`}>
       <head>
         {/* Ya no se abre conexión con los servidores de imágenes de Amazon:
             la web no carga ninguna. */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
       </head>
-      <body className={`${inter.variable} ${fraunces.variable}`}>
+      <body>
         <AuthProvider>
           {/* Dentro del proveedor de sesión: necesita saber si quien navega es
               el administrador para no medirse a sí mismo. */}

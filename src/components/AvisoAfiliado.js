@@ -22,7 +22,17 @@ import styles from './AvisoAfiliado.module.css';
  * «donde el cliente lo note sin tener que buscarlo». Un aviso que no se lee no
  * cumple.
  */
-export default function AvisoAfiliado({ className = '', children }) {
+export default function AvisoAfiliado({ className = '', children, breve = false }) {
+  // `breve` es para las tarjetas: solo la marca, que es lo que pide Amazon.
+  // La explicación larga ya está en la declaración global de la página.
+  if (breve) {
+    return (
+      <p className={`${styles.aviso} ${className}`.trim()}>
+        <span className={styles.marca}>Enlace de afiliado</span>
+      </p>
+    );
+  }
+
   return (
     <p className={`${styles.aviso} ${className}`.trim()}>
       <span className={styles.marca}>Enlace de afiliado.</span>

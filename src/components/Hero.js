@@ -142,8 +142,7 @@ function PickCard({ product, label, priority = false, posicion = 1 }) {
       })
     : null;
 
-  const reviews = Number(product.reviews_count);
-  const hasReviews = Number.isFinite(reviews) && reviews > 0;
+  const opinion = !product.url_slug || product.url_slug.endsWith('opinion');
 
   return (
     <TrackedLink
@@ -174,16 +173,14 @@ function PickCard({ product, label, priority = false, posicion = 1 }) {
                 <span className={styles.cardStarsOff}>{'★'.repeat(5 - stars)}</span>
               </span>
               <span className={styles.cardReviews}>
-                {hasReviews
-                  ? `${reviews.toLocaleString('es-ES')} reseñas en Amazon`
-                  : 'valoración en Amazon'}
+                Nuestra puntuación
               </span>
             </span>
           </div>
         )}
 
         <span className={styles.cardCta}>
-          Ver análisis
+          {opinion ? 'Leer opinión' : 'Ver ficha técnica'}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <line x1="5" y1="12" x2="19" y2="12" />

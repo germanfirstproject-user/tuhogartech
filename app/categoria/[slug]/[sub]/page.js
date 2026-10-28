@@ -24,7 +24,8 @@ import PaginacionEnlaces from '@/components/PaginacionEnlaces';
 import styles from '../../page.module.css';
 import piezas from '@/components/Categoria.module.css';
 
-export const revalidate = 300;
+// Caché de 24 horas: el panel de administración la renueva al guardar (/api/revalidar)
+export const revalidate = 86400;
 
 const POR_PAGINA = 12;
 
@@ -171,7 +172,7 @@ export default async function SubcategoryPage({ params, searchParams }) {
           </p>
         </div>
 
-        <ProductsGrid products={products} idsDestacados={idsDestacados} />
+        <ProductsGrid products={products} idsDestacados={idsDestacados} origen="listado_subcategoria" pagina="subcategoria" />
 
         <PaginacionEnlaces base={base} actual={pagina} total={totalPaginas} />
       </div>

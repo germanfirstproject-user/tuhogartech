@@ -2,11 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import ProductVisual from './ProductVisual';
+import ProductCard from './ProductCard';
 import { setNavSource } from '@/lib/navSource';
 import { trackModuleClick } from '@/lib/analytics';
 import styles from './Carousel.module.css';
-import { rutaFicha } from '@/lib/fichas';
 
 /**
  * @param {string} moduleName    - Identificador del módulo para la medición.
@@ -66,7 +65,7 @@ export default function Carousel({ items, type = 'product', moduleName, idsDesta
   const getTransformValue = () => {
     if (!trackRef.current) return 0;
     
-    const firstCard = trackRef.current.querySelector(`.${styles.card}`);
+    const firstCard = trackRef.current.firstElementChild;
     if (!firstCard) return 0;
     
     const cardWidth = firstCard.offsetWidth;
@@ -108,13 +107,15 @@ export default function Carousel({ items, type = 'product', moduleName, idsDesta
         >
           {items.map((item, index) => (
             type === 'product' ? (
-              <ProductCard
-                key={item.id || index}
-                product={item}
-                moduleName={moduleName}
-                posicion={index + 1}
-                destacado={destacados.has(item.id)}
-              />
+              <div key={item.id || index} className={styles.slot}>
+                <ProductCard
+                  product={item}
+                  origen={moduleName}
+                  pagina="inicio"
+                  posicion={index + 1}
+                  destacado={destacados.has(item.id)}
+                />
+              </div>
             ) : (
               <BlogCard
                 key={item.id || index}
@@ -139,54 +140,6 @@ export default function Carousel({ items, type = 'product', moduleName, idsDesta
         </button>
       )}
     </div>
-  );
-}
-
-function ProductCard({ product, moduleName, posicion, destacado = false }) {
-  const registrar = () => {
-    if (!moduleName) return;
-    setNavSource(moduleName, { pagina: 'inicio' });
-    trackModuleClick({
-      modulo: moduleName,
-      destino: 'producto',
-      itemId: product.id,
-      itemName: product.title,
-      posicion,
-    });
-  };
-
-  return (
-    <Link 
-      href={rutaFicha(product)} 
-      className={styles.card} 
-      prefetch={false}
-      scroll={true}
-      onClick={registrar}
-    >
-      <div className={styles.imageContainer}>
-        <ProductVisual product={product} />
-        {destacado && <span className={styles.badgeDestacado}>Destacado</span>}
-      </div>
-      
-      <div className={styles.cardContent}>
-        {product.brand && (
-          <p className={styles.brand}>{product.brand}</p>
-        )}
-        
-        <h3 className={styles.title}>{product.title}</h3>
-        
-        {product.rating && (
-          <div className={styles.rating}>
-            <span className={styles.stars}>★</span>
-            <span className={styles.ratingValue}>{product.rating}/5</span>
-          </div>
-        )}
-        
-        {/* Sin precio ni disponibilidad: son datos que solo Amazon puede dar
-            actualizados, y sus políticas de afiliados no permiten mostrarlos
-            desde una copia propia. */}
-      </div>
-    </Link>
   );
 }
 

@@ -1,72 +1,81 @@
 /* =========================================
-   SISTEMA DE DISEÑO — TuHogarTech
-   Estética editorial: papel cálido, tinta,
-   un acento viridiano y ámbar para precio/rating.
+   SISTEMA DE DISEÑO — TuHogarTech 2026
+   Sobrio y técnico: fondo blanco, un morado
+   oscuro para la acción, líneas de 1px y
+   esquinas cuadradas.
    ========================================= */
 
 :root {
-  /* ========== PALETA BASE ========== */
-  /* Acento principal: verde viridiano profundo */
-  --color-primary: #166355;
-  --color-primary-dark: #0f4c41;
-  --color-primary-light: #3d8577;
-  --color-primary-very-light: #e6efec;
+  /* ========== PALETA ==========
+     Un solo color de acción (morado oscuro) y un morado claro para fondos
+     suaves. Todo lo demás son grises con un matiz violeta, para que el ojo
+     vaya al texto y al botón. Ver el sistema de diseño (artifact). */
+  --color-primary: #4a2a8c;
+  --color-primary-dark: #361c6b;
+  --color-primary-light: #8e6fd6;
+  --color-primary-very-light: #f3effb;
+  --color-primary-soft: #e5ddf6;
+  --color-border-accent: #cfc2ee;
 
-  --color-secondary: #6b675c;
-  --color-secondary-dark: #47443c;
-  --color-secondary-light: #d8d4c9;
+  --color-secondary: #67627a;
+  --color-secondary-dark: #4b4759;
+  --color-secondary-light: #e6e2ef;
 
-  --color-accent: #166355;
-  --color-accent-dark: #0f4c41;
-  --color-accent-light: #3d8577;
+  --color-accent: var(--color-primary);
+  --color-accent-dark: var(--color-primary-dark);
+  --color-accent-light: var(--color-primary-light);
 
-  /* Ámbar: reservado a precios, estrellas y avisos */
-  --color-price: #8a5a13;
-  --color-star: #d9a13b;
+  /* Los precios van en tinta; la estrella es el único toque cálido */
+  --color-price: #191625;
+  --color-star: #b7791f;
 
-  --color-danger: #a8433b;
-  --color-danger-dark: #8c352e;
-  --color-danger-light: #f3e0de;
+  --color-danger: #b3261e;
+  --color-danger-dark: #8c1d18;
+  --color-danger-light: #fcebea;
 
-  --color-warning: #b07818;
-  --color-warning-light: #f5ead2;
+  --color-warning: #8a5a00;
+  --color-warning-light: #fff3d6;
 
-  --color-success: #3d7a52;
-  --color-success-dark: #2f6140;
-  --color-success-light: #e3ede6;
+  --color-success: #1b6b45;
+  --color-success-dark: #14543a;
+  --color-success-light: #e6f4ec;
 
-  /* ========== NEUTROS CÁLIDOS ========== */
-  --color-dark: #1d1c18;
-  --color-dark-secondary: #2b2a24;
-  --color-dark-tertiary: #47443c;
+  /* ========== NEUTROS ========== */
+  --color-dark: #1d1530;
+  --color-dark-secondary: #2a1f42;
+  --color-dark-tertiary: #43385d;
+  --color-dark-muted: #a59ebb;
 
-  --color-light: #faf9f6;
-  --color-light-secondary: #f3f1ea;
-  --color-light-tertiary: #e9e6dc;
+  --color-light: #fbfafd;
+  --color-light-secondary: #f3f0f8;
+  --color-light-tertiary: #d9d4e6;
 
-  --color-text: #1d1c18;
-  --color-text-secondary: #5f5c52;
-  --color-text-muted: #8b8779;
+  --color-text: #191625;
+  --color-text-secondary: #4b4759;
+  --color-text-muted: #67627a;
   --color-text-light: #ffffff;
 
-  --color-background: #faf9f6;
+  --color-background: #ffffff;
   --color-background-secondary: #ffffff;
-  --color-background-tertiary: #f3f1ea;
+  --color-background-tertiary: #f7f5fb;
 
-  --color-border: #e5e2d8;
-  --color-border-dark: #cfcaba;
+  --color-border: #e6e2ef;
+  --color-border-dark: #928ca8;
 
-  /* ========== SOMBRAS (mínimas, tinta cálida) ========== */
-  --shadow-sm: 0 1px 2px rgba(29, 28, 24, 0.05);
-  --shadow-md: 0 2px 6px rgba(29, 28, 24, 0.07);
-  --shadow-lg: 0 6px 16px rgba(29, 28, 24, 0.09);
-  --shadow-xl: 0 12px 28px rgba(29, 28, 24, 0.12);
-  --shadow-2xl: 0 18px 40px rgba(29, 28, 24, 0.16);
+  /* ========== SOMBRAS ==========
+     Bordes antes que sombras: las tarjetas no llevan sombra. Solo menús y
+     diálogos usan las grandes. */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: 0 8px 24px rgba(25, 22, 37, 0.08);
+  --shadow-xl: 0 16px 40px rgba(25, 22, 37, 0.10);
+  --shadow-2xl: 0 24px 56px rgba(25, 22, 37, 0.14);
 
   /* ========== TIPOGRAFÍA ========== */
-  --font-family-sans: var(--font-inter, 'Inter'), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --font-family-display: var(--font-fraunces, 'Fraunces'), Georgia, 'Times New Roman', serif;
-  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --font-family-sans: var(--font-schibsted, 'Schibsted Grotesk'), 'Helvetica Neue', Arial, sans-serif;
+  --font-family-display: var(--font-schibsted, 'Schibsted Grotesk'), 'Helvetica Neue', Arial, sans-serif;
+  --font-family-reading: var(--font-source-serif, 'Source Serif 4'), Georgia, 'Times New Roman', serif;
+  --font-family-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */
@@ -74,24 +83,25 @@
   --font-size-lg: 1.125rem;   /* 18px */
   --font-size-xl: 1.25rem;    /* 20px */
   --font-size-2xl: 1.5rem;    /* 24px */
-  --font-size-3xl: 1.875rem;  /* 30px */
-  --font-size-4xl: 2.375rem;  /* 38px */
+  --font-size-3xl: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --font-size-4xl: clamp(2rem, 1.5rem + 2vw, 2.75rem);
 
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --font-weight-extrabold: 700; /* evitamos pesos 800: jerarquía por tamaño y fuente */
+  --font-weight-extrabold: 800;
 
-  --line-height-tight: 1.15;
-  --line-height-snug: 1.35;
-  --line-height-normal: 1.55;
-  --line-height-relaxed: 1.65;
+  --line-height-tight: 1.12;
+  --line-height-snug: 1.3;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.7;
   --line-height-loose: 2;
 
-  /* Etiquetas pequeñas en mayúsculas (eyebrows) */
-  --tracking-label: 0.08em;
+  /* Las etiquetas ya no van en mayúsculas: sin espaciado extra */
+  --tracking-label: 0;
+  --tracking-title: -0.02em;
 
   /* ========== ESPACIADO ========== */
   --space-0: 0;
@@ -99,29 +109,42 @@
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
+  --space-5: 1.25rem;
   --space-6: 1.5rem;
   --space-8: 2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
+  --space-14: 3.5rem;
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
 
-  /* ========== RADIUS (contenidos) ========== */
+  /* ========== RADIOS ==========
+     Esquinas cuadradas en todo. Los nombres se conservan: cambiando el valor
+     se redondea todo de golpe. */
   --radius-none: 0;
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 10px;
-  --radius-2xl: 12px;
-  --radius-full: 9999px;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-full: 0;
 
-  /* ========== TRANSITIONS ========== */
-  --transition-fast: 140ms ease;
-  --transition-normal: 220ms ease;
-  --transition-slow: 400ms ease;
+  /* ========== BORDES ========== */
+  --border-hairline: 1px;
+  --border-medium: 2px;
 
-  /* Compatibilidad: tokens de gradiente ahora planos */
+  /* ========== MEDIDAS ========== */
+  --container: 75rem;
+  --measure: 66ch;
+  --header-height: 4rem;
+
+  /* ========== TRANSICIONES ========== */
+  --transition-fast: 120ms cubic-bezier(0.2, 0, 0, 1);
+  --transition-normal: 200ms cubic-bezier(0.2, 0, 0, 1);
+  --transition-slow: 320ms cubic-bezier(0.2, 0, 0, 1);
+
+  /* Compatibilidad: sin degradados */
   --gradient-hero: var(--color-primary);
   --gradient-success: var(--color-success);
   --gradient-danger: var(--color-danger);
@@ -163,7 +186,9 @@ body {
 /* ========== TIPOGRAFÍA BASE ========== */
 h1, h2, h3, h4 {
   font-family: var(--font-family-display);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-title);
+  text-wrap: balance;
   line-height: var(--line-height-tight);
   margin-bottom: var(--space-4);
   color: var(--color-text);
@@ -184,6 +209,7 @@ h6 { font-size: var(--font-size-base); }
 
 p {
   margin-bottom: var(--space-4);
+  text-wrap: pretty;
 }
 
 a {
@@ -221,9 +247,9 @@ select {
 input:focus,
 textarea:focus,
 select:focus {
-  outline: none;
+  outline: var(--border-medium) solid var(--color-primary);
+  outline-offset: 0;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-very-light);
 }
 
 button {
@@ -238,7 +264,7 @@ button {
 /* ========== UTILIDADES ========== */
 .container {
   width: 100%;
-  max-width: 1280px;
+  max-width: var(--container);
   margin: 0 auto;
   padding: 0 var(--space-4);
 }

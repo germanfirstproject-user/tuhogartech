@@ -34,7 +34,7 @@
   font-size: 0.8125rem;
   color: var(--color-text-muted);
   margin: 0.75rem 0 0;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: var(--tracking-label);
   font-weight: 600;
 }
@@ -62,8 +62,8 @@
 
 .blogCard:hover {
   border-color: var(--color-border-dark);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  box-shadow: none;
+  transform: none;
 }
 
 .blogImageContainer {
@@ -106,7 +106,7 @@
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--color-text-secondary);
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: var(--tracking-label);
   /* Separador en lugar de una segunda píldora: la categoría ya lleva color,
      y dos distintivos seguidos compiten con el titular de la tarjeta. */
@@ -125,7 +125,7 @@
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--color-primary-dark);
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: var(--tracking-label);
   width: fit-content;
 }
@@ -169,7 +169,7 @@
 }
 
 .blogDate {
-  text-transform: capitalize;
+  text-transform: none;
 }
 
 .blogAuthor {

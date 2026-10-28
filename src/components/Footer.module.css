@@ -39,13 +39,13 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--color-text-muted);
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: var(--tracking-label);
   margin-bottom: 0.25rem;
 }
 
 .sectionDescription {
-  color: #b5b1a4;
+  color: var(--color-dark-muted);
   font-size: 0.9375rem;
   line-height: 1.65;
   max-width: 340px;
@@ -61,7 +61,7 @@
 }
 
 .link {
-  color: #b5b1a4;
+  color: var(--color-dark-muted);
   text-decoration: none;
   font-size: 0.9375rem;
   transition: color 0.15s ease;
@@ -79,7 +79,7 @@
   background: none;
   border: none;
   font-family: inherit;
-  color: #b5b1a4;
+  color: var(--color-dark-muted);
   font-size: 0.9375rem;
   cursor: pointer;
   transition: color 0.15s ease;
@@ -104,13 +104,13 @@
 }
 
 .copyright {
-  color: #8b8779;
+  color: var(--color-dark-muted);
   font-size: 0.8125rem;
   margin: 0;
 }
 
 .affiliate {
-  color: #8b8779;
+  color: var(--color-dark-muted);
   font-size: 0.8125rem;
   margin: 0;
   max-width: 560px;

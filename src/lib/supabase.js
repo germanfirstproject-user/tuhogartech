@@ -9,6 +9,23 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 /**
+ * Tras guardar algo desde el panel, pide a la web que regenere sus páginas.
+ *
+ * Las páginas públicas se guardan 24 horas en caché; sin este aviso, un
+ * cambio del administrador tardaría hasta un día en verse. No se espera la
+ * respuesta: si falla, el guardado ya está hecho y la página se pondrá al día
+ * sola al caducar la caché.
+ */
+function refrescarWeb() {
+  if (typeof window === 'undefined') return;
+  supabase.auth.getSession().then(({ data }) => {
+    const token = data?.session?.access_token;
+    if (!token) return;
+    fetch('/api/revalidar', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+  });
+}
+
+/**
  * Servicio para obtener productos desde Supabase
  * 
  * La tabla 'products' debe tener la siguiente estructura (compatible con Amazon PA-API):
@@ -334,6 +351,57 @@ export async function getRelatedProducts(productId, category, limit = 4) {
   }
 }
 
+/**
+ * Grupo comparable de una ficha (`product_groups`) y sus otros productos.
+ *
+ * El grupo es una etiqueta interna: no tiene página. Sirve para la tabla
+ * comparativa de la ficha, con las columnas que define el propio grupo y los
+ * valores de `products.compare_specs`. Devuelve `null` si la ficha no tiene
+ * grupo, y entonces la tabla sale solo con ella.
+ */
+export async function getGrupoDeProducto(product, maxVecinos = 3) {
+  if (!product?.group_id) return { success: true, data: null };
+
+  try {
+    const [grupoRes, vecinosRes] = await Promise.all([
+      supabase.from('product_groups').select('*').eq('id', product.group_id).maybeSingle(),
+      supabase
+        .from('products')
+        .select('*')
+        .eq('group_id', product.group_id)
+        .neq('id', product.id)
+        .order('rating', { ascending: false, nullsFirst: false })
+        .limit(maxVecinos),
+    ]);
+
+    if (grupoRes.error || !grupoRes.data) {
+      return { success: false, error: grupoRes.error?.message, data: null };
+    }
+
+    return {
+      success: true,
+      data: { ...grupoRes.data, vecinos: vecinosRes.data || [] },
+    };
+  } catch (err) {
+    console.error('Error in getGrupoDeProducto:', err);
+    return { success: false, error: err.message, data: null };
+  }
+}
+
+/** Todos los grupos, para el desplegable del panel de productos. */
+export async function getProductGroups() {
+  try {
+    const { data, error } = await supabase
+      .from('product_groups')
+      .select('id, slug, name, columnas, subcategory_id, display_order')
+      .order('name');
+    if (error) return { success: false, error: error.message, data: [] };
+    return { success: true, data: data || [] };
+  } catch (err) {
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
 // Obtener blogs que mencionan un producto específico
 export async function getBlogsReferencingProduct(productId, productTitle, limit = 4) {
   try {
@@ -341,7 +409,7 @@ export async function getBlogsReferencingProduct(productId, productTitle, limit 
     const { data, error } = await supabase
       .from('blogs')
       .select('*')
-      .or(`content.ilike.%${productId}%,content.ilike.%${productTitle}%,title.ilike.%${productTitle}%`)
+      .or(`content.ilike.%/resenas/${productId}-%,title.ilike.%${productTitle}%`)
       .not('published_at', 'is', null)
       .order('published_at', { ascending: false })
       .limit(limit);
@@ -373,6 +441,7 @@ export async function insertProduct(productData) {
       return { success: false, error };
     }
 
+    refrescarWeb();
     return { success: true, data };
   } catch (err) {
     console.error('Supabase connection error:', err);
@@ -400,6 +469,7 @@ export async function updateProduct(id, updates) {
       return { success: false, error };
     }
 
+    refrescarWeb();
     return { success: true, data };
   } catch (err) {
     console.error('Supabase connection error:', err);
@@ -427,6 +497,7 @@ export async function deleteProduct(id) {
       return { success: false, error: { message: await explicarCeroFilas('El producto') } };
     }
 
+    refrescarWeb();
     return { success: true };
   } catch (err) {
     console.error('Supabase connection error:', err);
@@ -812,6 +883,7 @@ export async function insertBlog(blogData) {
       return { success: false, error: 'No se pudo crear el blog' };
     }
 
+    refrescarWeb();
     return { success: true, data: data[0] };
   } catch (err) {
     console.error('Error en insertBlog:', err);
@@ -870,6 +942,7 @@ export async function updateBlog(id, blogData) {
     }
 
     console.log('Blog actualizado exitosamente:', data[0]);
+    refrescarWeb();
     return { success: true, data: data[0] };
   } catch (err) {
     console.error('Excepción en updateBlog:', err);
@@ -898,6 +971,7 @@ export async function deleteBlog(id) {
       return { success: false, error: await explicarCeroFilas('El artículo') };
     }
 
+    refrescarWeb();
     return { success: true };
   } catch (err) {
     console.error('Error:', err);
@@ -949,6 +1023,7 @@ export async function upsertProductSeo(productId, seoData) {
       return { success: false, error: error.message };
     }
 
+    refrescarWeb();
     return { success: true, data };
   } catch (err) {
     console.error('Error:', err);
@@ -969,6 +1044,7 @@ export async function deleteProductSeo(productId) {
       return { success: false, error: error.message };
     }
 
+    refrescarWeb();
     return { success: true };
   } catch (err) {
     console.error('Error:', err);
@@ -1421,6 +1497,7 @@ export async function insertCategory(categoryData) {
       return { success: false, error: error.message };
     }
 
+    refrescarWeb();
     return { success: true, data };
   } catch (err) {
     console.error('Error:', err);
@@ -1443,6 +1520,7 @@ export async function updateCategory(id, categoryData) {
       return { success: false, error: error.message };
     }
 
+    refrescarWeb();
     return { success: true, data };
   } catch (err) {
     console.error('Error:', err);
@@ -1463,6 +1541,7 @@ export async function deleteCategory(id) {
       return { success: false, error: error.message };
     }
 
+    refrescarWeb();
     return { success: true };
   } catch (err) {
     console.error('Error:', err);
@@ -2023,6 +2102,7 @@ export async function updateSiteSettings(settings) {
         return { success: false, error: error.message, data: null };
       }
 
+      refrescarWeb();
       return { success: true, data, error: null };
     } else {
       // Crear nuevo registro
@@ -2134,6 +2214,7 @@ export async function addFeaturedProduct(productId, displayOrder = 0) {
       return { success: false, error: error.message, data: null };
     }
 
+    refrescarWeb();
     return { success: true, data, error: null };
   } catch (err) {
     console.error('Error:', err);
@@ -2154,6 +2235,7 @@ export async function removeFeaturedProduct(productId) {
       return { success: false, error: error.message };
     }
 
+    refrescarWeb();
     return { success: true, error: null };
   } catch (err) {
     console.error('Error:', err);
@@ -2180,6 +2262,7 @@ export async function updateFeaturedProductsOrder(productOrders) {
       return { success: false, error: 'Some updates failed' };
     }
 
+    refrescarWeb();
     return { success: true, error: null };
   } catch (err) {
     console.error('Error:', err);

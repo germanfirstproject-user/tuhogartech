@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getProducts, insertProduct, updateProduct, deleteProduct, getProductSeo, upsertProductSeo, getCategories, getSiteSettings, getAllSubcategories } from '@/lib/supabase';
+import { getProducts, insertProduct, updateProduct, deleteProduct, getProductSeo, upsertProductSeo, getCategories, getSiteSettings, getAllSubcategories, getProductGroups } from '@/lib/supabase';
 import ProductVisual from '@/components/ProductVisual';
 import styles from './page.module.css';
 
@@ -10,10 +10,24 @@ const PRODUCTS_PER_PAGE = 30;
 // Google corta el título alrededor de los 60 caracteres.
 const LIMITE_TITULO_SERP = 60;
 
+// Campos de la ficha «opinión»: grupo de comparación, textos de encaje y FAQ.
+const FICHA_VACIA = {
+  group_id: '',
+  compare_specs: {},
+  best_for: '',
+  ideal_for: '',
+  not_for: '',
+  verdict: '',
+  faq: '',
+  reviewed_at: '',
+  url_slug: '',
+};
+
 export default function ProductsAdminPage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [showSeoModal, setShowSeoModal] = useState(false);
@@ -56,6 +70,7 @@ export default function ProductsAdminPage() {
     subcategory: '',
     stock: 'in_stock',
     affiliate_link: '',
+    ...FICHA_VACIA,
   });
 
   useEffect(() => {
@@ -78,12 +93,13 @@ export default function ProductsAdminPage() {
   };
 
   const loadCategories = async () => {
-    const [result, subsResult] = await Promise.all([getCategories(), getAllSubcategories()]);
+    const [result, subsResult, groupsResult] = await Promise.all([getCategories(), getAllSubcategories(), getProductGroups()]);
     if (result.success) {
       // Filtrar solo categorías activas para el dropdown
       setCategories(result.data.filter(cat => cat.is_active));
     }
     if (subsResult.success) setSubcategories(subsResult.data);
+    if (groupsResult.success) setGroups(groupsResult.data);
   };
 
   const handleSubmit = async (e) => {
@@ -99,6 +115,26 @@ export default function ProductsAdminPage() {
         return;
       }
     }
+
+    let parsedFaq = null;
+    if (formData.faq.trim()) {
+      try {
+        parsedFaq = JSON.parse(formData.faq);
+        if (!Array.isArray(parsedFaq)) throw new Error('no es una lista');
+      } catch (err) {
+        alert('Error en el formato JSON de las preguntas frecuentes: tiene que ser una lista de {"pregunta", "respuesta"}');
+        return;
+      }
+    }
+
+    // Solo se guardan los datos de las columnas del grupo elegido: si se cambia
+    // de grupo, los del anterior ya no salen en ninguna tabla.
+    const grupo = groups.find((g) => g.id === formData.group_id);
+    const compareSpecs = {};
+    (grupo?.columnas || []).forEach(({ clave }) => {
+      const valor = (formData.compare_specs[clave] || '').trim();
+      if (valor) compareSpecs[clave] = valor;
+    });
 
     const productData = {
       asin: formData.asin,
@@ -119,6 +155,15 @@ export default function ProductsAdminPage() {
       subcategory: formData.subcategory || null,
       stock: formData.stock || 'in_stock',
       affiliate_link: formData.affiliate_link || null,
+      group_id: formData.group_id || null,
+      compare_specs: Object.keys(compareSpecs).length ? compareSpecs : null,
+      best_for: formData.best_for.trim() || null,
+      ideal_for: formData.ideal_for.trim() || null,
+      not_for: formData.not_for.trim() || null,
+      verdict: formData.verdict.trim() || null,
+      faq: parsedFaq && parsedFaq.length ? parsedFaq : null,
+      reviewed_at: formData.reviewed_at || null,
+      url_slug: formData.url_slug.trim() || null,
     };
 
     // Solo incluir ID al crear, no al actualizar
@@ -166,6 +211,15 @@ export default function ProductsAdminPage() {
       subcategory: product.subcategory || '',
       stock: product.stock || 'in_stock',
       affiliate_link: product.affiliate_link || '',
+      group_id: product.group_id || '',
+      compare_specs: product.compare_specs || {},
+      best_for: product.best_for || '',
+      ideal_for: product.ideal_for || '',
+      not_for: product.not_for || '',
+      verdict: product.verdict || '',
+      faq: Array.isArray(product.faq) && product.faq.length ? JSON.stringify(product.faq, null, 2) : '',
+      reviewed_at: product.reviewed_at || '',
+      url_slug: product.url_slug || '',
     });
     setShowForm(true);
   };
@@ -202,6 +256,7 @@ export default function ProductsAdminPage() {
       subcategory: '',
       stock: 'in_stock',
       affiliate_link: '',
+      ...FICHA_VACIA,
     });
   };
 
@@ -236,12 +291,12 @@ export default function ProductsAdminPage() {
         og_title: product.title || '',
         og_description: product.description || '',
         // Imagen propia del sitio: las de Amazon no se pueden republicar.
-        og_image: 'https://tuhogartech.com/og-image.png',
+        og_image: 'https://tuhogartech.com/og-image-morado.png',
         og_type: 'product',
         twitter_card: 'summary_large_image',
         twitter_title: product.title || '',
         twitter_description: product.description || '',
-        twitter_image: 'https://tuhogartech.com/og-image.png',
+        twitter_image: 'https://tuhogartech.com/og-image-morado.png',
         canonical_url: '',
         meta_robots: 'index, follow',
       });
@@ -595,6 +650,127 @@ export default function ProductsAdminPage() {
                       rows={4}
                       placeholder="Batería podría durar más&#10;No incluye accesorios"
                     />
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.formSection}>
+                <h3>Ficha de opinión</h3>
+
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label>Grupo para comparar</label>
+                    <select
+                      value={formData.group_id}
+                      onChange={(e) => setFormData({...formData, group_id: e.target.value})}
+                    >
+                      <option value="">Sin grupo (la tabla sale solo con este producto)</option>
+                      {groups.map((g) => (
+                        <option key={g.id} value={g.id}>{g.name}</option>
+                      ))}
+                    </select>
+                    <small>La tabla de la ficha lo compara con los 3 mejor puntuados de su grupo.</small>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label>Mejor para (frase corta)</label>
+                    <input
+                      type="text"
+                      value={formData.best_for}
+                      onChange={(e) => setFormData({...formData, best_for: e.target.value})}
+                      maxLength={60}
+                      placeholder="Copias de casa con poco ruido"
+                    />
+                    <small>Sale en la tarjeta, en la cabecera de la ficha y en la tabla.</small>
+                  </div>
+                </div>
+
+                {(() => {
+                  const grupo = groups.find((g) => g.id === formData.group_id);
+                  if (!grupo?.columnas?.length) return null;
+                  return (
+                    <div className={styles.formRow}>
+                      {grupo.columnas.map(({ clave, etiqueta }) => (
+                        <div key={clave} className={styles.formGroup}>
+                          <label>{etiqueta} (tabla)</label>
+                          <input
+                            type="text"
+                            value={formData.compare_specs[clave] || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              compare_specs: { ...formData.compare_specs, [clave]: e.target.value },
+                            })}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+
+                <div className={styles.formGroup}>
+                  <label>Respuesta corta (veredicto)</label>
+                  <textarea
+                    value={formData.verdict}
+                    onChange={(e) => setFormData({...formData, verdict: e.target.value})}
+                    rows={3}
+                    placeholder="Sí merece la pena si… Dos o tres frases que respondan a «¿es bueno?»."
+                  />
+                  <small>Va debajo del título de la ficha. Vacío, no sale nada.</small>
+                </div>
+
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label>Para ti si…</label>
+                    <textarea
+                      value={formData.ideal_for}
+                      onChange={(e) => setFormData({...formData, ideal_for: e.target.value})}
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label>Mejor otro si…</label>
+                    <textarea
+                      value={formData.not_for}
+                      onChange={(e) => setFormData({...formData, not_for: e.target.value})}
+                      rows={3}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Preguntas frecuentes (JSON)</label>
+                  <textarea
+                    value={formData.faq}
+                    onChange={(e) => setFormData({...formData, faq: e.target.value})}
+                    rows={5}
+                    placeholder='[{"pregunta": "¿Hace falta un hub?", "respuesta": "No, se conecta al WiFi de casa."}]'
+                  />
+                  <small>Vacío, la ficha monta dos preguntas con «Para ti si…» y «Mejor otro si…».</small>
+                </div>
+
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label>Revisado el</label>
+                    <input
+                      type="date"
+                      value={formData.reviewed_at}
+                      onChange={(e) => setFormData({...formData, reviewed_at: e.target.value})}
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label>URL (lo que va tras el id)</label>
+                    <input
+                      type="text"
+                      value={formData.url_slug}
+                      onChange={(e) => setFormData({...formData, url_slug: e.target.value})}
+                      placeholder="synology-ds224-opinion"
+                    />
+                    <small>
+                      Quedará /resenas/{formData.id || editingProduct?.id || '{id}'}-{formData.url_slug || '…'}.
+                      {' '}Cambiarla en una ficha ya publicada mueve la página (la vieja redirige).
+                    </small>
                   </div>
                 </div>
               </div>

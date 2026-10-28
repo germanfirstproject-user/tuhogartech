@@ -78,7 +78,7 @@
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: var(--tracking-label, 0.08em);
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--color-primary);
   margin: 0 0 0.75rem;
 }
@@ -157,7 +157,7 @@
   height: 3px;
   padding: 0;
   border: none;
-  border-radius: 2px;
+  border-radius: 0;
   background: var(--color-border-dark);
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -193,7 +193,7 @@
      galón a una rayita. El otro carrusel ya lo anulaba. */
   padding: 0;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(29, 28, 24, 0.13);
+  box-shadow: none;
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 

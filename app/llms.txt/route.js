@@ -16,8 +16,8 @@ import { getCategories, getCategoriesWithCounts, getBlogs, getSubcategoryPages }
 
 const BASE = 'https://tuhogartech.com';
 
-// Una hora, igual que el sitemap: es un índice, no contenido vivo.
-export const revalidate = 3600;
+// Un día, igual que el sitemap: es un índice, no contenido vivo.
+export const revalidate = 86400;
 
 /** Markdown no distingue, pero un ] suelto rompe el enlace. */
 function limpiar(texto = '') {

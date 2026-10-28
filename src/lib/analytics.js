@@ -183,6 +183,52 @@ export const trackModuleClick = ({ modulo, destino, itemId, itemName, posicion }
 };
 
 /**
+ * Clic en «Leer opinión» desde una tarjeta de producto: la salida secundaria,
+ * hacia la ficha propia. Junto con `affiliate_click` de la misma tarjeta dice
+ * si la gente prefiere ir directa a Amazon o leer antes el análisis.
+ */
+export const trackLeerOpinion = ({ productId, productName, origen, posicion } = {}) => {
+  if (!isGtagAvailable()) return;
+
+  window.gtag(
+    'event',
+    'leer_opinion_click',
+    limpiarParametros({
+      product_id: productId,
+      product_name: recortar(productName),
+      origen,
+      index: posicion,
+    })
+  );
+};
+
+/**
+ * La tabla comparativa de una ficha (o de un artículo) ha entrado en pantalla.
+ * Es el denominador de los clics desde `ficha_tabla` y `blog_tabla`.
+ */
+export const trackComparativaView = ({ productId, grupo, filas, pagina } = {}) => {
+  if (!isGtagAvailable()) return false;
+
+  window.gtag(
+    'event',
+    'comparativa_view',
+    limpiarParametros({ product_id: productId, grupo, filas, pagina })
+  );
+  return true;
+};
+
+/** Se ha abierto una pregunta de las FAQ. Indica qué dudas frenan la compra. */
+export const trackFaqOpen = ({ pregunta, productId, pagina } = {}) => {
+  if (!isGtagAvailable()) return;
+
+  window.gtag(
+    'event',
+    'faq_open',
+    limpiarParametros({ pregunta: recortar(pregunta), product_id: productId, pagina })
+  );
+};
+
+/**
  * Trackear búsquedas
  * @param {string} searchTerm - Término de búsqueda
  * @param {number} resultsCount - Número de resultados

@@ -1,40 +1,44 @@
 /**
  * Identidad visual de un producto sin usar fotografías de Amazon.
  *
- * Cada categoría tiene su color y su icono, para orientarse de un vistazo en
- * un catálogo de 19 secciones. Dentro de una misma categoría, cada producto
- * recibe una variación de tono y una trama distintas, derivadas de su id: sin
- * eso, los 48 productos de "Baterías y energía" saldrían idénticos.
+ * Hay dos visuales distintos, para que no se confundan en la web:
+ * - Producto: lámina técnica clara (retícula fina, icono en tinta morada,
+ *   marca en el pie). Dentro de una categoría, cada ficha recibe una trama y
+ *   un tono propios derivados de su id.
+ * - Subcategoría: bloque morado oscuro a sangre con el icono en blanco y un
+ *   mosaico del mismo icono, porque lleva el texto encima.
  *
  * Todo es determinista: el mismo producto se ve siempre igual, y no hace
  * falta guardar nada ni generar archivos.
  */
 
-// Los ocho primeros son las categorías con más productos y llevan colores
-// claramente distintos entre sí. El resto puede acercarse más sin molestar.
+// Cada categoría conserva su icono. El color ya no cambia por categoría: el
+// sistema de diseño usa un solo morado, y lo que distingue una ficha de otra
+// es el icono, la trama y el rótulo de la marca.
 const CATEGORIAS = {
-  'Baterías y energía': { icono: 'energia', color: '#8a5a13' },
-  'Smart Home': { icono: 'casa', color: '#166355' },
-  'Streaming': { icono: 'streaming', color: '#7a4a5e' },
-  'Almacenamiento': { icono: 'disco', color: '#3f5d80' },
-  'Impresoras de etiquetas': { icono: 'etiquetas', color: '#7a5240' },
-  'Proyectores': { icono: 'proyector', color: '#5b4a7a' },
-  'Cultivo inteligente': { icono: 'planta', color: '#4a7038' },
-  'Seguridad Inteligente': { icono: 'escudo', color: '#a8433b' },
-  'Escáner': { icono: 'escaner', color: '#2f6d63' },
-  'Papel': { icono: 'papel', color: '#6b675c' },
-  'Conectividad | Docking': { icono: 'conector', color: '#45657a' },
-  'Realidad virtual': { icono: 'vr', color: '#6a4a86' },
-  'Ordenadores': { icono: 'portatil', color: '#4a5a6b' },
-  'Cámara instantánea': { icono: 'camara', color: '#96562f' },
-  'Impresoras portátiles': { icono: 'impresora', color: '#6d5a3a' },
-  'Plotters': { icono: 'plotter', color: '#556b4a' },
-  'Comederos automáticos': { icono: 'comedero', color: '#8a6a3c' },
-  'Sistemas de alimentación': { icono: 'bateria', color: '#5c6b7a' },
-  'Sistemas de sonido': { icono: 'altavoz', color: '#7a4a45' },
+  'Baterías y energía': { icono: 'energia' },
+  'Smart Home': { icono: 'casa' },
+  'Streaming': { icono: 'streaming' },
+  'Almacenamiento': { icono: 'disco' },
+  'Impresoras de etiquetas': { icono: 'etiquetas' },
+  'Proyectores': { icono: 'proyector' },
+  'Cultivo inteligente': { icono: 'planta' },
+  'Seguridad Inteligente': { icono: 'escudo' },
+  'Escáner': { icono: 'escaner' },
+  'Papel': { icono: 'papel' },
+  'Conectividad | Docking': { icono: 'conector' },
+  'Realidad virtual': { icono: 'vr' },
+  'Ordenadores': { icono: 'portatil' },
+  'Cámara instantánea': { icono: 'camara' },
+  'Impresoras portátiles': { icono: 'impresora' },
+  'Plotters': { icono: 'plotter' },
+  'Comederos automáticos': { icono: 'comedero' },
+  'Sistemas de alimentación': { icono: 'bateria' },
+  'Sistemas de sonido': { icono: 'altavoz' },
 };
 
-const POR_DEFECTO = { icono: 'caja', color: '#6b675c' };
+const MORADO = '#4a2a8c';
+const POR_DEFECTO = { icono: 'caja' };
 
 /* ---------- Color ---------- */
 
@@ -74,12 +78,12 @@ function hash(texto) {
   return h;
 }
 
-// Cuatro desplazamientos de tono dentro del color de la categoría.
+// Cuatro tintas del morado de la web, de la más oscura a la más clara.
 const TONOS = [
   { ds: 0, dl: 0 },
-  { ds: -6, dl: 8 },
-  { ds: 6, dl: -5 },
-  { ds: -10, dl: 14 },
+  { ds: -8, dl: 10 },
+  { ds: 4, dl: -6 },
+  { ds: -14, dl: 18 },
 ];
 
 export const NUM_TRAMAS = 4;
@@ -92,25 +96,28 @@ export const NUM_TRAMAS = 4;
 export function visualDeProducto(product) {
   const base = CATEGORIAS[product?.category] || POR_DEFECTO;
   const h = hash(product?.id ?? product?.asin ?? product?.title ?? 'sin-id');
-
-  const hslBase = hexAHsl(base.color);
+  const hslBase = hexAHsl(MORADO);
   const tono = TONOS[h % TONOS.length];
 
   return {
     icono: base.icono,
-    // Color de la categoría, matizado para este producto en concreto
     color: hsl(hslBase, tono.ds, tono.dl),
-    // Fondo muy claro del mismo tono: da color sin gritar
-    fondo: hsl(hslBase, -18, 92 - hslBase.l * 0.06),
     trama: (h >> 3) % NUM_TRAMAS,
-    rotacion: ((h >> 6) % 4) * 45,
+    rotacion: ((h >> 6) % 4) * 90,
     semilla: h % 1000,
   };
 }
 
+/** Visual de una subcategoría: siempre oscuro, con el mosaico desplazado. */
+export function visualDeSubcategoria(clave, categoria) {
+  const base = CATEGORIAS[categoria] || POR_DEFECTO;
+  const h = hash(clave);
+  return { icono: base.icono, desfase: h % 5, inclinado: (h >> 4) % 2 === 1 };
+}
+
 /** Solo el color de una categoría, para cabeceras y listados. */
-export function colorDeCategoria(nombre) {
-  return (CATEGORIAS[nombre] || POR_DEFECTO).color;
+export function colorDeCategoria() {
+  return MORADO;
 }
 
 export function iconoDeCategoria(nombre) {

@@ -8,8 +8,8 @@ import { buildContentSlides } from '@/lib/homeSlides';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 import styles from './page.module.css';
 
-// Revalidar cada 5 minutos (300 segundos) - buen balance entre rendimiento y frescura
-export const revalidate = 300;
+// Caché de 24 horas: el panel de administración la renueva al guardar (/api/revalidar)
+export const revalidate = 86400;
 
 const BASE = 'https://tuhogartech.com';
 
@@ -39,7 +39,7 @@ const organizacionSchema = {
   url: BASE,
   logo: {
     '@type': 'ImageObject',
-    url: `${BASE}/icon-512.png`,
+    url: `${BASE}/logo-512.png`,
     width: 512,
     height: 512,
   },

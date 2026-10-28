@@ -161,7 +161,7 @@ export default function SearchPageContent() {
                 )}
               </div>
               
-              <ProductsGrid products={currentProducts} />
+              <ProductsGrid products={currentProducts} origen="buscador" pagina="buscar" />
               
               {totalProductPages > 1 && (
                 <div className={styles.pagination}>

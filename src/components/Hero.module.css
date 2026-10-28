@@ -7,7 +7,7 @@
 }
 
 /* Ilustración de fondo del titular: un salón con los aparatos que analizamos,
-   en la misma tinta y el mismo verde que el resto del sitio. Es textura de
+   dibujado en línea con el morado del sitio. Es textura de
    papel, no una fotografía de archivo con un velo oscuro. La altura sale de la
    proporción de la imagen (2:1), así que a ancho completo mide justo media
    pantalla y se pinta entera, sin recortes, en cualquier tamaño.
@@ -24,7 +24,7 @@
   left: 0;
   right: 0;
   height: 50vw;
-  background: url('/hero/fondo-home.webp') center top / 100% auto no-repeat;
+  background: url('/hero/fondo-home-morado.svg') center top / 100% auto no-repeat;
   opacity: 0.85;
   /* El corte va en píxeles, no en porcentaje: la balda empieza más o menos a la
      misma altura en todos los anchos de escritorio, mientras que un porcentaje
@@ -59,7 +59,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: var(--tracking-label, 0.08em);
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--color-primary);
   margin: 0 0 1.25rem;
   display: flex;
@@ -174,7 +174,7 @@
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: var(--tracking-label, 0.08em);
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--color-text-muted);
   margin: 0 0 1rem;
 }
@@ -200,8 +200,8 @@
 
 .card:hover {
   border-color: var(--color-border-dark);
-  box-shadow: 0 8px 24px rgba(29, 28, 24, 0.08);
-  transform: translateY(-2px);
+  box-shadow: none;
+  transform: none;
   text-decoration: none;
 }
 
@@ -242,7 +242,7 @@
   font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: var(--tracking-label, 0.08em);
-  text-transform: uppercase;
+  text-transform: none;
   padding: 0.3125rem 0.625rem;
   border-radius: var(--radius-sm, 4px);
   white-space: nowrap;
@@ -261,7 +261,7 @@
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: var(--tracking-label, 0.08em);
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--color-text-muted);
   margin: 0 0 0.375rem;
 }
@@ -310,7 +310,7 @@
 .cardStars {
   color: var(--color-star);
   font-size: 0.8125rem;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-label);
   line-height: 1;
 }
 

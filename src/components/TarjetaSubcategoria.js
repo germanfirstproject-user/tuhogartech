@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import ProductVisual from './ProductVisual';
+import SubcategoryVisual from './SubcategoryVisual';
 import styles from './Categoria.module.css';
 
 /**
@@ -7,8 +7,7 @@ import styles from './Categoria.module.css';
  * aire que las de /resenas: imagen a sangre y el texto encima.
  *
  * La imagen sale de `subcategories.image_url` si se ha subido una. Si no, se
- * dibuja el visual de la categoría (su color y su icono) con una trama propia
- * de la subcategoría, igual que en las fichas sin foto.
+ * dibuja el visual oscuro de subcategoría, distinto del de las fichas.
  */
 export default function TarjetaSubcategoria({ categoria, subcategoria }) {
   const { name, slug, description, image_url, count } = subcategoria;
@@ -19,10 +18,7 @@ export default function TarjetaSubcategoria({ categoria, subcategoria }) {
         {image_url ? (
           <img src={image_url} alt="" loading="lazy" decoding="async" />
         ) : (
-          <ProductVisual
-            product={{ id: `${categoria.slug}/${slug}`, category: categoria.name }}
-            mostrarMarca={false}
-          />
+          <SubcategoryVisual clave={`${categoria.slug}/${slug}`} categoria={categoria.name} />
         )}
       </div>
       <div className={styles.tarjetaTexto}>

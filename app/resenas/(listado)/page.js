@@ -58,36 +58,23 @@ async function CategoriesContent() {
               className={styles.categoryLink}
               prefetch={true}
             >
+              {/* Solo la foto entera y el nombre debajo: el resto se ve
+                  al entrar en la categoría. */}
               <div className={styles.categoryCard}>
-                {/* Imagen de fondo */}
-                {category.image_url ? (
-                  <img
-                    src={category.image_url}
-                    alt={category.name}
-                    className={styles.categoryImage}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <div className={styles.categoryImagePlaceholder}>
-                    <span className={styles.placeholderIcon}>📦</span>
-                  </div>
-                )}
-
-                {/* Overlay */}
-                <div className={styles.categoryOverlay}>
-                  <h2 className={styles.categoryTitle}>
-                    {category.name}
-                  </h2>
-                  <p className={styles.categoryCount}>
-                    {category.product_count} {category.product_count === 1 ? 'reseña' : 'reseñas'}
-                  </p>
-                  {category.description && (
-                    <p className={styles.categoryDescription}>
-                      {category.description}
-                    </p>
+                <div className={styles.categoryMedia}>
+                  {category.image_url ? (
+                    <img
+                      src={category.image_url}
+                      alt=""
+                      className={styles.categoryImage}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className={styles.categoryImagePlaceholder} aria-hidden="true" />
                   )}
                 </div>
+                <h2 className={styles.categoryTitle}>{category.name}</h2>
               </div>
             </Link>
           ))

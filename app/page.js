@@ -1,4 +1,4 @@
-import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getSiteStats, getCategoriesWithCounts, getUltimosArticulos } from '@/lib/supabase';
+import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getCategoriesWithCounts, getUltimosArticulos } from '@/lib/supabase';
 import BlogCard from '@/components/BlogCard';
 import Carousel from '@/components/Carousel';
 import AdminLink from '@/components/AdminLink';
@@ -91,12 +91,11 @@ export async function generateMetadata() {
 
 export default async function HomePage() {
   // Cargar todos los datos en paralelo en el servidor (MUCHO más rápido)
-  const [settingsResult, featuredResult, topRatedResult, blogsResult, statsResult, categoriesResult, ultimosResult] = await Promise.all([
+  const [settingsResult, featuredResult, topRatedResult, blogsResult, categoriesResult, ultimosResult] = await Promise.all([
     getSiteSettings(),
     getFeaturedProducts(),
     getTopRatedProducts(10),
     getRecentBlogs(10),
-    getSiteStats(),
     getCategoriesWithCounts(),
     getUltimosArticulos(6),
   ]);
@@ -104,7 +103,6 @@ export default async function HomePage() {
   const featuredProducts = featuredResult.success ? featuredResult.data : [];
   const topRatedProducts = topRatedResult.success ? topRatedResult.data : [];
   const recentBlogs = blogsResult.success ? blogsResult.data : [];
-  const stats = statsResult.success ? statsResult.data : { productsCount: 0, categoriesCount: 0 };
   const categories = categoriesResult.success ? categoriesResult.data : [];
   const ultimosArticulos = ultimosResult.success ? ultimosResult.data : [];
 
@@ -153,7 +151,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify([websiteSchema, organizacionSchema]) }}
       />
 
-      <Hero stats={stats} categories={categories} picks={heroPicks} />
+      <Hero categories={categories} picks={heroPicks} />
 
       {/* Los seis últimos artículos, justo bajo el hero. Son enlaces normales
           en el HTML (no un carrusel), así que el buscador los ve todos y los

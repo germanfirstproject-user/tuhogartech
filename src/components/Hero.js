@@ -13,7 +13,7 @@ import { rutaFicha } from '@/lib/fichas';
  * Lo que seguimos sin usar es una fotografía de archivo con superposición
  * oscura encima, que es lo que hace que una home parezca una plantilla.
  */
-export default function Hero({ stats, categories = [], picks = [] }) {
+export default function Hero({ categories = [], picks = [] }) {
   const topCategories = categories.slice(0, 6);
   const visiblePicks = picks.filter((pick) => pick?.product).slice(0, 2);
 
@@ -22,14 +22,13 @@ export default function Hero({ stats, categories = [], picks = [] }) {
       <div className={styles.inner}>
         {/* ---- Titular ---- */}
         <div className={styles.lead}>
+          {/* Oculto a la vista pero presente en el HTML: los lectores de
+              pantalla y los buscadores lo siguen leyendo. */}
           <p className={styles.eyebrow}>Selección y análisis independientes</p>
 
           <h1 className={styles.title}>
-            Lo mejor en
-            <br />
-            tecnología para casa,
-            <br />
-            <span className={styles.titleAccent}>y por qué lo es</span>
+            Lo mejor en tecnología,
+            <span className={styles.titleAccent}> y por qué lo es</span>
           </h1>
 
           <div className={styles.leadSide}>
@@ -58,13 +57,6 @@ export default function Hero({ stats, categories = [], picks = [] }) {
                 Leer las guías
               </TrackedLink>
             </div>
-
-            {stats?.productsCount > 0 && (
-              <p className={styles.meta}>
-                <strong>{stats.productsCount}</strong> productos analizados en{' '}
-                <strong>{stats.categoriesCount}</strong> categorías
-              </p>
-            )}
           </div>
         </div>
 
@@ -142,8 +134,7 @@ function PickCard({ product, label, priority = false, posicion = 1 }) {
       })
     : null;
 
-  const reviews = Number(product.reviews_count);
-  const hasReviews = Number.isFinite(reviews) && reviews > 0;
+  const opinion = !product.url_slug || product.url_slug.endsWith('opinion');
 
   return (
     <TrackedLink
@@ -174,16 +165,14 @@ function PickCard({ product, label, priority = false, posicion = 1 }) {
                 <span className={styles.cardStarsOff}>{'★'.repeat(5 - stars)}</span>
               </span>
               <span className={styles.cardReviews}>
-                {hasReviews
-                  ? `${reviews.toLocaleString('es-ES')} reseñas en Amazon`
-                  : 'valoración en Amazon'}
+                Nuestra puntuación
               </span>
             </span>
           </div>
         )}
 
         <span className={styles.cardCta}>
-          Ver análisis
+          {opinion ? 'Leer opinión' : 'Ver ficha técnica'}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <line x1="5" y1="12" x2="19" y2="12" />

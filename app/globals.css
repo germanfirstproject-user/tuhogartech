@@ -34,7 +34,6 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-border-dark);
-  border-radius: 5px;
   border: 2px solid var(--color-light-secondary);
 }
 
@@ -44,12 +43,12 @@ body {
 
 /* Selección de texto */
 ::selection {
-  background: rgba(22, 99, 85, 0.18);
+  background: var(--color-primary-soft);
   color: var(--color-text);
 }
 
 ::-moz-selection {
-  background: rgba(22, 99, 85, 0.18);
+  background: var(--color-primary-soft);
   color: var(--color-text);
 }
 
@@ -68,8 +67,10 @@ a:hover {
 h1, h2, h3, h4 {
   margin: 0;
   font-family: var(--font-family-display);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
+  letter-spacing: var(--tracking-title);
+  text-wrap: balance;
 }
 
 h5, h6 {
@@ -96,3 +97,24 @@ img {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+
+/* Movimiento: lo justo, y nada si la persona lo pide */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Más contraste si la persona lo pide: líneas más oscuras */
+@media (prefers-contrast: more) {
+  :root {
+    --color-border: #928ca8;
+    --color-text-muted: #4b4759;
+  }
+}
+
+/* Números alineados en valoraciones, recuentos y paginación */
+.tabular { font-variant-numeric: tabular-nums; }

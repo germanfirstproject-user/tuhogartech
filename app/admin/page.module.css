@@ -31,18 +31,18 @@
 
 .statCard {
   background: white;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .statCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: none;
+  box-shadow: none;
 }
 
 .statIcon {
@@ -87,7 +87,7 @@
   background: var(--color-primary);
   color: white;
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: 0;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -161,7 +161,7 @@
 
 .logoutButton:hover {
   background-color: var(--color-danger);
-  transform: translateY(-2px);
+  transform: none;
 }
 
 .logoutButton:active {
@@ -198,8 +198,8 @@
 .statLabel {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: none;
+  letter-spacing: var(--tracking-label);
   margin: 0 0 var(--space-2) 0;
   font-weight: var(--font-weight-semibold);
 }
@@ -289,7 +289,7 @@
 
 .button:hover {
   background-color: var(--color-primary-dark);
-  transform: translateY(-2px);
+  transform: none;
 }
 
 .buttonSecondary {
@@ -335,8 +335,8 @@
 }
 
 .statusPending {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 /* Form */
@@ -401,9 +401,9 @@
 }
 
 .alertInfo {
-  background-color: rgba(37, 99, 235, 0.05);
+  background-color: rgba(74, 42, 140, 0.05);
   border-color: var(--color-primary);
-  color: #1e3a8a;
+  color: var(--color-primary-dark);
 }
 
 .alertSuccess {
@@ -413,9 +413,9 @@
 }
 
 .alertWarning {
-  background-color: #fef3c7;
+  background-color: var(--color-warning-light);
   border-color: var(--color-warning);
-  color: #92400e;
+  color: var(--color-warning);
 }
 
 .alertError {

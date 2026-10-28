@@ -1,13 +1,41 @@
 'use client';
 
-import { useEffect } from 'react';
-import { trackAffiliateClick } from '@/lib/analytics';
+import { useEffect, useRef } from 'react';
+import { trackAffiliateClick, trackComparativaView } from '@/lib/analytics';
 
 /**
  * Componente que renderiza contenido HTML de blogs con soporte para etiquetas <style>
  * Extrae los estilos, los aplica con scope y limpia el HTML
  */
 export default function BlogContentRenderer({ content, blogId, blog, className }) {
+  const contenedor = useRef(null);
+
+  // Tablas con botón «Ver en Amazon»: cuando una entra en pantalla se manda
+  // `comparativa_view` (pagina = blog). Es el denominador de los clics con
+  // `link_position = blog_tabla`, igual que en la ficha.
+  useEffect(() => {
+    const nodo = contenedor.current;
+    if (!nodo || typeof IntersectionObserver === 'undefined') return;
+    const tablas = [...nodo.querySelectorAll('table')].filter((t) => t.querySelector('a[data-amazon-boton]'));
+    if (!tablas.length) return;
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((entrada) => {
+          if (!entrada.isIntersecting) return;
+          const enviado = trackComparativaView({
+            grupo: blog?.slug || String(blog?.id || ''),
+            filas: entrada.target.querySelectorAll('tbody tr').length,
+            pagina: 'blog',
+          });
+          if (enviado) observador.unobserve(entrada.target);
+        });
+      },
+      { threshold: 0.4 }
+    );
+    tablas.forEach((t) => observador.observe(t));
+    return () => observador.disconnect();
+  }, [content, blog?.slug, blog?.id]);
+
   useEffect(() => {
     if (!content) return;
 
@@ -80,7 +108,8 @@ export default function BlogContentRenderer({ content, blogId, blog, className }
   };
 
   return (
-    <div 
+    <div
+      ref={contenedor}
       className={className}
       data-blog-content={blogId}
       onClick={medirClicAmazon}

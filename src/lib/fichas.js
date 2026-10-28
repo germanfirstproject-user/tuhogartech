@@ -47,9 +47,16 @@ export function slugFicha(producto) {
   return slug;
 }
 
-/** Ruta relativa de la ficha: /resenas/356-digitus-cat5e-0-5-m-cable-red. */
+/**
+ * Ruta relativa de la ficha: /resenas/223-synology-ds224-opinion.
+ *
+ * Desde el 28-10-2026 el trozo tras el número se guarda en `products.url_slug`
+ * («synology-ds224-opinion»), porque la dirección ya no es el título entero
+ * sino el modelo más «opinión». Si está vacío (fichas nuevas sin rellenar), se
+ * saca del título como antes.
+ */
 export function rutaFicha(producto) {
-  const slug = slugFicha(producto);
+  const slug = producto?.url_slug?.trim() || slugFicha(producto);
   return `${PREFIJO_FICHA}${producto.id}${slug ? `-${slug}` : ''}`;
 }
 

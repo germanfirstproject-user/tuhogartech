@@ -5,8 +5,8 @@ import BlogCard from '@/components/BlogCard';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import styles from './page.module.css';
 
-// Revalidar cada 5 minutos (300 segundos)
-export const revalidate = 300;
+// Caché de 24 horas: el panel de administración la renueva al guardar (/api/revalidar)
+export const revalidate = 86400;
 
 // Sin la marca: la añade la plantilla de app/layout.js. Con ella puesta aquí
 // también, el título salía «Reseñas - Tu Hogar Tech | Tu Hogar Tech».
@@ -58,36 +58,23 @@ async function CategoriesContent() {
               className={styles.categoryLink}
               prefetch={true}
             >
+              {/* Solo la foto entera y el nombre debajo: el resto se ve
+                  al entrar en la categoría. */}
               <div className={styles.categoryCard}>
-                {/* Imagen de fondo */}
-                {category.image_url ? (
-                  <img
-                    src={category.image_url}
-                    alt={category.name}
-                    className={styles.categoryImage}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <div className={styles.categoryImagePlaceholder}>
-                    <span className={styles.placeholderIcon}>📦</span>
-                  </div>
-                )}
-
-                {/* Overlay */}
-                <div className={styles.categoryOverlay}>
-                  <h2 className={styles.categoryTitle}>
-                    {category.name}
-                  </h2>
-                  <p className={styles.categoryCount}>
-                    {category.product_count} {category.product_count === 1 ? 'reseña' : 'reseñas'}
-                  </p>
-                  {category.description && (
-                    <p className={styles.categoryDescription}>
-                      {category.description}
-                    </p>
+                <div className={styles.categoryMedia}>
+                  {category.image_url ? (
+                    <img
+                      src={category.image_url}
+                      alt=""
+                      className={styles.categoryImage}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className={styles.categoryImagePlaceholder} aria-hidden="true" />
                   )}
                 </div>
+                <h2 className={styles.categoryTitle}>{category.name}</h2>
               </div>
             </Link>
           ))

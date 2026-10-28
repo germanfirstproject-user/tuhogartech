@@ -16,22 +16,22 @@
 .title {
   font-size: 2rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-text);
   margin: 0 0 0.5rem 0;
 }
 
 .subtitle {
   font-size: 1rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .refreshButton {
   padding: 0.75rem 1.5rem;
-  background: #007bff;
+  background: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s;
@@ -39,8 +39,8 @@
 }
 
 .refreshButton:hover {
-  background: #0056b3;
-  transform: translateY(-1px);
+  background: var(--color-primary-dark);
+  transform: none;
 }
 
 /* Loading */
@@ -56,8 +56,8 @@
 .spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid #e1e4e8;
-  border-top-color: #007bff;
+  border: 4px solid var(--color-border);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -76,12 +76,12 @@
 
 .statCard {
   background: white;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
@@ -105,8 +105,8 @@
 }
 
 .statCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  transform: none;
+  box-shadow: none;
 }
 
 .statIcon {
@@ -121,28 +121,28 @@
 .statValue {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-text);
   margin: 0 0 0.25rem 0;
 }
 
 .statLabel {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-transform: none;
+  letter-spacing: var(--tracking-label);
   font-weight: 600;
 }
 
 .statDetail {
   font-size: 0.875rem;
-  color: #999;
+  color: var(--color-text-muted);
   margin: 0.25rem 0 0 0;
 }
 
 .statTrend {
   font-size: 0.75rem;
-  color: #007bff;
+  color: var(--color-primary);
   font-weight: 600;
   margin-top: 0.5rem;
 }
@@ -155,7 +155,7 @@
 .sectionTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-text);
   margin: 0 0 1.5rem 0;
 }
 
@@ -170,7 +170,7 @@
   background: var(--color-primary);
   color: white;
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: 0;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -182,8 +182,8 @@
 }
 
 .actionCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(29, 28, 24, 0.1);
+  transform: none;
+  box-shadow: none;
 }
 
 .actionCard:nth-child(2) {
@@ -224,9 +224,9 @@
 
 .recentCard {
   background: white;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
 .recentHeader {
@@ -243,7 +243,7 @@
 .viewAllLink {
   background: none;
   border: none;
-  color: #007bff;
+  color: var(--color-primary);
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -251,7 +251,7 @@
 }
 
 .viewAllLink:hover {
-  color: #0056b3;
+  color: var(--color-primary-dark);
   text-decoration: underline;
 }
 
@@ -266,14 +266,14 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: var(--color-background-secondary);
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .recentItem:hover {
-  background: #e9ecef;
+  background: var(--color-border);
   transform: translateX(4px);
 }
 
@@ -285,7 +285,7 @@
   align-items: center;
   justify-content: center;
   background: white;
-  border-radius: 8px;
+  border-radius: 0;
 }
 
 .recentItemContent {
@@ -296,7 +296,7 @@
 .recentItemContent h4 {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text);
   margin: 0 0 0.25rem 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -305,7 +305,7 @@
 
 .recentItemContent p {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -320,7 +320,7 @@
   padding: 0.375rem 0.75rem;
   background: #d4edda;
   color: #155724;
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
@@ -329,9 +329,9 @@
 .badgeDraft {
   display: inline-block;
   padding: 0.375rem 0.75rem;
-  background: #fff3cd;
-  color: #856404;
-  border-radius: 6px;
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+  border-radius: 0;
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
@@ -340,7 +340,7 @@
 .emptyState {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
 }
 

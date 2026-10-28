@@ -1,4 +1,4 @@
-import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getSiteStats, getCategoriesWithCounts, getUltimosArticulos } from '@/lib/supabase';
+import { getSiteSettings, getFeaturedProducts, getTopRatedProducts, getRecentBlogs, getCategoriesWithCounts, getUltimosArticulos } from '@/lib/supabase';
 import BlogCard from '@/components/BlogCard';
 import Carousel from '@/components/Carousel';
 import AdminLink from '@/components/AdminLink';
@@ -8,8 +8,8 @@ import { buildContentSlides } from '@/lib/homeSlides';
 import AmazonDisclaimer from '@/components/AmazonDisclaimer';
 import styles from './page.module.css';
 
-// Revalidar cada 5 minutos (300 segundos) - buen balance entre rendimiento y frescura
-export const revalidate = 300;
+// Caché de 24 horas: el panel de administración la renueva al guardar (/api/revalidar)
+export const revalidate = 86400;
 
 const BASE = 'https://tuhogartech.com';
 
@@ -39,7 +39,7 @@ const organizacionSchema = {
   url: BASE,
   logo: {
     '@type': 'ImageObject',
-    url: `${BASE}/icon-512.png`,
+    url: `${BASE}/logo-512.png`,
     width: 512,
     height: 512,
   },
@@ -91,12 +91,11 @@ export async function generateMetadata() {
 
 export default async function HomePage() {
   // Cargar todos los datos en paralelo en el servidor (MUCHO más rápido)
-  const [settingsResult, featuredResult, topRatedResult, blogsResult, statsResult, categoriesResult, ultimosResult] = await Promise.all([
+  const [settingsResult, featuredResult, topRatedResult, blogsResult, categoriesResult, ultimosResult] = await Promise.all([
     getSiteSettings(),
     getFeaturedProducts(),
     getTopRatedProducts(10),
     getRecentBlogs(10),
-    getSiteStats(),
     getCategoriesWithCounts(),
     getUltimosArticulos(6),
   ]);
@@ -104,7 +103,6 @@ export default async function HomePage() {
   const featuredProducts = featuredResult.success ? featuredResult.data : [];
   const topRatedProducts = topRatedResult.success ? topRatedResult.data : [];
   const recentBlogs = blogsResult.success ? blogsResult.data : [];
-  const stats = statsResult.success ? statsResult.data : { productsCount: 0, categoriesCount: 0 };
   const categories = categoriesResult.success ? categoriesResult.data : [];
   const ultimosArticulos = ultimosResult.success ? ultimosResult.data : [];
 
@@ -153,7 +151,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify([websiteSchema, organizacionSchema]) }}
       />
 
-      <Hero stats={stats} categories={categories} picks={heroPicks} />
+      <Hero categories={categories} picks={heroPicks} />
 
       {/* Los seis últimos artículos, justo bajo el hero. Son enlaces normales
           en el HTML (no un carrusel), así que el buscador los ve todos y los

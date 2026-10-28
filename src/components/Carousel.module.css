@@ -25,7 +25,6 @@
   transform: translateY(-50%);
   width: 44px;
   height: 44px;
-  border-radius: 50%;
   background: var(--color-background-secondary);
   /* El borde claro daba 1,56:1 contra el papel de la página y el botón se
      perdía: se veía la flecha suelta, no un control. */
@@ -38,7 +37,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(29, 28, 24, 0.13);
+  box-shadow: none;
 }
 
 .navButton svg {
@@ -50,7 +49,7 @@
 .navButton:hover {
   border-color: var(--color-text);
   background: var(--color-text);
-  color: #ffffff;
+  color: var(--color-text-light);
 }
 
 .navButtonPrev {
@@ -62,6 +61,15 @@
 }
 
 /* Tarjeta */
+.slot {
+  flex: 0 0 calc(25% - 0.9375rem);
+  display: flex;
+}
+
+.slot > * {
+  width: 100%;
+}
+
 .card {
   flex: 0 0 calc(25% - 0.9375rem);
   background: var(--color-background-secondary);
@@ -77,9 +85,9 @@
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-border-dark);
+  transform: none;
+  box-shadow: none;
+  border-color: var(--color-primary-light);
   text-decoration: none;
 }
 
@@ -117,7 +125,7 @@
   justify-content: center;
   font-size: 0.8125rem;
   color: var(--color-text-muted);
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: var(--tracking-label);
   background: var(--color-light-secondary);
 }
@@ -135,7 +143,7 @@
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--color-text-muted);
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: var(--tracking-label);
   margin: 0;
 }
@@ -144,7 +152,7 @@
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--color-primary-dark);
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: var(--tracking-label);
   margin: 0;
 }
@@ -213,8 +221,8 @@
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--color-success-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  text-transform: none;
+  letter-spacing: var(--tracking-label);
 }
 
 /* Pie de blog */
@@ -249,7 +257,8 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
-  .card {
+  .card,
+  .slot {
     flex: 0 0 calc(33.333% - 0.8333rem);
   }
 }
@@ -259,7 +268,8 @@
     padding: 0 2.5rem;
   }
 
-  .card {
+  .card,
+  .slot {
     flex: 0 0 calc(50% - 0.625rem);
   }
 
@@ -295,7 +305,8 @@
     padding: 0 2rem;
   }
 
-  .card {
+  .card,
+  .slot {
     flex: 0 0 100%;
   }
 
@@ -332,7 +343,7 @@
   font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: var(--tracking-label, 0.08em);
-  text-transform: uppercase;
+  text-transform: none;
   padding: 0.3125rem 0.625rem;
   border-radius: var(--radius-sm, 4px);
   z-index: 2;

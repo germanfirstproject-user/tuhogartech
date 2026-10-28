@@ -19,7 +19,7 @@
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--color-text-muted);
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: var(--tracking-label);
 }
 

@@ -1,42 +1,20 @@
 'use client';
 
-import AffiliateLink from '@/components/AffiliateLink';
 import AvisoAfiliado from '@/components/AvisoAfiliado';
+import BotonAmazon from './BotonAmazon';
 import styles from './ProductCTA.module.css';
 
+/** Cierre de la ficha: la última salida a Amazon, para quien ha leído todo. */
 export default function ProductCTA({ product }) {
   if (!product?.affiliate_link) return null;
 
   return (
     <div className={styles.cta}>
-      <p className={styles.label}>Disponible en Amazon</p>
-
+      <p className={styles.label}>¿Te encaja?</p>
       <h2 className={styles.title}>{product.title}</h2>
-
       {/* Sin precio: el de Amazon cambia a diario y sus políticas no permiten
           mostrar una copia propia. El usuario lo ve al llegar. */}
-
-      <AffiliateLink
-        href={product.affiliate_link}
-        productId={product.id}
-        productName={product.title}
-        category={product.category}
-        brand={product.brand}
-        position="ficha_cierre"
-        className={styles.button}
-      >
-        Ver precio actual en Amazon
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-          <polyline points="15 3 21 3 21 9" />
-          <line x1="10" y1="14" x2="21" y2="3" />
-        </svg>
-      </AffiliateLink>
-
-      {/* Este bloque ya llevaba su aviso; ahora la redacción sale del mismo
-          sitio que la de los demás botones, para que no se separen con el
-          tiempo. */}
+      <BotonAmazon product={product} position="ficha_cierre" className={styles.button} />
       <AvisoAfiliado className={styles.note} />
     </div>
   );

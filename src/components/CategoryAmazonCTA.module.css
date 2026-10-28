@@ -9,8 +9,6 @@
   padding: 1.75rem 2rem;
   background: var(--color-background-secondary);
   border: 1px solid var(--color-border);
-  /* Filete del color de la categoría: la ata visualmente al listado */
-  border-left: 3px solid var(--c);
   border-radius: var(--radius-lg);
 }
 

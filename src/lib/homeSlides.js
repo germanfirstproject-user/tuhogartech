@@ -7,13 +7,13 @@
 // Portadas de reserva por categoría, para cuando una no tenga imagen propia
 // subida desde el panel. La clave es el slug de la tabla categories.
 const COVERS = {
-  'bateras-y-energa': '/hero/hub-energia.webp',
-  'smart-home': '/hero/hub-smart-home.webp',
-  streaming: '/hero/hub-streaming.webp',
-  almacenamiento: '/hero/hub-almacenamiento.webp',
+  'bateras-y-energa': '/hero/hub-energia.svg',
+  'smart-home': '/hero/hub-smart-home.svg',
+  streaming: '/hero/hub-streaming.svg',
+  almacenamiento: '/hero/hub-almacenamiento.svg',
 };
 
-const COVER_FALLBACK = '/hero/hub-guias.webp';
+const COVER_FALLBACK = '/hero/hub-guias.svg';
 
 // Gancho editorial por categoría: qué encuentra ahí quien entra.
 const PITCHES = {

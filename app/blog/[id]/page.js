@@ -11,8 +11,8 @@ import GuiasRelacionadas from '@/components/GuiasRelacionadas';
 import { extractProductIds, insertAmazonButtons, splitContentByProductCards } from '@/lib/blogProducts';
 import styles from './page.module.css';
 
-// Revalidar cada 10 minutos (600 segundos)
-export const revalidate = 600;
+// Caché de 24 horas: el panel de administración la renueva al guardar (/api/revalidar)
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   const result = await getBlogs();
@@ -145,7 +145,7 @@ export default async function BlogPostPage({ params }) {
       "name": "Tu Hogar Tech",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://tuhogartech.com/icon-512.png"
+        "url": "https://tuhogartech.com/logo-512.png"
       }
     },
     "mainEntityOfPage": {
@@ -251,7 +251,10 @@ export default async function BlogPostPage({ params }) {
         {/* Contenido: el texto se trocea para intercalar tarjetas de producto
             donde el artículo ya enlazaba a una ficha. Se renderiza en servidor,
             así que las tarjetas están en el HTML inicial. */}
-        <div className={styles.content}>
+        {/* El marco lleva el relleno y el cuerpo de letra; los estilos del texto
+            (.content) van solo en los trozos de HTML, para que no se cuelen en
+            las tarjetas de producto intercaladas. */}
+        <div className={styles.contentMarco}>
           {contentSegments.map((segment, i) =>
             segment.type === 'product' ? (
               <BlogProductCard
@@ -269,6 +272,7 @@ export default async function BlogPostPage({ params }) {
                 content={segment.value}
                 blogId={`${blog.id}-${i}`}
                 blog={blog}
+                className={styles.content}
               />
             )
           )}

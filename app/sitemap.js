@@ -4,9 +4,9 @@ import { rutaFicha } from '@/lib/fichas';
 
 const BASE = 'https://tuhogartech.com';
 
-// El sitemap se regenera cada hora. Es contenido que cambia poco y no merece
-// una consulta a la base de datos por cada visita de un rastreador.
-export const revalidate = 3600;
+// El sitemap se regenera una vez al día o cuando el administrador guarda algo.
+// No merece una consulta a la base de datos por cada visita de un rastreador.
+export const revalidate = 86400;
 
 /** Fecha válida para <lastmod>, o la de hoy si el registro no trae ninguna. */
 function fecha(...candidatas) {

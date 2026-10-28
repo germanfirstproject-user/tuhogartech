@@ -25,8 +25,8 @@ import MigasDePan from '@/components/MigasDePan';
 import TarjetaSubcategoria from '@/components/TarjetaSubcategoria';
 import GuiasRelacionadas from '@/components/GuiasRelacionadas';
 
-// Revalidar cada 5 minutos (300 segundos)
-export const revalidate = 300;
+// Caché de 24 horas: el panel de administración la renueva al guardar (/api/revalidar)
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   const result = await getCategories();
@@ -197,7 +197,7 @@ export default async function CategoryPage({ params }) {
             </p>
           </div>
 
-          <ProductsGrid products={sueltos} idsDestacados={idsDestacados} />
+          <ProductsGrid products={sueltos} idsDestacados={idsDestacados} origen="listado_categoria" pagina="categoria" />
         </div>
       )}
 

@@ -1,0 +1,277 @@
+/* ============ Tarjeta de producto (única en toda la web) ============
+   Fondo blanco, borde de 1 px, esquinas cuadradas y un solo botón saturado.
+   Al pasar por encima solo cambia el borde: nada de sombras ni saltos. */
+.card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  transition: border-color var(--transition-fast);
+}
+
+.card:hover,
+.card:has(:focus-visible) {
+  border-color: var(--color-primary-light);
+}
+
+.imagen {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-background-tertiary);
+}
+
+.badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.25rem 0.625rem;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  border: 1px solid var(--color-border-accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.125rem 1.25rem 1rem;
+}
+
+.marca {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--font-family-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: var(--color-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
+}
+
+.tituloEnlace {
+  color: inherit;
+}
+
+.tituloEnlace::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.card:hover .tituloEnlace {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--color-primary-light);
+}
+
+.mejorPara {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mejorParaEtiqueta {
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.nota {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: auto 0 0;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.estrella {
+  color: var(--color-star);
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.notaValor {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.notaTexto {
+  color: var(--color-text-muted);
+}
+
+/* Las acciones quedan por encima del enlace que cubre la tarjeta */
+.acciones {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  border: 1px solid var(--color-primary);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.boton:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: var(--color-text-light);
+}
+
+.boton:active {
+  background: var(--color-dark);
+  border-color: var(--color-dark);
+}
+
+.ext {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  transition: transform var(--transition-normal);
+}
+
+.boton:hover .ext {
+  transform: translate(1px, -1px);
+}
+
+.botonSecundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.botonSecundario:hover {
+  background: var(--color-primary-very-light);
+  color: var(--color-primary-dark);
+}
+
+.pie {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  flex-wrap: wrap;
+}
+
+.aviso {
+  font-size: 0.75rem;
+}
+
+.leer {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration-color: var(--color-border-accent);
+}
+
+.leer:hover {
+  color: var(--color-primary-dark);
+  text-decoration-color: currentColor;
+}
+
+/* ---------- Versión en fila, para dentro de los artículos ---------- */
+.fila {
+  grid-template-columns: minmax(9rem, 13rem) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  height: auto;
+  margin: var(--space-8) 0;
+  /* Los artículos usan la serif para leer; la tarjeta es interfaz */
+  font-family: var(--font-family-sans);
+}
+
+.fila .imagen {
+  grid-row: 1 / span 2;
+  aspect-ratio: auto;
+  min-height: 100%;
+  border-bottom: 0;
+  border-right: 1px solid var(--color-border);
+}
+
+.fila .titulo {
+  min-height: 0;
+  font-size: 1.0625rem;
+}
+
+.fila .acciones {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.fila .boton {
+  min-width: 12rem;
+}
+
+.fila .pie {
+  flex: 1;
+}
+
+@media (max-width: 36rem) {
+  .imagen {
+    aspect-ratio: 16 / 9;
+  }
+
+  .fila {
+    grid-template-columns: 1fr;
+  }
+
+  .fila .imagen {
+    grid-row: auto;
+    aspect-ratio: 16 / 9;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .fila .acciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
